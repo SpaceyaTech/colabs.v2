@@ -1,0 +1,32 @@
+project_id = "rzldibgzlvhrnwjhngmy"
+
+[functions.github-oauth]
+verify_jwt = false
+
+[functions.github-repositories]
+verify_jwt = true
+
+[functions.github-issues]
+verify_jwt = false
+
+[functions.github-project-data]
+verify_jwt = false
+
+# ──────────────────────────────────────────────────
+# TODO: STRIPE EDGE FUNCTIONS
+# Uncomment these when implementing Stripe integration.
+# See docs/STRIPE_INTEGRATION.md for full details.
+# ──────────────────────────────────────────────────
+#
+# [functions.create-checkout-session]
+# verify_jwt = true     # Authenticated users only
+#
+# [functions.stripe-webhook]
+# verify_jwt = false    # Stripe sends raw POST requests, not JWT
+#
+# [functions.create-marketplace-checkout]
+# verify_jwt = true     # Authenticated users only
+
+# ── Active: Customer Portal (ready for testing) ──
+[functions.create-portal-session]
+verify_jwt = false    # Uses manual getClaims() validation
