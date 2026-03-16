@@ -8,7 +8,7 @@ Colabs takes security seriously. This document describes our supported versions,
 
 | Version | Status | Notes |
 |---|---|---|
-| 1.0.x *(in development)* | ✅ Actively supported | Current development branch — all fixes applied here first |
+| 1.0.x *(in development)* | ✅ Actively supported | Developed on the `dev` branch — all fixes applied here first before release to `main` |
 | < 1.0.0 | ❌ Unsupported | Pre-release builds; no security patches |
 
 > As the project reaches stable releases, this table will be updated to reflect the current support window. We follow a **rolling support** model where only the latest stable minor version receives security patches.
