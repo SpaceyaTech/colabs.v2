@@ -196,12 +196,12 @@ hotfix/<name> ← branches from main only; merges into BOTH main and dev
 **For contributors — everyday workflow:**
 
 ```
-1. Branch off dev          git checkout dev && git pull origin dev
+1. Branch off dev          git checkout dev && git pull upstream dev
                            git checkout -b feat/your-feature
 
 2. Do your work            (commits, commits, commits)
 
-3. Sync before PR          git pull --rebase origin dev
+3. Sync before PR          git pull --rebase upstream dev
 
 4. Open PR → dev           Your feature is reviewed, merged into dev
                            CI runs, staging environment is updated automatically
@@ -228,7 +228,7 @@ hotfix/<name> ← branches from main only; merges into BOTH main and dev
 **For urgent production fixes — hotfix workflow:**
 
 ```
-1. Branch from main        git checkout main && git pull origin main
+1. Branch from main        git checkout main && git pull upstream main
                            git checkout -b hotfix/brief-description
 
 2. Fix and test            Apply the minimal fix needed
