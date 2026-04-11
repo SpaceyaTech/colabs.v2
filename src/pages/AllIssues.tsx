@@ -12,7 +12,7 @@ import {
   Code,
   FileText,
   Filter,
-  GitHub,
+  Github,
   Loader2,
   RefreshCw,
   Search,
@@ -455,7 +455,7 @@ export default function AllIssues() {
           <div className="bg-card border border-border rounded-xl p-4 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-muted rounded-lg">
-                <GitHub className="h-5 w-5 text-foreground" />
+                <Github className="h-5 w-5 text-foreground" />
               </div>
               <div>
                 <h3 className="text-sm font-medium">Connect GitHub to see real issues</h3>
@@ -473,7 +473,7 @@ export default function AllIssues() {
               {githubLoading ? (
                 <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
               ) : (
-                <GitHub className="h-3.5 w-3.5 mr-1.5" />
+                <Github className="h-3.5 w-3.5 mr-1.5" />
               )}
               Connect
             </Button>
