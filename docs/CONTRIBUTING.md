@@ -99,6 +99,13 @@ Click **Fork** on the repository page, then:
 ```bash
 git clone git@github.com:YOUR_USERNAME/colabs.v2.git
 cd colabs.v2
+
+# dev is the default branch — confirm you're on it
+git checkout dev
+
+# Add the upstream remote so you can sync with the main repo
+git remote add upstream git@github.com:SpaceyaTech/colabs.v2.git
+git fetch upstream
 ```
 
 **2. Install dependencies**
@@ -153,27 +160,95 @@ Open [http://localhost:5173](http://localhost:5173). For the full setup guide in
 
 ## Branching Strategy
 
-We use a **trunk-based** workflow with short-lived feature branches.
+We use a **two-branch integration model** with short-lived feature branches. This keeps production stable while allowing continuous contribution.
 
-| Branch prefix | Purpose | Merges Into |
-|---|---|---|
-| `main` | Production-ready code | — |
-| `feat/<short-name>` | New features | `main` |
-| `fix/<short-name>` | Bug fixes | `main` |
-| `docs/<short-name>` | Documentation only | `main` |
-| `chore/<short-name>` | Refactors, tooling, dependencies | `main` |
-| `test/<short-name>` | Adding or updating tests | `main` |
-| `hotfix/<short-name>` | Urgent production fixes | `main` |
+### Branch overview
+
+```
+main          ← production (colabs.dev) — protected; never pushed to directly
+ └── dev      ← staging (staging.colabs.dev) — default branch; all PRs target here
+      └── feat/<name>    ← short-lived; branch from dev, merge back into dev
+      └── fix/<name>
+      └── docs/<name>
+      └── chore/<name>
+      └── test/<name>
+
+hotfix/<name> ← branches from main only; merges into BOTH main and dev
+```
+
+### Branch reference
+
+| Branch | Environment | Purpose | Receives PRs from |
+|---|---|---|---|
+| `main` | Production (`colabs.dev`) | Stable, released code only | `dev` (release PRs) and `hotfix/*` only |
+| `dev` | Staging (`staging.colabs.dev`) | Integration — all contributions land here first | All feature, fix, docs, chore, test branches |
+| `feat/<short-name>` | Local / preview | New features | — |
+| `fix/<short-name>` | Local / preview | Bug fixes | — |
+| `docs/<short-name>` | Local / preview | Documentation only | — |
+| `chore/<short-name>` | Local / preview | Refactors, tooling, dependencies | — |
+| `test/<short-name>` | Local / preview | Adding or updating tests | — |
+| `hotfix/<short-name>` | Local / preview | Urgent production fixes only | — |
+
+> ⚙️ **`dev` is the default GitHub branch.** When you fork and open a pull request, GitHub will automatically target `dev`. Do not change the base branch to `main` unless you are a maintainer opening a release PR.
+
+### How the flow works
+
+**For contributors — everyday workflow:**
+
+```
+1. Branch off dev          git checkout dev && git pull upstream dev
+                           git checkout -b feat/your-feature
+
+2. Do your work            (commits, commits, commits)
+
+3. Sync before PR          git pull --rebase upstream dev
+
+4. Open PR → dev           Your feature is reviewed, merged into dev
+                           CI runs, staging environment is updated automatically
+```
+
+**For maintainers — releasing to production:**
+
+```
+1. Confirm dev is stable   All CI checks pass on dev; staging looks good
+
+2. Open a release PR       dev → main
+                           Title: "chore(release): vX.Y.Z"
+                           Body: summary of changes since last release
+
+3. Merge via Merge Commit  (not squash — preserves the full history from dev)
+
+4. Tag the release         git tag -a vX.Y.Z -m "Release vX.Y.Z"
+                           git push origin vX.Y.Z
+
+5. Sync dev with main      git checkout dev && git merge main && git push origin dev
+                           (keeps branches in sync — do this immediately after every release)
+```
+
+**For urgent production fixes — hotfix workflow:**
+
+```
+1. Branch from main        git checkout main && git pull upstream main
+                           git checkout -b hotfix/brief-description
+
+2. Fix and test            Apply the minimal fix needed
+
+3. Open TWO PRs:
+   - hotfix/* → main       (production fix)
+   - hotfix/* → dev        (keeps dev in sync — never skip this step)
+```
 
 ### Rules
 
-- Always branch from the latest `main`
+- **Always branch from `dev`** for normal work — never from `main`
 - Keep branches focused — one feature or fix per branch
 - Delete your branch after it is merged
-- Never push directly to `main`
-- Keep branch names lowercase, hyphen-separated, concise
+- Never push directly to `dev` or `main`
+- Keep branch names lowercase and hyphen-separated
+- Never let `dev` and `main` drift apart — maintainers sync them after every release
+- Database migrations land on `dev` first and are tested against the staging Supabase project before any release to `main`
 
-### Examples
+### Branch name examples
 
 ```
 feat/org-dashboard
@@ -248,7 +323,8 @@ test(proposals): add Zod schema validation unit tests
 
 Run through this checklist **before** requesting review:
 
-- [ ] Branch is up to date with `main` (`git pull --rebase origin main`)
+- [ ] Branch is up to date with `dev` (`git pull --rebase origin dev`)
+- [ ] PR is targeting `dev` — not `main` (check the base branch before opening)
 - [ ] Production build succeeds (`npm run build`)
 - [ ] Linting passes with zero warnings (`npm run lint`)
 - [ ] TypeScript type-check passes (`npm run type-check`)
