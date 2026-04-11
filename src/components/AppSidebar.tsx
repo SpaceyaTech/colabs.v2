@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { NavLink, useLocation, Link, useNavigate } from "react-router-dom";
-import { PanelLeftClose, PanelLeft, Plus, Users, Loader2 } from "lucide-react";
-import { useTeams } from "@/hooks/useTeams";
-import { CreateTeamDialog } from "@/components/dashboard/CreateTeamDialog";
+import { useState } from 'react';
+import { NavLink, useLocation, Link, useNavigate } from 'react-router-dom';
+import { PanelLeftClose, PanelLeft, Plus, Users, Loader2 } from 'lucide-react';
+import { useTeams } from '@/hooks/useTeams';
+import { CreateTeamDialog } from '@/components/dashboard/CreateTeamDialog';
 
 import {
   Sidebar,
@@ -16,8 +16,8 @@ import {
   SidebarHeader,
   SidebarFooter,
   useSidebar,
-} from "@/components/ui/sidebar";
-import { workspaceItems, exploreItems, bottomItems } from "@/config/nav";
+} from '@/components/ui/sidebar';
+import { workspaceItems, exploreItems, bottomItems } from '@/config/nav';
 
 export function AppSidebar() {
   const location = useLocation();
@@ -30,10 +30,10 @@ export function AppSidebar() {
 
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
     isActive
-      ? "bg-accent text-foreground font-medium"
-      : "text-muted-foreground hover:text-foreground hover:bg-accent/50";
+      ? 'bg-accent text-foreground font-medium'
+      : 'text-muted-foreground hover:text-foreground hover:bg-accent/50';
 
-  const renderNavItem = (item: typeof workspaceItems[0]) => (
+  const renderNavItem = (item: (typeof workspaceItems)[0]) => (
     <SidebarMenuItem key={item.title}>
       <SidebarMenuButton
         asChild
@@ -41,7 +41,7 @@ export function AppSidebar() {
       >
         <NavLink
           to={item.url}
-          end={item.url === "/dashboard"}
+          end={item.url === '/dashboard'}
           className={({ isActive }) =>
             `flex items-center gap-2.5 rounded-md text-[13px] transition-colors px-2 py-1.5 ${getNavCls({ isActive }).trim()}`
           }
@@ -61,8 +61,24 @@ export function AppSidebar() {
             <Link to="/" className="flex items-center space-x-2">
               <div className="w-6 h-6 relative flex items-center justify-center shrink-0">
                 <svg width="24" height="24" viewBox="0 0 32 32">
-                  <circle cx="12" cy="16" r="8" fill="none" stroke="hsl(var(--primary))" strokeWidth="2" opacity="0.8" />
-                  <circle cx="20" cy="16" r="8" fill="none" stroke="hsl(var(--primary))" strokeWidth="2" opacity="0.4" />
+                  <circle
+                    cx="12"
+                    cy="16"
+                    r="8"
+                    fill="none"
+                    stroke="hsl(var(--primary))"
+                    strokeWidth="2"
+                    opacity="0.8"
+                  />
+                  <circle
+                    cx="20"
+                    cy="16"
+                    r="8"
+                    fill="none"
+                    stroke="hsl(var(--primary))"
+                    strokeWidth="2"
+                    opacity="0.4"
+                  />
                 </svg>
               </div>
               <span className="text-sm font-semibold text-foreground">Colabs</span>
@@ -72,7 +88,11 @@ export function AppSidebar() {
             onClick={toggleSidebar}
             className="h-7 w-7 flex items-center justify-center rounded-md hover:bg-accent transition-colors text-muted-foreground hover:text-foreground"
           >
-            {isCollapsed ? <PanelLeft className="h-3.5 w-3.5" /> : <PanelLeftClose className="h-3.5 w-3.5" />}
+            {isCollapsed ? (
+              <PanelLeft className="h-3.5 w-3.5" />
+            ) : (
+              <PanelLeftClose className="h-3.5 w-3.5" />
+            )}
           </button>
         </div>
       </SidebarHeader>
@@ -86,9 +106,7 @@ export function AppSidebar() {
             </SidebarGroupLabel>
           )}
           <SidebarGroupContent>
-            <SidebarMenu className="space-y-0.5">
-              {workspaceItems.map(renderNavItem)}
-            </SidebarMenu>
+            <SidebarMenu className="space-y-0.5">{workspaceItems.map(renderNavItem)}</SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
 
@@ -136,7 +154,7 @@ export function AppSidebar() {
                   )}
                 </SidebarMenuItem>
               ) : (
-                teams.map((team) => {
+                teams.map(team => {
                   const teamUrl = `/dashboard/teams/${team.id}`;
                   const isActive = location.pathname === teamUrl;
                   return (
@@ -149,8 +167,8 @@ export function AppSidebar() {
                           to={teamUrl}
                           className={`flex items-center gap-2.5 rounded-md text-[13px] transition-colors px-2 py-1.5 ${
                             isActive
-                              ? "bg-accent text-foreground font-medium"
-                              : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                              ? 'bg-accent text-foreground font-medium'
+                              : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
                           }`}
                         >
                           <Users className="h-4 w-4 shrink-0" />
@@ -184,17 +202,13 @@ export function AppSidebar() {
             </SidebarGroupLabel>
           )}
           <SidebarGroupContent>
-            <SidebarMenu className="space-y-0.5">
-              {exploreItems.map(renderNavItem)}
-            </SidebarMenu>
+            <SidebarMenu className="space-y-0.5">{exploreItems.map(renderNavItem)}</SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
 
       <SidebarFooter className="px-2 pb-3">
-        <SidebarMenu className="space-y-0.5">
-          {bottomItems.map(renderNavItem)}
-        </SidebarMenu>
+        <SidebarMenu className="space-y-0.5">{bottomItems.map(renderNavItem)}</SidebarMenu>
       </SidebarFooter>
 
       <CreateTeamDialog open={createTeamOpen} onOpenChange={setCreateTeamOpen} />

@@ -39,8 +39,24 @@ export function TopNavLayout({ children, title, subtitle }: TopNavLayoutProps) {
           <Link to="/" className="flex items-center space-x-2 mr-4">
             <div className="w-8 h-8 relative flex items-center justify-center shrink-0">
               <svg width="32" height="32" viewBox="0 0 32 32" className="absolute">
-                <circle cx="12" cy="16" r="8" fill="none" stroke="hsl(var(--primary))" strokeWidth="2" opacity="0.8"/>
-                <circle cx="20" cy="16" r="8" fill="none" stroke="hsl(var(--primary))" strokeWidth="2" opacity="0.4"/>
+                <circle
+                  cx="12"
+                  cy="16"
+                  r="8"
+                  fill="none"
+                  stroke="hsl(var(--primary))"
+                  strokeWidth="2"
+                  opacity="0.8"
+                />
+                <circle
+                  cx="20"
+                  cy="16"
+                  r="8"
+                  fill="none"
+                  stroke="hsl(var(--primary))"
+                  strokeWidth="2"
+                  opacity="0.4"
+                />
               </svg>
             </div>
             <span className="text-xl font-bold text-foreground hidden sm:inline">Colabs</span>
@@ -60,14 +76,14 @@ export function TopNavLayout({ children, title, subtitle }: TopNavLayoutProps) {
         </div>
         <div className="flex items-center space-x-2">
           <GlobalSearch />
-          <Link 
-            to="/notifications" 
+          <Link
+            to="/notifications"
             className="p-2 rounded-md hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
           >
             <Bell className="h-5 w-5" />
           </Link>
-          <Link 
-            to="/saved-jobs" 
+          <Link
+            to="/saved-jobs"
             className="p-2 rounded-md hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
           >
             <Bookmark className="h-5 w-5" />
@@ -81,7 +97,7 @@ export function TopNavLayout({ children, title, subtitle }: TopNavLayoutProps) {
       <nav className="border-b bg-background sticky top-14 z-40">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-center gap-1 overflow-x-auto hide-scrollbar">
-            {navItems.map((item) => {
+            {navItems.map(item => {
               const Icon = item.icon;
               const active = isActive(item.href);
               return (
@@ -89,10 +105,10 @@ export function TopNavLayout({ children, title, subtitle }: TopNavLayoutProps) {
                   key={item.label}
                   to={item.href}
                   className={cn(
-                    "flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
+                    'flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap',
                     active
-                      ? "border-primary text-foreground"
-                      : "border-transparent text-muted-foreground hover:text-foreground hover:border-muted-foreground/50"
+                      ? 'border-primary text-foreground'
+                      : 'border-transparent text-muted-foreground hover:text-foreground hover:border-muted-foreground/50'
                   )}
                 >
                   <Icon className="h-4 w-4" />
@@ -105,9 +121,7 @@ export function TopNavLayout({ children, title, subtitle }: TopNavLayoutProps) {
       </nav>
 
       {/* Content */}
-      <main className={cn("min-h-[calc(100vh-112px)]", isMobile && "pb-16")}>
-        {children}
-      </main>
+      <main className={cn('min-h-[calc(100vh-112px)]', isMobile && 'pb-16')}>{children}</main>
 
       {/* Mobile Bottom Nav */}
       {isMobile && <BottomNav />}

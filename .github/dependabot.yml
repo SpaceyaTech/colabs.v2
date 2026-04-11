@@ -6,91 +6,99 @@ version: 2
 
 updates:
   # ── NPM: React / TypeScript application ──────────────────────────────────
-  - package-ecosystem: "npm"
-    directory: "/"
+  - package-ecosystem: 'npm'
+    directory: '/'
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "06:00"
-      timezone: "UTC"
+      interval: 'weekly'
+      day: 'monday'
+      time: '06:00'
+      timezone: 'UTC'
 
     # Limit open PRs to avoid noise — security PRs always bypass this
     open-pull-requests-limit: 10
 
-    # Target branch (change if your default branch differs)
-    target-branch: "main"
+    # Target branch (dev is the integration branch for Colabs)
+    target-branch: 'dev'
 
     # Group non-breaking updates into a single PR to reduce noise
     groups:
       react-ecosystem:
         patterns:
-          - "react"
-          - "react-dom"
-          - "react-router*"
-          - "@types/react*"
+          - 'react'
+          - 'react-dom'
+          - 'react-router*'
+          - '@types/react*'
         update-types:
-          - "minor"
-          - "patch"
+          - 'minor'
+          - 'patch'
 
       typescript-tooling:
         patterns:
-          - "typescript"
-          - "ts-*"
-          - "@typescript-eslint/*"
+          - 'typescript'
+          - 'ts-*'
+          - '@typescript-eslint/*'
         update-types:
-          - "minor"
-          - "patch"
+          - 'minor'
+          - 'patch'
 
       testing-suite:
         patterns:
-          - "jest*"
-          - "@testing-library/*"
-          - "vitest*"
-          - "playwright*"
+          - 'jest*'
+          - '@testing-library/*'
+          - 'vitest*'
+          - 'playwright*'
         update-types:
-          - "minor"
-          - "patch"
+          - 'minor'
+          - 'patch'
 
       linting-formatting:
         patterns:
-          - "eslint*"
-          - "prettier*"
-          - "@eslint/*"
+          - 'eslint*'
+          - 'prettier*'
+          - '@eslint/*'
         update-types:
-          - "minor"
-          - "patch"
+          - 'minor'
+          - 'patch'
 
       build-tooling:
         patterns:
-          - "vite*"
-          - "webpack*"
-          - "rollup*"
-          - "esbuild*"
+          - 'vite*'
+          - 'webpack*'
+          - 'rollup*'
+          - 'esbuild*'
         update-types:
-          - "minor"
-          - "patch"
+          - 'minor'
+          - 'patch'
+
+      all-other-non-major-dependencies:
+        patterns:
+          - '*'
+        update-types:
+          - 'minor'
+          - 'patch'
 
     # Labels applied to all Dependabot PRs for easy filtering
     labels:
-      - "dependencies"
-      - "automated"
+      - 'dependencies'
+      - 'automated'
+      - 'contributor'
 
     # Security-specific: keep major version bumps as individual PRs
     # so they get dedicated review — do NOT group them
     ignore:
       # Pin these: major bumps require intentional migration
-      - dependency-name: "react"
-        update-types: ["version-update:semver-major"]
-      - dependency-name: "react-dom"
-        update-types: ["version-update:semver-major"]
-      - dependency-name: "typescript"
-        update-types: ["version-update:semver-major"]
+      - dependency-name: 'react'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'react-dom'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'typescript'
+        update-types: ['version-update:semver-major']
 
     # Commit message conventions (keeps git history clean)
     commit-message:
-      prefix: "chore(deps)"
-      prefix-development: "chore(deps-dev)"
-      include: "scope"
+      prefix: 'chore(deps)'
+      prefix-development: 'chore(deps-dev)'
+      include: 'scope'
 
     # Optional: assign a reviewer / team for security-sensitive PRs
     # reviewers:
@@ -99,29 +107,33 @@ updates:
     #   - "your-github-username"
 
   # ── GitHub Actions: keep CI/CD pipeline dependencies patched ─────────────
-  - package-ecosystem: "github-actions"
-    directory: "/"
+  - package-ecosystem: 'github-actions'
+    directory: '/'
     schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "06:00"
-      timezone: "UTC"
+      interval: 'weekly'
+      day: 'monday'
+      time: '06:00'
+      timezone: 'UTC'
+
+    # Target branch for Actions
+    target-branch: 'dev'
 
     open-pull-requests-limit: 5
 
     groups:
       github-actions:
         patterns:
-          - "*"
+          - '*'
         update-types:
-          - "minor"
-          - "patch"
+          - 'minor'
+          - 'patch'
 
     labels:
-      - "dependencies"
-      - "ci/cd"
-      - "automated"
+      - 'dependencies'
+      - 'ci/cd'
+      - 'automated'
+      - 'contributor'
 
     commit-message:
-      prefix: "chore(actions)"
-      include: "scope"
+      prefix: 'chore(actions)'
+      include: 'scope'

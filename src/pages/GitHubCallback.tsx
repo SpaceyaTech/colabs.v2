@@ -33,7 +33,9 @@ const GitHubCallback = () => {
       <div className="text-center">
         <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
         <h2 className="text-lg font-semibold">Connecting to GitHub...</h2>
-        <p className="text-muted-foreground">Please wait while we complete your GitHub integration.</p>
+        <p className="text-muted-foreground">
+          Please wait while we complete your GitHub integration.
+        </p>
       </div>
     </div>
   );

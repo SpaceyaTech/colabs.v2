@@ -1,30 +1,30 @@
-import { Github, Linkedin, Twitter } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Github, Linkedin, Twitter } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   const footerLinks = {
     product: [
-      { label: "Features", href: "#" },
-      { label: "Pricing", href: "/pricing" },
-      { label: "Changelog", href: "#" },
-      { label: "Documentation", href: "#" },
+      { label: 'Features', href: '#' },
+      { label: 'Pricing', href: '/pricing' },
+      { label: 'Changelog', href: '#' },
+      { label: 'Documentation', href: '#' },
     ],
     resources: [
-      { label: "Blog", href: "#" },
-      { label: "Community", href: "#" },
-      { label: "GitHub", href: "#" },
-      { label: "Status", href: "#" },
+      { label: 'Blog', href: '#' },
+      { label: 'Community', href: '#' },
+      { label: 'GitHub', href: '#' },
+      { label: 'Status', href: '#' },
     ],
     company: [
-      { label: "About", href: "#" },
-      { label: "Careers", href: "#" },
-      { label: "Contact", href: "#" },
-      { label: "Press", href: "#" },
+      { label: 'About', href: '#' },
+      { label: 'Careers', href: '#' },
+      { label: 'Contact', href: '#' },
+      { label: 'Press', href: '#' },
     ],
     legal: [
-      { label: "Privacy", href: "#" },
-      { label: "Terms", href: "#" },
-      { label: "Security", href: "#" },
+      { label: 'Privacy', href: '#' },
+      { label: 'Terms', href: '#' },
+      { label: 'Security', href: '#' },
     ],
   };
 
@@ -37,8 +37,24 @@ const Footer = () => {
             <Link to="/" className="flex items-center space-x-2 mb-4">
               <div className="w-7 h-7 relative flex items-center justify-center">
                 <svg width="28" height="28" viewBox="0 0 32 32">
-                  <circle cx="12" cy="16" r="8" fill="none" stroke="hsl(var(--primary))" strokeWidth="2.5" opacity="0.9"/>
-                  <circle cx="20" cy="16" r="8" fill="none" stroke="hsl(var(--muted-foreground))" strokeWidth="2.5" opacity="0.4"/>
+                  <circle
+                    cx="12"
+                    cy="16"
+                    r="8"
+                    fill="none"
+                    stroke="hsl(var(--primary))"
+                    strokeWidth="2.5"
+                    opacity="0.9"
+                  />
+                  <circle
+                    cx="20"
+                    cy="16"
+                    r="8"
+                    fill="none"
+                    stroke="hsl(var(--muted-foreground))"
+                    strokeWidth="2.5"
+                    opacity="0.4"
+                  />
                 </svg>
               </div>
               <span className="text-lg font-semibold text-foreground">Colabs</span>
@@ -63,9 +79,12 @@ const Footer = () => {
           <div>
             <h4 className="font-medium text-foreground mb-4 text-sm">Product</h4>
             <ul className="space-y-3">
-              {footerLinks.product.map((link) => (
+              {footerLinks.product.map(link => (
                 <li key={link.label}>
-                  <a href={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  <a
+                    href={link.href}
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
                     {link.label}
                   </a>
                 </li>
@@ -77,9 +96,12 @@ const Footer = () => {
           <div>
             <h4 className="font-medium text-foreground mb-4 text-sm">Resources</h4>
             <ul className="space-y-3">
-              {footerLinks.resources.map((link) => (
+              {footerLinks.resources.map(link => (
                 <li key={link.label}>
-                  <a href={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  <a
+                    href={link.href}
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
                     {link.label}
                   </a>
                 </li>
@@ -91,9 +113,12 @@ const Footer = () => {
           <div>
             <h4 className="font-medium text-foreground mb-4 text-sm">Company</h4>
             <ul className="space-y-3">
-              {footerLinks.company.map((link) => (
+              {footerLinks.company.map(link => (
                 <li key={link.label}>
-                  <a href={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  <a
+                    href={link.href}
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
                     {link.label}
                   </a>
                 </li>
@@ -105,9 +130,12 @@ const Footer = () => {
           <div>
             <h4 className="font-medium text-foreground mb-4 text-sm">Legal</h4>
             <ul className="space-y-3">
-              {footerLinks.legal.map((link) => (
+              {footerLinks.legal.map(link => (
                 <li key={link.label}>
-                  <a href={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  <a
+                    href={link.href}
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
                     {link.label}
                   </a>
                 </li>

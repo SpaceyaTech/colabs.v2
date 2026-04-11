@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   LineChart,
   Line,
@@ -8,8 +8,14 @@ import {
   Tooltip,
   ResponsiveContainer,
   Legend,
-} from "recharts";
-import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from "@/components/ui/chart";
+} from 'recharts';
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  ChartLegend,
+  ChartLegendContent,
+} from '@/components/ui/chart';
 
 interface ActivityChartProps {
   activityData: Array<{
@@ -21,12 +27,12 @@ interface ActivityChartProps {
 
 const chartConfig = {
   commits: {
-    label: "Commits",
-    color: "hsl(142, 76%, 36%)",
+    label: 'Commits',
+    color: 'hsl(142, 76%, 36%)',
   },
   prs: {
-    label: "Pull Requests",
-    color: "hsl(var(--primary))",
+    label: 'Pull Requests',
+    color: 'hsl(var(--primary))',
   },
 };
 
@@ -41,14 +47,14 @@ export function ActivityChart({ activityData }: ActivityChartProps) {
           <ChartContainer config={chartConfig} className="h-full w-full">
             <LineChart data={activityData} margin={{ top: 5, right: 10, left: 10, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis 
-                dataKey="month" 
-                tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
-                axisLine={{ stroke: "hsl(var(--border))" }}
+              <XAxis
+                dataKey="month"
+                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                axisLine={{ stroke: 'hsl(var(--border))' }}
               />
-              <YAxis 
-                tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
-                axisLine={{ stroke: "hsl(var(--border))" }}
+              <YAxis
+                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                axisLine={{ stroke: 'hsl(var(--border))' }}
               />
               <ChartTooltip content={<ChartTooltipContent />} />
               <ChartLegend content={<ChartLegendContent />} />
@@ -57,7 +63,7 @@ export function ActivityChart({ activityData }: ActivityChartProps) {
                 dataKey="commits"
                 stroke="var(--color-commits)"
                 strokeWidth={2}
-                dot={{ fill: "var(--color-commits)", strokeWidth: 2, r: 4 }}
+                dot={{ fill: 'var(--color-commits)', strokeWidth: 2, r: 4 }}
                 activeDot={{ r: 6, strokeWidth: 2 }}
               />
               <Line
@@ -65,7 +71,7 @@ export function ActivityChart({ activityData }: ActivityChartProps) {
                 dataKey="prs"
                 stroke="var(--color-prs)"
                 strokeWidth={2}
-                dot={{ fill: "var(--color-prs)", strokeWidth: 2, r: 4 }}
+                dot={{ fill: 'var(--color-prs)', strokeWidth: 2, r: 4 }}
                 activeDot={{ r: 6, strokeWidth: 2 }}
               />
             </LineChart>

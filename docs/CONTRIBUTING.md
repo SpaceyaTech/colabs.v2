@@ -26,16 +26,16 @@ Before you start, please read our [Code of Conduct](./CODE_OF_CONDUCT.md). By pa
 
 Not all contributions are code. Here is what we welcome:
 
-| Type | Examples |
-|---|---|
-| 🐛 **Bug fixes** | Fix a broken query, a UI glitch, a broken redirect |
-| ✨ **Features** | Implement a planned feature from the [PRD](./PRD.md) |
-| 📝 **Documentation** | Improve README, fix typos, expand code comments, add JSDoc |
-| 🧪 **Tests** | Add unit tests, component tests, or integration tests |
-| 🎨 **Design / UX** | Improve accessibility, responsiveness, or visual consistency |
-| 🔒 **Security** | Harden RLS policies, fix token handling, improve input validation |
-| 🌐 **Performance** | Reduce bundle size, improve query efficiency, add lazy loading |
-| 🗃️ **Database** | Add or improve migrations, RLS policies, or seed data |
+| Type                    | Examples                                                                      |
+| ----------------------- | ----------------------------------------------------------------------------- |
+| 🐛 **Bug fixes**        | Fix a broken query, a UI glitch, a broken redirect                            |
+| ✨ **Features**         | Implement a planned feature from the [PRD](./PRD.md)                          |
+| 📝 **Documentation**    | Improve README, fix typos, expand code comments, add JSDoc                    |
+| 🧪 **Tests**            | Add unit tests, component tests, or integration tests                         |
+| 🎨 **Design / UX**      | Improve accessibility, responsiveness, or visual consistency                  |
+| 🔒 **Security**         | Harden RLS policies, fix token handling, improve input validation             |
+| 🌐 **Performance**      | Reduce bundle size, improve query efficiency, add lazy loading                |
+| 🗃️ **Database**         | Add or improve migrations, RLS policies, or seed data                         |
 | 💡 **Ideas & Feedback** | Open a GitHub Discussion or join our [Discord](https://discord.gg/UKjtBDDFHH) |
 
 ---
@@ -82,13 +82,13 @@ Have an idea that would make Colabs better?
 
 ### Prerequisites
 
-| Requirement | Version | Notes |
-|---|---|---|
-| [Node.js](https://nodejs.org) | 18+ | Use [nvm](https://github.com/nvm-sh/nvm) to manage versions |
-| [npm](https://www.npmjs.com) | 9+ | Comes with Node.js |
-| [Supabase CLI](https://supabase.com/docs/guides/cli) | latest | `npm install -g supabase` |
-| A [Supabase](https://supabase.com) account | — | Free tier is sufficient |
-| A [GitHub OAuth App](https://github.com/settings/developers) | — | Two apps needed — see README |
+| Requirement                                                  | Version | Notes                                                       |
+| ------------------------------------------------------------ | ------- | ----------------------------------------------------------- |
+| [Node.js](https://nodejs.org)                                | 18+     | Use [nvm](https://github.com/nvm-sh/nvm) to manage versions |
+| [npm](https://www.npmjs.com)                                 | 9+      | Comes with Node.js                                          |
+| [Supabase CLI](https://supabase.com/docs/guides/cli)         | latest  | `npm install -g supabase`                                   |
+| A [Supabase](https://supabase.com) account                   | —       | Free tier is sufficient                                     |
+| A [GitHub OAuth App](https://github.com/settings/developers) | —       | Two apps needed — see README                                |
 
 ### Setup steps
 
@@ -178,16 +178,16 @@ hotfix/<name> ← branches from main only; merges into BOTH main and dev
 
 ### Branch reference
 
-| Branch | Environment | Purpose | Receives PRs from |
-|---|---|---|---|
-| `main` | Production (`colabs.dev`) | Stable, released code only | `dev` (release PRs) and `hotfix/*` only |
-| `dev` | Staging (`staging.colabs.dev`) | Integration — all contributions land here first | All feature, fix, docs, chore, test branches |
-| `feat/<short-name>` | Local / preview | New features | — |
-| `fix/<short-name>` | Local / preview | Bug fixes | — |
-| `docs/<short-name>` | Local / preview | Documentation only | — |
-| `chore/<short-name>` | Local / preview | Refactors, tooling, dependencies | — |
-| `test/<short-name>` | Local / preview | Adding or updating tests | — |
-| `hotfix/<short-name>` | Local / preview | Urgent production fixes only | — |
+| Branch                | Environment                    | Purpose                                         | Receives PRs from                            |
+| --------------------- | ------------------------------ | ----------------------------------------------- | -------------------------------------------- |
+| `main`                | Production (`colabs.dev`)      | Stable, released code only                      | `dev` (release PRs) and `hotfix/*` only      |
+| `dev`                 | Staging (`staging.colabs.dev`) | Integration — all contributions land here first | All feature, fix, docs, chore, test branches |
+| `feat/<short-name>`   | Local / preview                | New features                                    | —                                            |
+| `fix/<short-name>`    | Local / preview                | Bug fixes                                       | —                                            |
+| `docs/<short-name>`   | Local / preview                | Documentation only                              | —                                            |
+| `chore/<short-name>`  | Local / preview                | Refactors, tooling, dependencies                | —                                            |
+| `test/<short-name>`   | Local / preview                | Adding or updating tests                        | —                                            |
+| `hotfix/<short-name>` | Local / preview                | Urgent production fixes only                    | —                                            |
 
 > ⚙️ **`dev` is the default GitHub branch.** When you fork and open a pull request, GitHub will automatically target `dev`. Do not change the base branch to `main` unless you are a maintainer opening a release PR.
 
@@ -277,17 +277,17 @@ We follow [Conventional Commits](https://www.conventionalcommits.org/) for a cle
 
 ### Types
 
-| Type | When to use |
-|---|---|
-| `feat` | New feature or user-facing functionality |
-| `fix` | Bug fix |
-| `docs` | Documentation only |
-| `style` | Formatting, whitespace — no logic changes |
+| Type       | When to use                                 |
+| ---------- | ------------------------------------------- |
+| `feat`     | New feature or user-facing functionality    |
+| `fix`      | Bug fix                                     |
+| `docs`     | Documentation only                          |
+| `style`    | Formatting, whitespace — no logic changes   |
 | `refactor` | Code restructuring without behaviour change |
-| `perf` | Performance improvement |
-| `test` | Adding or updating tests |
-| `chore` | Build config, dependencies, CI tooling |
-| `security` | Security patches or hardening |
+| `perf`     | Performance improvement                     |
+| `test`     | Adding or updating tests                    |
+| `chore`    | Build config, dependencies, CI tooling      |
+| `security` | Security patches or hardening               |
 
 ### Scopes
 
@@ -349,17 +349,22 @@ docs(readme): add architecture diagram to overview
 
 ```markdown
 ## Summary
+
 Brief description of what this PR does and why.
 
 ## Changes
+
 - Key change 1
 - Key change 2
 
 ## Screenshots
+
 <!-- If UI changes are included, add before/after screenshots here -->
 
 ## Testing
+
 Steps to verify the changes manually:
+
 1. Step one
 2. Step two
 
@@ -369,6 +374,7 @@ Steps to verify the changes manually:
 - [ ] Dark mode tested
 
 ## Related Issues
+
 Closes #XX
 ```
 
@@ -376,11 +382,11 @@ Closes #XX
 
 Keep pull requests small and focused. Large PRs are harder to review and slower to merge.
 
-| Size | Lines Changed | Target Review Time |
-|---|---|---|
-| 🟢 Small | < 100 | < 30 minutes |
-| 🟡 Medium | 100 – 300 | 30 – 60 minutes |
-| 🔴 Large | 300+ | Split into smaller PRs if possible |
+| Size      | Lines Changed | Target Review Time                 |
+| --------- | ------------- | ---------------------------------- |
+| 🟢 Small  | < 100         | < 30 minutes                       |
+| 🟡 Medium | 100 – 300     | 30 – 60 minutes                    |
+| 🔴 Large  | 300+          | Split into smaller PRs if possible |
 
 If a feature genuinely requires 300+ lines, break it into a series of stacked PRs — for example, one for the data model, one for the hooks, and one for the UI.
 
@@ -420,7 +426,9 @@ const { data: gigs, isLoading } = useQuery({ queryKey: ['gigs'], queryFn: fetchG
 
 // ❌ Avoid — manual data fetching
 const [gigs, setGigs] = useState([]);
-useEffect(() => { fetchGigs().then(setGigs); }, []);
+useEffect(() => {
+  fetchGigs().then(setGigs);
+}, []);
 ```
 
 ### Styling
@@ -498,11 +506,11 @@ Reviewers use this checklist when evaluating a PR:
 
 Stuck? Not sure where to start? We'd love to help.
 
-| Channel | Link | Purpose |
-|---|---|---|
-| 💬 Discord | [discord.gg/UKjtBDDFHH](https://discord.gg/UKjtBDDFHH) | Real-time help, contributor introductions, team chat |
+| Channel               | Link                                                                          | Purpose                                                    |
+| --------------------- | ----------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| 💬 Discord            | [discord.gg/UKjtBDDFHH](https://discord.gg/UKjtBDDFHH)                        | Real-time help, contributor introductions, team chat       |
 | 💡 GitHub Discussions | [colabs.v2/discussions](https://github.com/SpaceyaTech/colabs.v2/discussions) | Feature ideas, architecture questions, long-form proposals |
-| 🐛 GitHub Issues | [colabs.v2/issues](https://github.com/SpaceyaTech/colabs.v2/issues) | Bug reports and tracked feature requests |
-| 𝕏 X | [@SpaceYaTech](https://x.com/SpaceYaTech) | Announcements and release updates |
+| 🐛 GitHub Issues      | [colabs.v2/issues](https://github.com/SpaceyaTech/colabs.v2/issues)           | Bug reports and tracked feature requests                   |
+| 𝕏 X                   | [@SpaceYaTech](https://x.com/SpaceYaTech)                                     | Announcements and release updates                          |
 
 For security issues, see [SECURITY.md](./SECURITY.md). Do not open public issues for vulnerabilities.

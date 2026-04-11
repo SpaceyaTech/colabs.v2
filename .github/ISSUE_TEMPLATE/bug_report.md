@@ -1,9 +1,9 @@
 ---
 name: Bug Report
 about: Report a bug to help us improve Colabs
-title: "[Bug] "
+title: '[Bug] '
 labels: bug
-assignees: ""
+assignees: ''
 ---
 
 ## Description
@@ -41,6 +41,7 @@ What actually happened.
 <!-- Paste any relevant browser console errors here. -->
 
 ```
+
 ```
 
 ## Additional Context

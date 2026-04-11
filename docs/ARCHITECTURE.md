@@ -41,19 +41,19 @@ src/
 
 All routes are defined in `src/App.tsx`. Key routes:
 
-| Route | Page | Auth Required |
-|---|---|---|
-| `/` | Landing page | No |
-| `/sign-in`, `/sign-up` | Authentication | No |
-| `/dashboard/*` | User dashboard (tabs) | Yes |
-| `/projects` | Project listings | No |
-| `/project/:id` | Project detail | No |
-| `/marketplace` | Gig marketplace | No |
-| `/gig/:id` | Gig detail | No |
-| `/seller` | Seller dashboard | Yes |
-| `/issues` | All issues | No |
-| `/profile` | User profile | Yes |
-| `/settings` | User settings | Yes |
+| Route                  | Page                  | Auth Required |
+| ---------------------- | --------------------- | ------------- |
+| `/`                    | Landing page          | No            |
+| `/sign-in`, `/sign-up` | Authentication        | No            |
+| `/dashboard/*`         | User dashboard (tabs) | Yes           |
+| `/projects`            | Project listings      | No            |
+| `/project/:id`         | Project detail        | No            |
+| `/marketplace`         | Gig marketplace       | No            |
+| `/gig/:id`             | Gig detail            | No            |
+| `/seller`              | Seller dashboard      | Yes           |
+| `/issues`              | All issues            | No            |
+| `/profile`             | User profile          | Yes           |
+| `/settings`            | User settings         | Yes           |
 
 ## Design System
 
@@ -90,5 +90,6 @@ Forms use **Zod** schemas for client-side validation (e.g., `CreateGigDialog`). 
 ### Layout
 
 Two layout shells are available:
+
 - `AppLayout` — sidebar navigation (dashboard pages)
 - `TopNavLayout` — top navigation bar (public pages)

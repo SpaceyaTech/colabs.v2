@@ -22,7 +22,9 @@ export function AppLayout({ children }: AppLayoutProps) {
             <ProfileDropdown />
           </div>
         </header>
-        <div className={`flex-1 min-h-[calc(100svh-48px)] bg-background ${isMobile ? 'pb-16' : ''}`}>
+        <div
+          className={`flex-1 min-h-[calc(100svh-48px)] bg-background ${isMobile ? 'pb-16' : ''}`}
+        >
           {children}
         </div>
         {isMobile && <BottomNav />}

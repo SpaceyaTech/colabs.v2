@@ -76,14 +76,15 @@ const { data, error } = await supabase.auth.signInWithOAuth({
 7. `loadRepositories()` — Loads repos from DB with collaboration request counts
 
 **Callback page** (`src/pages/GitHubCallback.tsx`):
+
 - Extracts `code` and `state` from URL params
 - Calls `handleOAuthCallback()` and redirects to `/settings`
 
 ### Required Secrets
 
-| Secret | Where Set | Purpose |
-|---|---|---|
-| `GITHUB_CLIENT_ID` | Edge function env | OAuth App client ID |
+| Secret                 | Where Set         | Purpose                 |
+| ---------------------- | ----------------- | ----------------------- |
+| `GITHUB_CLIENT_ID`     | Edge function env | OAuth App client ID     |
 | `GITHUB_CLIENT_SECRET` | Edge function env | OAuth App client secret |
 
 The client-side uses a publishable client ID hardcoded in `useGitHub.tsx`.
@@ -91,6 +92,7 @@ The client-side uses a publishable client ID hardcoded in `useGitHub.tsx`.
 ## Repository Collaboration
 
 Users can toggle `allow_collaboration` on individual repositories. When enabled:
+
 - The repository's open issues become visible to other authenticated users
 - Issues are fetched via the `github-issues` edge function
 - Other users can claim issues and track progress
@@ -102,6 +104,7 @@ Users can toggle `allow_collaboration` on individual repositories. When enabled:
 Fetches open issues from all collaboration-enabled repos for the authenticated user.
 
 **Flow:**
+
 1. Verify JWT → Get user's `github_integrations` record
 2. Query `github_repositories` where `allow_collaboration = true`
 3. For each repo, call `GET /repos/{owner}/{repo}/issues?state=open`
@@ -132,6 +135,7 @@ Fetches live data for the project detail page (no auth required):
 **Endpoint:** POST with `{ repoUrl: "https://github.com/owner/repo" }`
 
 **Returns:**
+
 - Repository metadata (stars, forks, language, topics, license)
 - Contributors list (top 12)
 - Open issues (top 15, sorted with "good first issues" first)

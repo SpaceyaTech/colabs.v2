@@ -35,7 +35,8 @@ export const useOrganizations = () => {
 
       const { data, error } = await supabase
         .from('organization_members')
-        .select(`
+        .select(
+          `
           role,
           organizations (
             id,
@@ -46,15 +47,17 @@ export const useOrganizations = () => {
             website_url,
             created_at
           )
-        `)
+        `
+        )
         .eq('user_id', user?.id);
 
       if (error) throw error;
 
-      const orgsWithRole = data?.map(item => ({
-        ...item.organizations,
-        role: item.role
-      })) || [];
+      const orgsWithRole =
+        data?.map(item => ({
+          ...item.organizations,
+          role: item.role,
+        })) || [];
 
       setOrganizations(orgsWithRole);
     } catch (err: any) {
@@ -81,13 +84,11 @@ export const useOrganizations = () => {
     if (orgError) throw orgError;
 
     // Add user as owner
-    const { error: memberError } = await supabase
-      .from('organization_members')
-      .insert({
-        organization_id: organization.id,
-        user_id: user.id,
-        role: 'owner'
-      });
+    const { error: memberError } = await supabase.from('organization_members').insert({
+      organization_id: organization.id,
+      user_id: user.id,
+      role: 'owner',
+    });
 
     if (memberError) throw memberError;
 
@@ -99,13 +100,11 @@ export const useOrganizations = () => {
   const joinOrganization = async (organizationId: string, role: 'member' | 'admin' = 'member') => {
     if (!user) throw new Error('User not authenticated');
 
-    const { error } = await supabase
-      .from('organization_members')
-      .insert({
-        organization_id: organizationId,
-        user_id: user.id,
-        role
-      });
+    const { error } = await supabase.from('organization_members').insert({
+      organization_id: organizationId,
+      user_id: user.id,
+      role,
+    });
 
     if (error) throw error;
 
@@ -135,6 +134,6 @@ export const useOrganizations = () => {
     createOrganization,
     joinOrganization,
     leaveOrganization,
-    refetch: fetchUserOrganizations
+    refetch: fetchUserOrganizations,
   };
 };

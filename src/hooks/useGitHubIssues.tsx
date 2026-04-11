@@ -75,7 +75,7 @@ export const useGitHubIssues = () => {
 
       setIssues(data.issues || []);
       setRepositories(data.repositories || []);
-      
+
       if (data.issues?.length > 0) {
         toast.success(`Loaded ${data.issues.length} issues from GitHub`);
       }

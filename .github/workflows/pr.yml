@@ -1,0 +1,306 @@
+# pr.yml — Colabs
+#
+# Everything that must pass BEFORE a pull request is merged into dev or main.
+# This is the contributor-facing gate. If any job here fails, the PR cannot merge.
+#
+# Jobs consolidated from:
+#   - ci.yml          (lint, type-check, build)
+#   - pr-title-lint.yml  (conventional commit title check)
+#   - auto-label.yml     (path-based label application)
+#   - changelog-preview.yml (changelog comment on PR)
+#
+# Branch protection required status checks to add (Settings → Branches):
+#   ✓  CI / format
+#   ✓  CI / lint
+#   ✓  CI / type-check
+#   ✓  CI / build
+#   ✓  PR checks / lint-pr-title
+#   (auto-label and changelog-preview are non-blocking, do not add as required checks)
+
+name: PR
+
+on:
+  pull_request:
+    branches:
+      - dev
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - edited # re-run title lint when PR title is updated
+
+# Cancel in-progress runs for the same PR when a new commit is pushed.
+# Keeps the queue clean when contributors push multiple quick fixups.
+concurrency:
+  group: pr-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ─────────────────────────────────────────────────────────────────────────────
+  # JOB 1 — Code quality (lint → type-check → build)
+  #
+  # Three steps, each catching a distinct class of problem:
+  #   lint        — ESLint: unused vars, hooks violations, missing useEffect deps
+  #   type-check  — tsc --noEmit: wrong prop types, bad Supabase shapes
+  #   build       — Vite build: missing imports, broken lazy routes, circular deps
+  #
+  # All three must pass. The job name "CI" is referenced by branch protection rules
+  # — do not rename it.
+  # ─────────────────────────────────────────────────────────────────────────────
+  format:
+    name: CI / format
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check formatting
+        run: npm run format:check
+
+  lint:
+    name: CI / lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: format
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      # npm ci: exact lockfile versions, fails if package-lock.json is out of sync
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+  type-check:
+    name: CI / type-check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Only run if lint passes — no point checking types in a file with lint errors
+    needs: lint
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npm run type-check
+
+  build:
+    name: CI / build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Only run if type-check passes — a type-broken codebase will fail the build anyway
+    needs: type-check
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+        env:
+          # These must be set in repo Settings → Secrets → Actions.
+          # Placeholder values are fine — Supabase is never called during build.
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_GITHUB_CLIENT_ID: placeholder
+          VITE_APP_URL: http://localhost:5173
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # JOB 2 — PR title lint (Conventional Commits enforcement)
+  #
+  # Checks the PR title matches: type(scope): description
+  # e.g. feat: add gig filtering, fix(auth): handle expired token
+  #
+  # Required because semantic-release reads commit messages (which follow the
+  # squashed PR title) to determine version bump and generate the changelog.
+  # A PR with title "fix stuff" would produce a broken changelog entry.
+  #
+  # Add "PR checks / lint-pr-title" as a required status check in branch protection.
+  # ─────────────────────────────────────────────────────────────────────────────
+  lint-pr-title:
+    name: PR checks / lint-pr-title
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    permissions:
+      pull-requests: read
+      statuses: write
+
+    steps:
+      - name: Check PR title follows Conventional Commits
+        uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          types: |
+            feat
+            fix
+            docs
+            style
+            refactor
+            test
+            chore
+          scopes: |
+            auth
+            dashboard
+            marketplace
+            gigs
+            projects
+            issues
+            teams
+            orgs
+            github-integration
+            subscriptions
+            db
+            ci
+          requireScope: false
+          subjectPattern: ^[a-z].+$
+          subjectPatternError: |
+            PR title "{title}" doesn't match the required format.
+            The description after the colon must start with a lowercase letter.
+
+            Valid examples:
+              feat: add loading state to gig cards
+              fix: correct empty state on project explorer
+              docs: update DEVELOPMENT.md OAuth steps
+              chore: upgrade ESLint to v9
+              feat(auth): support magic link login
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # JOB 3 — Auto-label (non-blocking)
+  #
+  # Applies path-based labels to the PR automatically.
+  # Config lives in .github/labeler.yml.
+  # Never blocks merge — not a required status check.
+  # ─────────────────────────────────────────────────────────────────────────────
+  auto-label:
+    name: PR checks / auto-label
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # Run in parallel with lint — labeling doesn't depend on code quality
+    if: github.event.action != 'edited' # don't re-label on title edits
+
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Apply labels based on changed paths
+        uses: actions/labeler@v5
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          configuration-path: .github/labeler.yml
+          sync-labels: false # never remove manually added labels
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # JOB 4 — Changelog preview comment (non-blocking)
+  #
+  # Posts a comment on the PR showing what the changelog entry will look like
+  # once this PR is merged and semantic-release runs.
+  #
+  # This is purely informational — helps contributors and reviewers see the
+  # impact of the PR on the changelog without waiting for a release.
+  #
+  # The comment is updated (not duplicated) on each new push to the PR.
+  # ─────────────────────────────────────────────────────────────────────────────
+  changelog-preview:
+    name: PR checks / changelog-preview
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: github.event.action != 'edited'
+
+    permissions:
+      pull-requests: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate changelog preview
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          # Tag the PR base commit so conventional-changelog uses it as the "from"
+          # boundary, scoping output to commits in this PR only (base..head range).
+          # fetch-depth: 0 above ensures both commits are available locally.
+          git tag -f pr-preview-base "$BASE_SHA"
+          npx conventional-changelog -p angular -r 1 > PREVIEW_CHANGELOG.md \
+            || echo "No conventional commits found." > PREVIEW_CHANGELOG.md
+          git tag -d pr-preview-base
+
+      - name: Post or update changelog preview comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const preview = fs.readFileSync('PREVIEW_CHANGELOG.md', 'utf8').trim();
+            const marker = '<!-- changelog-preview -->';
+            const body = `${marker}\n## Changelog preview\n\nThis is what the changelog entry will look like once this PR is merged.\n\n${preview || '_No conventional commits found in this PR._'}`;
+
+            // Find an existing preview comment and update it rather than creating a new one
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const existing = comments.find(c => c.body?.includes(marker));
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }

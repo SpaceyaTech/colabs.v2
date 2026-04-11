@@ -1,5 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { GitPullRequest, GitCommit, Clock, FolderGit2 } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { GitPullRequest, GitCommit, Clock, FolderGit2 } from 'lucide-react';
 
 interface ContributionStatsProps {
   stats: {

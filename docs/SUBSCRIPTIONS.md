@@ -41,27 +41,27 @@ Colabs uses a **tier-based subscription model** with three plans. Every authenti
 
 ## Pricing Tiers
 
-| Plan | Price | Seats | Key Features | Expiry |
-|---|---|---|---|---|
-| **Starter** | Free | 1 | Basic leaderboard, community support, basic analytics, public repos only | Never |
-| **Pro** | $20/mo | Up to 10 | Advanced leaderboard, priority support, advanced analytics, private repos, custom integrations, team management | 30 days from activation |
-| **Pro+** | $30/mo | Unlimited | Full leaderboard customization, 24/7 support, enterprise analytics, API access, white-label, SLA guarantee | 30 days from activation |
+| Plan        | Price  | Seats     | Key Features                                                                                                    | Expiry                  |
+| ----------- | ------ | --------- | --------------------------------------------------------------------------------------------------------------- | ----------------------- |
+| **Starter** | Free   | 1         | Basic leaderboard, community support, basic analytics, public repos only                                        | Never                   |
+| **Pro**     | $20/mo | Up to 10  | Advanced leaderboard, priority support, advanced analytics, private repos, custom integrations, team management | 30 days from activation |
+| **Pro+**    | $30/mo | Unlimited | Full leaderboard customization, 24/7 support, enterprise analytics, API access, white-label, SLA guarantee      | 30 days from activation |
 
 ### Feature Matrix
 
-| Feature | Starter | Pro | Pro+ |
-|---|---|---|---|
-| Claim issues | ✅ | ✅ | ✅ |
-| Create projects | ✅ (3 max) | ✅ (25 max) | ✅ (unlimited) |
-| Create gigs | ❌ | ✅ | ✅ |
-| Team management | ❌ | ✅ (3 teams) | ✅ (unlimited) |
-| Private repositories | ❌ | ✅ | ✅ |
-| Advanced analytics | ❌ | ✅ | ✅ |
-| Custom integrations | ❌ | ✅ | ✅ |
-| API access | ❌ | ❌ | ✅ |
-| White-label options | ❌ | ❌ | ✅ |
-| SLA guarantee | ❌ | ❌ | ✅ |
-| Priority/24-7 support | ❌ | Priority | 24/7 Dedicated |
+| Feature               | Starter    | Pro          | Pro+           |
+| --------------------- | ---------- | ------------ | -------------- |
+| Claim issues          | ✅         | ✅           | ✅             |
+| Create projects       | ✅ (3 max) | ✅ (25 max)  | ✅ (unlimited) |
+| Create gigs           | ❌         | ✅           | ✅             |
+| Team management       | ❌         | ✅ (3 teams) | ✅ (unlimited) |
+| Private repositories  | ❌         | ✅           | ✅             |
+| Advanced analytics    | ❌         | ✅           | ✅             |
+| Custom integrations   | ❌         | ✅           | ✅             |
+| API access            | ❌         | ❌           | ✅             |
+| White-label options   | ❌         | ❌           | ✅             |
+| SLA guarantee         | ❌         | ❌           | ✅             |
+| Priority/24-7 support | ❌         | Priority     | 24/7 Dedicated |
 
 ---
 
@@ -145,8 +145,7 @@ The auto-demotion check happens at **two levels** for reliability:
 The `useSubscription()` hook checks `expires_at` on every load:
 
 ```typescript
-const isExpired = subscription.expires_at && 
-  new Date(subscription.expires_at) < new Date();
+const isExpired = subscription.expires_at && new Date(subscription.expires_at) < new Date();
 
 if (isExpired) {
   // Trigger server-side demotion
@@ -169,7 +168,7 @@ DECLARE
   sub public.user_subscriptions;
 BEGIN
   SELECT * INTO sub FROM public.user_subscriptions WHERE user_id = _user_id;
-  
+
   -- If paid plan has expired, demote to starter
   IF sub.plan != 'starter' AND sub.status = 'active' AND sub.expires_at < now() THEN
     UPDATE public.user_subscriptions
@@ -181,7 +180,7 @@ BEGIN
     WHERE user_id = _user_id
     RETURNING * INTO sub;
   END IF;
-  
+
   RETURN sub;
 END;
 $$;
@@ -244,13 +243,13 @@ User opens app
 
 ### Demotion Rules
 
-| Condition | Action | User Impact |
-|---|---|---|
-| `plan = 'pro'` AND `expires_at < now()` | Demote to starter | Loses team mgmt, private repos, advanced analytics |
-| `plan = 'pro_plus'` AND `expires_at < now()` | Demote to starter | Loses all premium features |
-| `status = 'cancelled'` AND `expires_at < now()` | Demote to starter | Same as above |
-| `plan = 'starter'` | No action | Already on free plan |
-| `expires_at IS NULL` | No action | Free plan, never expires |
+| Condition                                       | Action            | User Impact                                        |
+| ----------------------------------------------- | ----------------- | -------------------------------------------------- |
+| `plan = 'pro'` AND `expires_at < now()`         | Demote to starter | Loses team mgmt, private repos, advanced analytics |
+| `plan = 'pro_plus'` AND `expires_at < now()`    | Demote to starter | Loses all premium features                         |
+| `status = 'cancelled'` AND `expires_at < now()` | Demote to starter | Same as above                                      |
+| `plan = 'starter'`                              | No action         | Already on free plan                               |
+| `expires_at IS NULL`                            | No action         | Free plan, never expires                           |
 
 ### Data Preservation
 
@@ -270,8 +269,8 @@ interface SubscriptionState {
   status: 'active' | 'expired' | 'cancelled';
   expiresAt: string | null;
   isExpired: boolean;
-  isPro: boolean;       // true for pro OR pro_plus
-  isProPlus: boolean;   // true for pro_plus only
+  isPro: boolean; // true for pro OR pro_plus
+  isProPlus: boolean; // true for pro_plus only
   isLoading: boolean;
   canCreateProject: boolean;
   canCreateGig: boolean;
@@ -287,23 +286,25 @@ interface SubscriptionState {
 const { isPro, canCreateGig } = useSubscription();
 
 // Gate a feature
-{canCreateGig ? (
-  <CreateGigDialog />
-) : (
-  <UpgradePrompt plan="pro" feature="creating gigs" />
-)}
+{
+  canCreateGig ? <CreateGigDialog /> : <UpgradePrompt plan="pro" feature="creating gigs" />;
+}
 
 // Gate a route
-<Route path="/seller" element={
-  <SubscriptionGuard requiredPlan="pro">
-    <SellerDashboard />
-  </SubscriptionGuard>
-} />
+<Route
+  path="/seller"
+  element={
+    <SubscriptionGuard requiredPlan="pro">
+      <SellerDashboard />
+    </SubscriptionGuard>
+  }
+/>;
 ```
 
 ### Pricing Page Integration
 
 The Pricing page reads the user's current plan to:
+
 1. Highlight the active plan with a "Current Plan" badge
 2. Disable the button for the current plan
 3. Show "Upgrade" for higher plans, "Downgrade" for lower plans
@@ -338,37 +339,37 @@ The Pricing page reads the user's current plan to:
 
 ### File Map
 
-| File | Purpose |
-|---|---|
-| `src/hooks/useSubscription.tsx` | Subscription state hook with auto-demotion check |
-| `src/components/SubscriptionGuard.tsx` | Route-level plan enforcement component |
-| `src/components/UpgradePrompt.tsx` | Reusable upgrade CTA shown when features are gated |
-| `src/pages/Pricing.tsx` | Pricing page with live plan state |
-| `supabase/functions/payment-webhook/index.ts` | (Future) Stripe webhook handler for upgrades |
+| File                                          | Purpose                                            |
+| --------------------------------------------- | -------------------------------------------------- |
+| `src/hooks/useSubscription.tsx`               | Subscription state hook with auto-demotion check   |
+| `src/components/SubscriptionGuard.tsx`        | Route-level plan enforcement component             |
+| `src/components/UpgradePrompt.tsx`            | Reusable upgrade CTA shown when features are gated |
+| `src/pages/Pricing.tsx`                       | Pricing page with live plan state                  |
+| `supabase/functions/payment-webhook/index.ts` | (Future) Stripe webhook handler for upgrades       |
 
 ---
 
 ## Edge Cases
 
-| Scenario | Handling |
-|---|---|
-| User has no subscription row | `useSubscription` creates a starter row on first check |
-| User upgrades mid-cycle | `started_at` and `expires_at` reset to new 30-day window |
-| User downgrades Pro+ → Pro | Update plan, keep same `expires_at` |
-| Multiple devices logged in | All devices read same DB row; demotion propagates via React Query refetch |
-| Payment fails on renewal | Plan expires naturally; user sees demotion toast |
-| User deletes account | `ON DELETE CASCADE` removes subscription row |
+| Scenario                      | Handling                                                                       |
+| ----------------------------- | ------------------------------------------------------------------------------ |
+| User has no subscription row  | `useSubscription` creates a starter row on first check                         |
+| User upgrades mid-cycle       | `started_at` and `expires_at` reset to new 30-day window                       |
+| User downgrades Pro+ → Pro    | Update plan, keep same `expires_at`                                            |
+| Multiple devices logged in    | All devices read same DB row; demotion propagates via React Query refetch      |
+| Payment fails on renewal      | Plan expires naturally; user sees demotion toast                               |
+| User deletes account          | `ON DELETE CASCADE` removes subscription row                                   |
 | Clock skew (client vs server) | Server-side `check_and_demote_subscription()` uses DB `now()`, not client time |
 
 ---
 
 ## Future Enhancements
 
-| Feature | Description |
-|---|---|
-| Stripe integration | Automated billing, invoice generation, and webhook-driven plan updates. See [STRIPE_INTEGRATION.md](./STRIPE_INTEGRATION.md) for full implementation plan. |
-| Grace period | 3-day grace after expiry before demotion |
-| Annual plans | Discounted yearly billing with 365-day `expires_at` |
-| Usage-based limits | Track seat count, project count against plan limits in real-time |
-| Subscription history table | Separate `subscription_history` table for audit trail of all plan changes |
-| Email notifications | Send emails 7 days and 1 day before expiry via Supabase edge function + email provider |
+| Feature                    | Description                                                                                                                                                |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Stripe integration         | Automated billing, invoice generation, and webhook-driven plan updates. See [STRIPE_INTEGRATION.md](./STRIPE_INTEGRATION.md) for full implementation plan. |
+| Grace period               | 3-day grace after expiry before demotion                                                                                                                   |
+| Annual plans               | Discounted yearly billing with 365-day `expires_at`                                                                                                        |
+| Usage-based limits         | Track seat count, project count against plan limits in real-time                                                                                           |
+| Subscription history table | Separate `subscription_history` table for audit trail of all plan changes                                                                                  |
+| Email notifications        | Send emails 7 days and 1 day before expiry via Supabase edge function + email provider                                                                     |
