@@ -626,7 +626,7 @@ All edge functions return a consistent JSON error envelope:
 
 ### 9.5 CI Gate
 
-All of the following must pass before a PR can be merged to `main`:
+All of the following must pass before a PR can be merged to `dev`:
 
 - `npm run lint` — ESLint (zero warnings policy)
 - `npm run type-check` — TypeScript strict mode, zero errors
@@ -641,25 +641,33 @@ All of the following must pass before a PR can be merged to `main`:
 
 | Environment | Branch | URL | Purpose |
 |---|---|---|---|
-| Development | `dev` / feature branches | Lovable preview URL | Active development and PR reviews |
-| Staging | `staging` | staging.colabs.dev | Pre-release QA and stakeholder review |
-| Production | `main` | colabs.dev | Live environment |
+| Local development | `feat/*`, `fix/*`, etc. | `localhost:5173` | Active contributor development |
+| Staging | `dev` | staging.colabs.dev | Integration testing — all PRs land here first |
+| Production | `main` | colabs.dev | Stable released code — only receives release PRs from `dev` and hotfixes |
+
+> **`dev` is the default GitHub branch.** All contributor PRs target `dev`. The `main` branch is protected and only updated by maintainers via a deliberate release PR (`dev → main`) or a hotfix.
 
 ### 10.2 Branching Strategy
 
 ```
-main          ← production; protected; requires PR + CI pass
- └── staging  ← pre-release; merges from feature branches after review
-      └── feat/issue-filtering    ← feature branches
-      └── fix/rate-limit-error    ← bug fix branches
-      └── chore/update-deps       ← maintenance branches
+main          ← production; protected; only receives release PRs from dev and hotfixes
+ └── dev      ← staging; default branch; all contributor PRs target here
+      └── feat/<name>     ← feature branches (branch from dev, merge into dev)
+      └── fix/<name>      ← bug fix branches
+      └── docs/<name>     ← documentation only
+      └── chore/<name>    ← refactors, tooling, dependencies
+      └── test/<name>     ← adding or updating tests
+
+hotfix/<name> ← branches from main only; opens TWO PRs: one into main, one into dev
 ```
 
-All branches must follow the convention: `feat/`, `fix/`, `docs/`, `chore/`, `refactor/`, `test/`.
+All branches must follow the convention: `feat/`, `fix/`, `docs/`, `chore/`, `refactor/`, `test/`, `hotfix/`.
+
+**Release cycle:** When `dev` is stable and ready to ship, a maintainer opens a release PR (`dev → main`) titled `chore(release): vX.Y.Z`. After merging, `main` is immediately synced back into `dev` to prevent drift.
 
 ### 10.3 CI Pipeline (GitHub Actions)
 
-Runs on every push to any branch and on all PRs targeting `main` or `staging`:
+Runs on every push to any branch and on all PRs targeting `dev` or `main`:
 
 ```
 1. Install dependencies          npm ci
@@ -673,9 +681,12 @@ Runs on every push to any branch and on all PRs targeting `main` or `staging`:
 
 | Resource | Tool | Trigger |
 |---|---|---|
-| Frontend | Lovable publish / Vercel | Merge to `main` |
-| Supabase migrations | `supabase db push` via GitHub Actions | Merge to `main` |
-| Edge Functions | `supabase functions deploy` via GitHub Actions | Merge to `main` |
+| Frontend (staging) | Lovable preview / Vercel preview | Merge to `dev` |
+| Frontend (production) | Lovable publish / Vercel | Merge to `main` |
+| Supabase migrations (staging) | `supabase db push` via GitHub Actions | Merge to `dev` |
+| Supabase migrations (production) | `supabase db push` via GitHub Actions | Merge to `main` |
+| Edge Functions (staging) | `supabase functions deploy` via GitHub Actions | Merge to `dev` |
+| Edge Functions (production) | `supabase functions deploy` via GitHub Actions | Merge to `main` |
 | Edge Function secrets | Supabase dashboard (manual) | When secrets rotate |
 
 > **Secret rotation policy:** Edge function secrets (e.g., `GITHUB_CLIENT_SECRET`) must be rotated every 90 days or immediately following a suspected exposure. Rotation is documented in [SECURITY.md](./SECURITY.md).

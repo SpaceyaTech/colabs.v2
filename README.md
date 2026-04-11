@@ -521,7 +521,8 @@ Colabs is an open-source project and contributions of all kinds are welcome — 
 git clone git@github.com:YOUR_USERNAME/colabs.v2.git
 cd colabs.v2
 
-# 2. Create a feature branch (branch off main)
+# 2. Create a feature branch off dev (never off main)
+git checkout dev && git pull origin dev
 git checkout -b feat/your-feature-name
 
 # 3. Make your changes
@@ -532,7 +533,7 @@ npm run type-check
 # 5. Commit using conventional commits
 git commit -m "feat: add issue filtering by repository"
 
-# 6. Push and open a Pull Request against main
+# 6. Push and open a Pull Request against dev
 git push origin feat/your-feature-name
 ```
 
