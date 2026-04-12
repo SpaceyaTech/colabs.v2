@@ -118,7 +118,7 @@ Stores GitHub OAuth tokens and user info. **The `access_token` column is exclude
 | `avatar_url`      | text      | GitHub avatar URL                     |
 | `is_active`       | boolean   | Integration status                    |
 
-**RLS:** Users can only read their own integration record. The SELECT policy explicitly excludes the `access_token` column — it is only accessible via Edge Functions using the service role key.
+**RLS:** Users can only read their own integration record. RLS does not filter columns — it filters rows. The `access_token` column is protected by **never including it in client-side SELECT queries**. Edge Functions use the service role key to read it server-side.
 
 ---
 

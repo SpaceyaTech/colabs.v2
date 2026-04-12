@@ -193,7 +193,7 @@ export function useContributionHeatmap(userId: string | undefined) {
 
       const { data, error } = await supabase
         .from('claimed_issues')
-        .select('created_at, updated_at')
+        .select('created_at')
         .eq('user_id', userId!)
         .gte('created_at', oneYearAgo.toISOString());
 
@@ -308,6 +308,10 @@ Deno.serve(async req => {
     }
   );
 
+  if (!response.ok) {
+    throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
+  }
+
   const events = await response.json();
   const ninetyDaysAgo = new Date();
   ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
@@ -388,11 +392,12 @@ export function useContributionStats(userId: string | undefined) {
     /* ... live query ... */
   });
 
-  // Fallback to mock while the feature is being validated
-  if (query.isLoading || query.isError) {
+  // Fallback to mock only during initial loading — never on error
+  // Returning mock data on isError would hide real failures from developers
+  if (query.isLoading) {
     return {
       ...query,
-      data: MOCK_CONTRIBUTION_STATS, // keep mock as fallback during transition
+      data: MOCK_CONTRIBUTION_STATS, // keep mock as loading placeholder during transition
     };
   }
   return query;

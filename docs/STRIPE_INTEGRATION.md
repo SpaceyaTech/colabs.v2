@@ -188,7 +188,14 @@ See [Webhook Handling](#webhook-handling).
 
 ### Step 5: User is redirected back → UI refreshes
 
-On the success URL, `useSubscription()` refetches via React Query. The webhook will have already updated `user_subscriptions` by the time the user lands back.
+On the success URL, `useSubscription()` refetches via React Query.
+
+> **Important:** Stripe webhook delivery is asynchronous. The user may land on the success page before the `stripe-webhook` edge function has finished processing. Do not assume the subscription record has already been updated. The success page should either:
+>
+> - Poll `useSubscription()` with a short refetch interval until `plan` changes from `'starter'`, or
+> - Display a "processing" state and let React Query's background refetch pick it up.
+
+Never show confirmed plan upgrade UI until `useSubscription()` actually returns the new plan.
 
 ---
 
@@ -211,19 +218,28 @@ On the success URL, `useSubscription()` refetches via React Query. The webhook w
 //
 // Events to handle:
 //
-// checkout.session.completed
+//   checkout.session.completed
 //   Payment just succeeded. Activate the plan.
+//   The authoritative expiry comes from Stripe's subscription object, NOT a fixed interval.
 //   INSERT INTO user_subscriptions (user_id, plan, status, started_at, expires_at, stripe_subscription_id)
-//   VALUES (metadata.user_id, metadata.colabs_plan, 'active', now(), now() + interval '30 days', subscription.id)
+//   VALUES (
+//     metadata.user_id,
+//     metadata.colabs_plan,
+//     'active',
+//     now(),
+//     to_timestamp(subscription.current_period_end),   -- from Stripe payload
+//     subscription.id
+//   )
 //   ON CONFLICT (user_id) DO UPDATE
 //     SET plan = EXCLUDED.plan, status = 'active',
-//         started_at = now(), expires_at = now() + interval '30 days',
+//         started_at = now(),
+//         expires_at = to_timestamp(subscription.current_period_end),
 //         stripe_subscription_id = EXCLUDED.stripe_subscription_id
 //
 // invoice.payment_succeeded
-//   Recurring renewal succeeded. Extend expiry.
+//   Recurring renewal succeeded. Extend expiry using Stripe's period end.
 //   UPDATE user_subscriptions
-//     SET expires_at = now() + interval '30 days', status = 'active'
+//     SET expires_at = to_timestamp(subscription.current_period_end), status = 'active'
 //     WHERE stripe_subscription_id = subscription.id
 //
 // invoice.payment_failed

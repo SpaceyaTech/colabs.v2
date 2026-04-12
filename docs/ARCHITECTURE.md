@@ -104,7 +104,7 @@ Returns only rows where user_id matches the JWT
 
 3. **Three security definer functions bypass RLS for role checks.** `is_team_member()`, `get_user_org_role()`, and `is_organization_member()` run with elevated privileges to avoid recursive policy evaluation. Use them in policies that need to check membership — don't write raw subqueries.
 
-4. **The `access_token` column in `github_integrations` is never returned to the client.** The SELECT policy on that table explicitly excludes the `access_token` column. Edge functions use the service role key to read it server-side.
+4. **The `access_token` column in `github_integrations` is never returned to the client.** RLS does not filter columns — it filters rows. Protection for `access_token` comes from never including it in any client-side SELECT query. Edge Functions use the service role key to read it server-side.
 
 5. **The service role key bypasses RLS entirely.** It is only used inside Edge Functions via `Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')`. It must never appear in any `VITE_` environment variable or client-side code.
 

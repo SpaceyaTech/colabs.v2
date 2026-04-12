@@ -59,8 +59,9 @@ function extractSection(md, title) {
   }
 
   if (start === -1) {
-    console.warn(`  ⚠  Section not found: "${title}"`);
-    return '';
+    console.error(`\n❌  Section not found in AGENTS.md: "${title}"`);
+    console.error('    Fix: check for typos in the section title in the ADAPTERS array.\n');
+    process.exit(1);
   }
 
   const nextH2 = md.indexOf('\n## ', start + 1);
@@ -246,8 +247,16 @@ for (const adapter of ADAPTERS) {
   const body = getSections(source, adapter.sections);
   const content = (adapter.header ?? '') + body + (adapter.footer ?? '') + '\n';
 
-  // Only write if content has changed — avoids unnecessary git diffs
-  const existing = existsSync(outputPath) ? readFileSync(outputPath, 'utf8') : null;
+  // Only write if content has changed — avoids unnecessary git diffs.
+  // Read with try/catch instead of existsSync + readFileSync to avoid a
+  // TOCTOU (time-of-check/time-of-use) race between the existence check and the read.
+  let existing = null;
+  try {
+    existing = readFileSync(outputPath, 'utf8');
+  } catch {
+    // File does not exist yet — will be created below
+  }
+
   if (existing === content) {
     console.log(`  ─  ${adapter.path} (unchanged)`);
     unchanged++;
@@ -265,7 +274,7 @@ console.log(`\n${changed} file(s) updated, ${unchanged} unchanged.`);
 if (changed > 0) {
   console.log('\nCommit all generated files alongside .agents/AGENTS.md:');
   console.log(
-    '  git add .agents/AGENTS.md CLAUDE.md .cursor/ .github/copilot-instructions.md .windsurfrules'
+    '  git add .agents/AGENTS.md .agents/rules/context.md CLAUDE.md .cursor/ .github/copilot-instructions.md .windsurfrules'
   );
   console.log("  git commit -m 'docs(agents): update AI agent instructions'");
 }

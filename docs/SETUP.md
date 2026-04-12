@@ -209,7 +209,7 @@ Verify deployment in **Supabase Dashboard → Edge Functions**.
 | `github-issues`       | Fetches open issues from collaboration-enabled repos                 |
 | `github-project-data` | Retrieves detailed project/repo metadata for the project detail page |
 
-> **Security note:** Access tokens are stored server-side only in the `github_integrations` table. Column-level RLS filtering ensures the `access_token` column is never returned to the browser.
+> **Security note:** Access tokens are stored server-side only in the `github_integrations` table. RLS does not filter columns — protection is enforced by never including `access_token` in any client-side SELECT query. Edge Functions read the token via the service role key and never return it in response bodies.
 
 ---
 

@@ -333,7 +333,7 @@ Verify deployment in your Supabase dashboard under **Edge Functions**.
 | `github-issues`       | Fetches open issues from collaboration-enabled repos with label categorisation |
 | `github-project-data` | Retrieves detailed project/repo metadata                                       |
 
-> **Security note:** Access tokens are stored server-side only. They are never returned to or readable by the client — Supabase RLS column-level filtering enforces this.
+> **Security note:** Access tokens are stored server-side only. They are never returned to the client — protection is enforced by never including `access_token` in any client-side SELECT query. Edge Functions read the token via the service role key.
 
 ---
 

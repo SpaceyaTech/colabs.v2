@@ -159,6 +159,10 @@ CREATE POLICY "Team members can read"
   ON public.your_table FOR SELECT
   USING (is_team_member(auth.uid(), team_id));
 
+-- ⚠️  This EXISTS subquery queries 'public.teams', a *different* table — not the
+--    same table this policy is attached to. Cross-table EXISTS is safe from
+--    recursive RLS issues. Only inline subqueries on the *same* protected table
+--    cause recursion. Use security definer functions for same-table membership.
 CREATE POLICY "Team creator can write"
   ON public.your_table FOR ALL
   USING (
@@ -178,28 +182,46 @@ CREATE POLICY "Org members can read"
   ON public.your_table FOR SELECT
   USING (is_organization_member(auth.uid(), organization_id));
 
-CREATE POLICY "Org admins can write"
-  ON public.your_table FOR INSERT UPDATE DELETE
+-- ✅ INSERT/UPDATE share the same check — one policy each
+CREATE POLICY "Org admins can insert"
+  ON public.your_table FOR INSERT
+  WITH CHECK (
+    get_user_org_role(auth.uid(), organization_id) IN ('owner', 'admin')
+  );
+
+CREATE POLICY "Org admins can update or delete"
+  ON public.your_table FOR ALL
   USING (
     get_user_org_role(auth.uid(), organization_id) IN ('owner', 'admin')
   );
 ```
 
-### Column-level security
+### Protecting sensitive columns
 
-For sensitive columns that must never be returned to the client (like `access_token`), add a restrictive SELECT policy:
+**RLS filters rows, not columns.** A SELECT policy controls _which rows_ a user can read — it has no ability to hide individual columns within those rows. There is no PostgreSQL RLS equivalent of a column-level filter.
+
+For sensitive columns that must never reach the client (like `access_token`), the only reliable protection is **never selecting that column in client-side queries**:
 
 ```sql
--- The client-side anon key can never read access_token
-CREATE POLICY "Users can read own integration (no token)"
+-- ✅ Row-level policy — users can only see their own integration ROW
+CREATE POLICY "Users can read own integration"
   ON public.github_integrations FOR SELECT
   USING (auth.uid() = user_id);
-
--- The edge function uses service role key which bypasses RLS entirely
--- So the edge function CAN read access_token directly
 ```
 
-The service role key bypasses all RLS. Access token reads in edge functions are safe because the service role key never leaves the server.
+```typescript
+// ✅ Client query — access_token is simply never requested
+supabase
+  .from('github_integrations')
+  .select('id, user_id, github_username, avatar_url, is_active')
+  .eq('user_id', userId)
+  .single();
+
+// ❌ Never — SELECT * would return access_token even with an RLS SELECT policy
+supabase.from('github_integrations').select('*');
+```
+
+The service role key bypasses all RLS. Inside Edge Functions, the service role client can select `access_token` directly — and must never return it in the response body.
 
 ---
 

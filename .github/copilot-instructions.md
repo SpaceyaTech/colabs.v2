@@ -261,7 +261,7 @@ Any variable prefixed `VITE_` is bundled into the client. Secrets must never use
 
 ### `access_token` in `github_integrations`
 
-The `access_token` column must never be returned to the client. RLS column-level filtering enforces this, but never write a query that explicitly selects it:
+The `access_token` column must never be returned to the client. RLS does not filter columns — it filters rows. Enforce this exclusively by never including `access_token` in any SELECT list:
 
 ```typescript
 // ❌ Never — returns access_token

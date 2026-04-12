@@ -64,6 +64,7 @@ These three concepts are the source of most early contributor mistakes. Understa
 Every table has Row Level Security enabled. PostgreSQL evaluates RLS policies against `auth.uid()` before returning any rows.
 
 **What this means:**
+
 - An empty array from a query is not an error — it means the user has no access. Always handle empty arrays with `EmptyState` components.
 - Every new table must have `ENABLE ROW LEVEL SECURITY` and at least one policy in the same migration. A table with RLS enabled but no policies returns zero rows to everyone, silently.
 - Never write inline subqueries inside RLS policies — they cause recursive evaluation. Use the security definer functions: `is_team_member()`, `get_user_org_role()`, `is_organization_member()`.
@@ -73,13 +74,13 @@ Every table has Row Level Security enabled. PostgreSQL evaluates RLS policies ag
 
 There are two completely independent OAuth flows. Never conflate them.
 
-| | Auth flow | Integration flow |
-|---|---|---|
-| Purpose | Sign in / sign up | Connect GitHub to sync repos and issues |
-| When | `/sign-in`, `/sign-up` | Settings → GitHub Integration (user already logged in) |
-| OAuth App | Supabase Auth → Providers → GitHub | Separate app with `repo` scope |
-| Callback | `<supabase-ref>.supabase.co/auth/v1/callback` | `/github-callback` page |
-| Client code | `useAuth.tsx` | `useGitHub.tsx` |
+|             | Auth flow                                     | Integration flow                                       |
+| ----------- | --------------------------------------------- | ------------------------------------------------------ |
+| Purpose     | Sign in / sign up                             | Connect GitHub to sync repos and issues                |
+| When        | `/sign-in`, `/sign-up`                        | Settings → GitHub Integration (user already logged in) |
+| OAuth App   | Supabase Auth → Providers → GitHub            | Separate app with `repo` scope                         |
+| Callback    | `<supabase-ref>.supabase.co/auth/v1/callback` | `/github-callback` page                                |
+| Client code | `useAuth.tsx`                                 | `useGitHub.tsx`                                        |
 
 ### 3. Components receive data — they don't fetch it
 
@@ -95,25 +96,25 @@ These rules are non-negotiable. CI enforces the code quality ones automatically;
 
 ### Secrets — never in client code
 
-| Secret | Where it lives | How to set |
-|---|---|---|
-| `GITHUB_CLIENT_SECRET` | Supabase Edge Function secrets | `npx supabase secrets set` |
-| `STRIPE_SECRET_KEY` | Supabase Edge Function secrets | `npx supabase secrets set` |
-| `STRIPE_WEBHOOK_SECRET` | Supabase Edge Function secrets | `npx supabase secrets set` |
-| `SUPABASE_SERVICE_ROLE_KEY` | Auto-available in Edge Functions | Never set manually |
+| Secret                      | Where it lives                   | How to set                 |
+| --------------------------- | -------------------------------- | -------------------------- |
+| `GITHUB_CLIENT_SECRET`      | Supabase Edge Function secrets   | `npx supabase secrets set` |
+| `STRIPE_SECRET_KEY`         | Supabase Edge Function secrets   | `npx supabase secrets set` |
+| `STRIPE_WEBHOOK_SECRET`     | Supabase Edge Function secrets   | `npx supabase secrets set` |
+| `SUPABASE_SERVICE_ROLE_KEY` | Auto-available in Edge Functions | Never set manually         |
 
 Any variable prefixed `VITE_` is bundled into the client. Secrets must never use this prefix.
 
 ### `access_token` in `github_integrations`
 
-The `access_token` column must never be returned to the client. RLS column-level filtering enforces this, but never write a query that explicitly selects it:
+The `access_token` column must never be returned to the client. RLS does not filter columns — it filters rows. Enforce this exclusively by never including `access_token` in any SELECT list:
 
 ```typescript
 // ❌ Never — returns access_token
-supabase.from("github_integrations").select("*")
+supabase.from('github_integrations').select('*');
 
 // ✅ Always explicit
-supabase.from("github_integrations").select("id, user_id, github_username, avatar_url, is_active")
+supabase.from('github_integrations').select('id, user_id, github_username, avatar_url, is_active');
 ```
 
 ### File uploads
@@ -126,19 +127,19 @@ Validate MIME type, file extension, and size before any storage write. Never tru
 
 ## What not to do
 
-| Never | Reason |
-|---|---|
-| Edit `src/integrations/supabase/types.ts` | Auto-generated — run type gen instead |
-| Edit `src/components/ui/` files | shadcn/ui managed — run `npx shadcn-ui add` |
-| `SELECT *` on any table | Specify columns — `access_token` must never be returned |
-| Put secrets in `VITE_` variables | Bundled into the client |
-| Edit an existing migration file | Append-only — create a new one |
-| Push directly to `dev` or `main` | Always open a PR |
-| `useEffect + useState` for data fetching | Use `useQuery` |
-| Inline subqueries in RLS policies | Use security definer functions |
-| `Math.random()` in production data paths | Use stable data sources |
-| Hardcode colours in components | Use semantic Tailwind tokens |
-| Expose stack traces in edge function errors | Return `"Internal server error"` |
+| Never                                       | Reason                                                  |
+| ------------------------------------------- | ------------------------------------------------------- |
+| Edit `src/integrations/supabase/types.ts`   | Auto-generated — run type gen instead                   |
+| Edit `src/components/ui/` files             | shadcn/ui managed — run `npx shadcn-ui add`             |
+| `SELECT *` on any table                     | Specify columns — `access_token` must never be returned |
+| Put secrets in `VITE_` variables            | Bundled into the client                                 |
+| Edit an existing migration file             | Append-only — create a new one                          |
+| Push directly to `dev` or `main`            | Always open a PR                                        |
+| `useEffect + useState` for data fetching    | Use `useQuery`                                          |
+| Inline subqueries in RLS policies           | Use security definer functions                          |
+| `Math.random()` in production data paths    | Use stable data sources                                 |
+| Hardcode colours in components              | Use semantic Tailwind tokens                            |
+| Expose stack traces in edge function errors | Return `"Internal server error"`                        |
 
 ---
 
@@ -174,6 +175,7 @@ Conventional Commits — required for semantic-release changelog generation.
 **Scopes:** `auth` | `github` | `gigs` | `projects` | `issues` | `teams` | `orgs` | `proposals` | `subscriptions` | `ui` | `db` | `edge-fn` | `docs` | `ci`
 
 **Examples:**
+
 ```
 feat(gigs): add milestone-based budget input to gig form
 fix(auth): redirect to sign-up on expired session
@@ -183,9 +185,10 @@ docs(setup): add VSCode extension recommendations
 ```
 
 **Rules:**
+
 - Imperative mood: "add" not "added" or "adds"
 - Subject line under 72 characters
-- Body explains *why*, not *what* (the diff shows the what)
+- Body explains _why_, not _what_ (the diff shows the what)
 - Breaking changes: `BREAKING CHANGE: <description>` in the footer
 
 ---

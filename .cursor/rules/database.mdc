@@ -86,46 +86,45 @@ app.listen(3000)                                      // ❌ Express
 
 ```typescript
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-Deno.serve(async (req) => {
+Deno.serve(async req => {
   // 1. Always handle OPTIONS first
-  if (req.method === "OPTIONS") {
+  if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
     // 2. Verify JWT (for authenticated functions)
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) throw new Error("Unauthorized");
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) throw new Error('Unauthorized');
 
     // 3. Use service role client for DB writes (bypasses RLS)
     const supabase = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
     );
 
     // 4. Business logic ...
 
-    return new Response(
-      JSON.stringify({ success: true }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
-
+    return new Response(JSON.stringify({ success: true }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
   } catch (error) {
     // 5. Never expose stack traces
     console.error(error.message);
-    return new Response(
-      JSON.stringify({ error: "Internal server error" }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    return new Response(JSON.stringify({ error: 'Internal server error' }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
   }
 });
 ```
 
 **Webhook endpoints** (Stripe, GitHub) must:
+
 - Set `verify_jwt = false` in `supabase/config.toml`
 - Return `200` even on non-fatal errors — prevents Stripe/GitHub retry storms
 - Always verify the webhook signature before processing
@@ -140,25 +139,25 @@ These rules are non-negotiable. CI enforces the code quality ones automatically;
 
 ### Secrets — never in client code
 
-| Secret | Where it lives | How to set |
-|---|---|---|
-| `GITHUB_CLIENT_SECRET` | Supabase Edge Function secrets | `npx supabase secrets set` |
-| `STRIPE_SECRET_KEY` | Supabase Edge Function secrets | `npx supabase secrets set` |
-| `STRIPE_WEBHOOK_SECRET` | Supabase Edge Function secrets | `npx supabase secrets set` |
-| `SUPABASE_SERVICE_ROLE_KEY` | Auto-available in Edge Functions | Never set manually |
+| Secret                      | Where it lives                   | How to set                 |
+| --------------------------- | -------------------------------- | -------------------------- |
+| `GITHUB_CLIENT_SECRET`      | Supabase Edge Function secrets   | `npx supabase secrets set` |
+| `STRIPE_SECRET_KEY`         | Supabase Edge Function secrets   | `npx supabase secrets set` |
+| `STRIPE_WEBHOOK_SECRET`     | Supabase Edge Function secrets   | `npx supabase secrets set` |
+| `SUPABASE_SERVICE_ROLE_KEY` | Auto-available in Edge Functions | Never set manually         |
 
 Any variable prefixed `VITE_` is bundled into the client. Secrets must never use this prefix.
 
 ### `access_token` in `github_integrations`
 
-The `access_token` column must never be returned to the client. RLS column-level filtering enforces this, but never write a query that explicitly selects it:
+The `access_token` column must never be returned to the client. RLS does not filter columns — it filters rows. Enforce this exclusively by never including `access_token` in any SELECT list:
 
 ```typescript
 // ❌ Never — returns access_token
-supabase.from("github_integrations").select("*")
+supabase.from('github_integrations').select('*');
 
 // ✅ Always explicit
-supabase.from("github_integrations").select("id, user_id, github_username, avatar_url, is_active")
+supabase.from('github_integrations').select('id, user_id, github_username, avatar_url, is_active');
 ```
 
 ### File uploads

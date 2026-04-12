@@ -286,13 +286,15 @@ supabase
   .single();
 ```
 
-The RLS SELECT policy on `github_integrations` should use column-level filtering. Verify it exists:
+**RLS does not filter columns — it filters rows.** There is no way to use a policy to hide a specific column from a query that explicitly selects it. Protection for `access_token` is enforced entirely at the query level:
 
-```sql
--- Check the policy definition in Supabase Dashboard → Table Editor → github_integrations → Policies
--- The SELECT policy USING clause should restrict column access to exclude access_token
--- If the DB does not support column-level RLS, verify the code never includes it in SELECT
-```
+````typescript
+// ✅ Never include access_token in any client-side SELECT list
+supabase
+  .from('github_integrations')
+  .select('id, user_id, github_username, avatar_url, is_active, github_user_id')
+  .eq('user_id', userId)
+  .single();
 
 ### Token reads inside edge functions only
 
@@ -314,7 +316,7 @@ const response = await fetch('https://api.github.com/repos/...', {
 
 // Return only the data the client needs — never the token
 return new Response(JSON.stringify({ repos: data }));
-```
+````
 
 ### Token deletion on disconnect
 

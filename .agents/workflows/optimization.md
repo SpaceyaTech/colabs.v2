@@ -373,7 +373,8 @@ const { data } = await supabase.from('gigs').select('id, title, status').in('id'
 Any query that can return more than 50 rows needs pagination:
 
 ```tsx
-// Cursor-based pagination for feeds
+// Offset-based pagination — simple, but degrades on large datasets (>10k rows)
+// Upgrade to cursor-based (keyset) pagination when rows exceed this threshold
 useQuery({
   queryKey: ['gigs', page],
   queryFn: async () => {
