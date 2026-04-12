@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- [Node.js](https://nodejs.org/) v18+ (or [Bun](https://bun.sh/))
+- [Node.js](https://nodejs.org/) v20.19+ (or [Bun](https://bun.sh/))
 - [Supabase CLI](https://supabase.com/docs/guides/cli) (for edge function development)
 - A Supabase project (auto-provisioned via Lovable Cloud)
 
