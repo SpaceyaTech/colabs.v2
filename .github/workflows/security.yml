@@ -69,6 +69,19 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Verify Gitleaks License Presence
+        # Diagnoses if the GITLEAKS_LICENSE secret is accessible to the workflow.
+        # If this fails, check Organization Settings -> Secrets -> Actions -> Repository Access.
+        run: |
+          if [ -z "$GITLEAKS_LICENSE" ]; then
+            echo "::error::GITLEAKS_LICENSE is empty! Check Org settings for repository access."
+            exit 1
+          else
+            echo "GITLEAKS_LICENSE is present and populated."
+          fi
+        env:
+          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
+
       - name: Run Gitleaks
         uses: gitleaks/gitleaks-action@ff98106e4c7b2bc287b24eaf42907196329070c7 # v2.3.9
         env:
