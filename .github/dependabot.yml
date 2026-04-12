@@ -13,7 +13,6 @@ updates:
     # Limit open PRs to avoid noise — security PRs always bypass this
     open-pull-requests-limit: 10
 
-    # Target branch (dev is the integration branch for Colabs)
     target-branch: 'dev'
 
     # Group non-breaking updates into a single PR to reduce noise
@@ -62,6 +61,16 @@ updates:
           - 'webpack*'
           - 'rollup*'
           - 'esbuild*'
+        update-types:
+          - 'minor'
+          - 'patch'
+
+      tailwind-postcss:
+        patterns:
+          - 'tailwindcss*'
+          - 'postcss*'
+          - '@tailwindcss/*'
+          - 'autoprefixer'
         update-types:
           - 'minor'
           - 'patch'
