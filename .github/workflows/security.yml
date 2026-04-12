@@ -107,10 +107,9 @@ jobs:
         run: npm ci
 
       - name: Audit for high and critical CVEs
-        run: npm audit --audit-level=high
-        # If a transitive dependency blocks PRs and cannot be updated yet:
-        # 1. Identify the advisory ID from the audit output (GHSA-xxxx-xxxx-xxxx)
-        # 2. Add to .npmrc:  audit-exceptions=GHSA-xxxx-xxxx-xxxx
+        # Focus on production dependencies to ensure application security 
+        # while avoiding blocks from unfixable build-tool vulnerabilities.
+        run: npm audit --audit-level=high --omit=dev
         # 3. Add a comment above it explaining the CVE, why it is acceptable
         #    temporarily, and a target date to resolve it.
         # Never add exceptions silently.

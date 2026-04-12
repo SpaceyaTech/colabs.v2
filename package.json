@@ -16,13 +16,6 @@
     "check-types": "npm run type-check",
     "preview": "vite preview"
   },
-  "overrides": {
-    "picomatch": "^4.0.4",
-    "npm": {
-      "brace-expansion": "^5.0.5",
-      "picomatch": "^4.0.4"
-    }
-  },
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
     "@heroicons/react": "^2.2.0",
@@ -80,12 +73,6 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
-    "@semantic-release/changelog": "^6.0.3",
-    "@semantic-release/commit-analyzer": "^13.0.1",
-    "@semantic-release/git": "^10.0.1",
-    "@semantic-release/github": "^12.0.6",
-    "@semantic-release/npm": "^13.1.5",
-    "@semantic-release/release-notes-generator": "^14.1.0",
     "@tailwindcss/typography": "^0.5.15",
     "@types/node": "^22.5.5",
     "@types/react": "^18.3.3",
@@ -103,7 +90,6 @@
     "lovable-tagger": "^1.1.7",
     "postcss": "^8.5.9",
     "prettier": "^3.8.2",
-    "semantic-release": "^25.0.3",
     "tailwindcss": "^3.4.11",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.58.1",
