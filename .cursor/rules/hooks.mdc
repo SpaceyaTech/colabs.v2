@@ -1,0 +1,119 @@
+---
+description: Data fetching and hook rules — src/hooks
+globs: ["src/hooks/**/*.ts", "src/hooks/**/*.tsx"]
+alwaysApply: false
+---
+
+<!-- Auto-generated. Source: .agents/AGENTS.md | Update: npm run sync-agents -->
+
+## Data fetching patterns
+
+### Standard query
+
+```tsx
+export function useMyData(userId: string | undefined) {
+  return useQuery({
+    queryKey: ["my-data", userId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("table")
+        .select("id, name, status")   // explicit columns — never SELECT *
+        .eq("user_id", userId!);
+      if (error) throw error;          // always throw, never swallow
+      return data ?? [];               // always default arrays
+    },
+    enabled: !!userId,                 // always gate on dependency
+  });
+}
+```
+
+### Mutation with cache invalidation
+
+```tsx
+const mutation = useMutation({
+  mutationFn: async (input: CreateInput) => {
+    const { data, error } = await supabase
+      .from("table")
+      .insert(input)
+      .select()
+      .single();
+    if (error) throw error;
+    return data;
+  },
+  onSuccess: () => {
+    queryClient.invalidateQueries({ queryKey: ["my-data"] });
+    toast.success("Created");
+  },
+  onError: (err) => toast.error(err.message),
+});
+```
+
+### Auth-gated query
+
+```tsx
+const { session } = useAuth();
+
+return useQuery({
+  queryKey: ["protected-data"],
+  queryFn: async () => { /* ... */ },
+  enabled: !!session,  // prevents the spurious empty render before session restores
+});
+```
+
+### Edge function call
+
+```tsx
+const { data, error } = await supabase.functions.invoke("function-name", {
+  headers: { Authorization: `Bearer ${session.access_token}` },
+  body: { key: "value" },
+});
+
+if (error) throw new Error(error.message);
+if (!data.success) throw new Error(data.error ?? "Unknown error");
+```
+
+### Query key naming
+
+```
+List:         ["gigs"]
+User-scoped:  ["my-gigs", userId]
+Single:       ["gig", gigId]
+Nested:       ["proposals", gigId]
+```
+
+---
+
+---
+
+## Security rules
+
+These rules are non-negotiable. CI enforces the code quality ones automatically; the others require review.
+
+### Secrets — never in client code
+
+| Secret | Where it lives | How to set |
+|---|---|---|
+| `GITHUB_CLIENT_SECRET` | Supabase Edge Function secrets | `npx supabase secrets set` |
+| `STRIPE_SECRET_KEY` | Supabase Edge Function secrets | `npx supabase secrets set` |
+| `STRIPE_WEBHOOK_SECRET` | Supabase Edge Function secrets | `npx supabase secrets set` |
+| `SUPABASE_SERVICE_ROLE_KEY` | Auto-available in Edge Functions | Never set manually |
+
+Any variable prefixed `VITE_` is bundled into the client. Secrets must never use this prefix.
+
+### `access_token` in `github_integrations`
+
+The `access_token` column must never be returned to the client. RLS column-level filtering enforces this, but never write a query that explicitly selects it:
+
+```typescript
+// ❌ Never — returns access_token
+supabase.from("github_integrations").select("*")
+
+// ✅ Always explicit
+supabase.from("github_integrations").select("id, user_id, github_username, avatar_url, is_active")
+```
+
+### File uploads
+
+Validate MIME type, file extension, and size before any storage write. Never trust the content-type header alone — check the file magic bytes server-side.
+
+---

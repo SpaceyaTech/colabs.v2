@@ -1,0 +1,168 @@
+---
+description: Migration and edge function rules — supabase/
+globs: ["supabase/migrations/**/*.sql", "supabase/functions/**/*.ts"]
+alwaysApply: false
+---
+
+<!-- Auto-generated. Source: .agents/AGENTS.md | Update: npm run sync-agents -->
+
+## Database and migration rules
+
+### Migrations are append-only
+
+Never edit an existing migration file. Create a new one:
+
+```bash
+npx supabase migration new your_migration_name
+```
+
+### Every new table needs RLS in the same migration
+
+```sql
+CREATE TABLE public.your_table (
+  id          UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id     UUID        NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+ALTER TABLE public.your_table ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can access own rows"
+  ON public.your_table
+  USING (auth.uid() = user_id);
+```
+
+### The four canonical RLS patterns
+
+```sql
+-- Owner-only
+USING (auth.uid() = user_id)
+
+-- Public read, owner write
+USING (visibility = 'public')           -- SELECT
+USING (auth.uid() = creator_id)         -- ALL (for owner)
+
+-- Membership-based
+USING (is_team_member(auth.uid(), team_id))
+
+-- Role-based write
+USING (get_user_org_role(auth.uid(), organization_id) IN ('owner', 'admin'))
+```
+
+Use security definer functions in membership policies — never inline subqueries:
+
+```sql
+-- ✅ Correct
+USING (is_team_member(auth.uid(), team_id))
+
+-- ❌ Wrong — causes recursive RLS evaluation
+USING (auth.uid() IN (SELECT user_id FROM team_members WHERE team_id = ...))
+```
+
+---
+
+---
+
+## Edge function patterns
+
+### Deno vs Node — key differences
+
+```typescript
+// Environment variables
+Deno.env.get("VAR_NAME")                            // ✅ Deno
+process.env.VAR_NAME                                 // ❌ Node
+
+// Package imports
+import X from "https://esm.sh/package@version?target=deno"  // ✅ Deno
+import X from "package"                                       // ❌ Node
+
+// HTTP server
+Deno.serve(async (req) => { ... })                   // ✅ Deno
+app.listen(3000)                                      // ❌ Express
+```
+
+### Required structure for every function
+
+```typescript
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
+
+Deno.serve(async (req) => {
+  // 1. Always handle OPTIONS first
+  if (req.method === "OPTIONS") {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  try {
+    // 2. Verify JWT (for authenticated functions)
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) throw new Error("Unauthorized");
+
+    // 3. Use service role client for DB writes (bypasses RLS)
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+    );
+
+    // 4. Business logic ...
+
+    return new Response(
+      JSON.stringify({ success: true }),
+      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+
+  } catch (error) {
+    // 5. Never expose stack traces
+    console.error(error.message);
+    return new Response(
+      JSON.stringify({ error: "Internal server error" }),
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+  }
+});
+```
+
+**Webhook endpoints** (Stripe, GitHub) must:
+- Set `verify_jwt = false` in `supabase/config.toml`
+- Return `200` even on non-fatal errors — prevents Stripe/GitHub retry storms
+- Always verify the webhook signature before processing
+
+---
+
+---
+
+## Security rules
+
+These rules are non-negotiable. CI enforces the code quality ones automatically; the others require review.
+
+### Secrets — never in client code
+
+| Secret | Where it lives | How to set |
+|---|---|---|
+| `GITHUB_CLIENT_SECRET` | Supabase Edge Function secrets | `npx supabase secrets set` |
+| `STRIPE_SECRET_KEY` | Supabase Edge Function secrets | `npx supabase secrets set` |
+| `STRIPE_WEBHOOK_SECRET` | Supabase Edge Function secrets | `npx supabase secrets set` |
+| `SUPABASE_SERVICE_ROLE_KEY` | Auto-available in Edge Functions | Never set manually |
+
+Any variable prefixed `VITE_` is bundled into the client. Secrets must never use this prefix.
+
+### `access_token` in `github_integrations`
+
+The `access_token` column must never be returned to the client. RLS column-level filtering enforces this, but never write a query that explicitly selects it:
+
+```typescript
+// ❌ Never — returns access_token
+supabase.from("github_integrations").select("*")
+
+// ✅ Always explicit
+supabase.from("github_integrations").select("id, user_id, github_username, avatar_url, is_active")
+```
+
+### File uploads
+
+Validate MIME type, file extension, and size before any storage write. Never trust the content-type header alone — check the file magic bytes server-side.
+
+---
