@@ -34,6 +34,7 @@ export const IssueRow = forwardRef<
 >(({ issue, onClick, ...props }, ref) => (
   <button
     ref={ref}
+    type="button"
     onClick={onClick}
     className="w-full flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 px-3 py-2.5 sm:py-2 text-left hover:bg-accent/50 transition-colors rounded-md group text-[13px]"
     {...props}

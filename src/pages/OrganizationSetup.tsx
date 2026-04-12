@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -54,9 +54,9 @@ const OrganizationSetup = () => {
     if (slug && user) {
       fetchOrganization();
     }
-  }, [slug, user]);
+  }, [slug, user, fetchOrganization]);
 
-  const fetchOrganization = async () => {
+  const fetchOrganization = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('organizations')
@@ -121,7 +121,7 @@ const OrganizationSetup = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [slug]);
 
   const connectGitHub = async () => {
     if (!organization) return;

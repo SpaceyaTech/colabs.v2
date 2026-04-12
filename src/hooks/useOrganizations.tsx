@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
 
@@ -26,9 +26,9 @@ export const useOrganizations = () => {
       setOrganizations([]);
       setLoading(false);
     }
-  }, [user]);
+  }, [user, fetchUserOrganizations]);
 
-  const fetchUserOrganizations = async () => {
+  const fetchUserOrganizations = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -65,7 +65,7 @@ export const useOrganizations = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
 
   const createOrganization = async (orgData: {
     name: string;

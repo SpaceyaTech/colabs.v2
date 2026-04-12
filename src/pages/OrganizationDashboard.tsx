@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, NavLink } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -72,9 +72,9 @@ const OrganizationDashboard = () => {
     if (slug && user) {
       fetchOrganizationData();
     }
-  }, [slug, user]);
+  }, [slug, user, fetchOrganizationData]);
 
-  const fetchOrganizationData = async () => {
+  const fetchOrganizationData = useCallback(async () => {
     try {
       // Fetch organization
       const { data: orgData, error: orgError } = await supabase
@@ -132,7 +132,7 @@ const OrganizationDashboard = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [slug, user]);
 
   const getIntegrationIcon = (type: string) => {
     switch (type) {

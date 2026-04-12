@@ -363,26 +363,26 @@ export default function AllIssues() {
 
   const activeFilterCount = filterPriorities.size;
 
-  const getTabIssues = (tab: string) => {
-    switch (tab) {
-      case 'saved':
-        return allIssues.filter(i => savedIssueIds.includes(i.id));
-      case 'bugs':
-        return allIssues.filter(i => i.category === 'bug');
-      case 'features':
-        return allIssues.filter(i => i.category === 'feature');
-      case 'enhancements':
-        return allIssues.filter(i => i.category === 'enhancement');
-      case 'docs':
-        return allIssues.filter(i => i.category === 'documentation');
-      case 'good-first':
-        return allIssues.filter(i => i.isGoodFirstIssue);
-      default:
-        return allIssues;
-    }
-  };
-
   const filteredAndSorted = useMemo(() => {
+    const getTabIssues = (tab: string) => {
+      switch (tab) {
+        case 'saved':
+          return allIssues.filter(i => savedIssueIds.includes(i.id));
+        case 'bugs':
+          return allIssues.filter(i => i.category === 'bug');
+        case 'features':
+          return allIssues.filter(i => i.category === 'feature');
+        case 'enhancements':
+          return allIssues.filter(i => i.category === 'enhancement');
+        case 'docs':
+          return allIssues.filter(i => i.category === 'documentation');
+        case 'good-first':
+          return allIssues.filter(i => i.isGoodFirstIssue);
+        default:
+          return allIssues;
+      }
+    };
+
     let issues = getTabIssues(activeTab);
     if (searchQuery) {
       const q = searchQuery.toLowerCase();

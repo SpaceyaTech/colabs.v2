@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import { AppLayout } from '@/components/AppLayout';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
@@ -22,7 +22,7 @@ const SavedJobs = () => {
     document.title = 'Saved Jobs | Colabs';
   }, []);
 
-  const load = async () => {
+  const load = useCallback(async () => {
     if (!user) return;
     const { data, error } = await supabase
       .from('saved_jobs' as any)
@@ -30,11 +30,11 @@ const SavedJobs = () => {
       .order('created_at', { ascending: false });
     if (!error) setItems(data as any);
     setLoading(false);
-  };
+  }, [user]);
 
   useEffect(() => {
     load();
-  }, [user]);
+  }, [user, load]);
 
   const remove = async (id: string) => {
     await supabase

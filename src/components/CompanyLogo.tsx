@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { cn } from '@/lib/utils';
 
 interface CompanyLogoProps {
@@ -52,13 +53,15 @@ const ColabsPlaceholder = ({ size }: { size: 'sm' | 'md' | 'lg' }) => {
 };
 
 export function CompanyLogo({ logoUrl, companyName, size = 'md', className }: CompanyLogoProps) {
+  const [hasError, setHasError] = useState(false);
+
   const sizeClasses = {
     sm: 'w-8 h-8',
     md: 'w-10 h-10',
     lg: 'w-12 h-12',
   };
 
-  if (!logoUrl) {
+  if (!logoUrl || hasError) {
     return (
       <div className={cn('flex items-center justify-center', className)}>
         <ColabsPlaceholder size={size} />
@@ -78,11 +81,7 @@ export function CompanyLogo({ logoUrl, companyName, size = 'md', className }: Co
         src={logoUrl}
         alt={`${companyName} logo`}
         className="w-full h-full object-contain p-1"
-        onError={e => {
-          // Replace with placeholder on error
-          e.currentTarget.style.display = 'none';
-          e.currentTarget.parentElement?.classList.add('fallback-active');
-        }}
+        onError={() => setHasError(true)}
       />
     </div>
   );

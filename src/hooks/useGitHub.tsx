@@ -94,7 +94,7 @@ export const useGitHub = () => {
         setLoading(false);
       }
     },
-    [user]
+    [user, syncRepositories]
   );
 
   const syncRepositories = useCallback(async () => {
