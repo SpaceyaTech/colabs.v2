@@ -185,6 +185,9 @@ jobs:
             subscriptions
             db
             ci
+            deps
+            deps-dev
+            actions
           requireScope: false
           subjectPattern: ^[a-z].+$
           subjectPatternError: |
