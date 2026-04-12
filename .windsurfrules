@@ -189,15 +189,13 @@ These rules are non-negotiable. CI enforces the code quality ones automatically;
 Any variable prefixed `VITE_` is bundled into the client. Secrets must never use this prefix.
 
 ### `access_token` security
- 
- The `access_token` column must never be reachable by the client. Protection for sensitive tokens must be enforced at the database schema level by moving them to a separate table (e.g., `github_integration_secrets`) with RLS enabled but NO policies. This ensures that only the service role key (inside edge functions) can access them.
- 
- ```typescript
- // ✅ Client query — selects from the public metadata table
- supabase
-   .from('github_integrations')
-   .select('id, user_id, github_username, avatar_url, is_active');
- ```
+
+The `access_token` column must never be reachable by the client. Protection for sensitive tokens must be enforced at the database schema level by moving them to a separate table (e.g., `github_integration_secrets`) with RLS enabled but NO policies. This ensures that only the service role key (inside edge functions) can access them.
+
+```typescript
+// ✅ Client query — selects from the public metadata table
+supabase.from('github_integrations').select('id, user_id, github_username, avatar_url, is_active');
+```
 
 ### File uploads
 
@@ -209,19 +207,19 @@ Validate MIME type, file extension, and size before any storage write. Never tru
 
 ## What not to do
 
-| Never                                       | Reason                                                  |
-| ------------------------------------------- | ------------------------------------------------------- |
-| Edit `src/integrations/supabase/types.ts`   | Auto-generated — run type gen instead                   |
-| Edit `src/components/ui/` files             | shadcn/ui managed — run `npx shadcn-ui add`             |
-| `SELECT *` on any table                     | Specify columns — secrets must be in separate table     |
-| Put secrets in `VITE_` variables            | Bundled into the client                                 |
-| Edit an existing migration file             | Append-only — create a new one                          |
-| Push directly to `dev` or `main`            | Always open a PR                                        |
-| `useEffect + useState` for data fetching    | Use `useQuery`                                          |
-| Inline subqueries in RLS policies           | Use security definer functions                          |
-| `Math.random()` in production data paths    | Use stable data sources                                 |
-| Hardcode colours in components              | Use semantic Tailwind tokens                            |
-| Expose stack traces in edge function errors | Return `"Internal server error"`                        |
+| Never                                       | Reason                                              |
+| ------------------------------------------- | --------------------------------------------------- |
+| Edit `src/integrations/supabase/types.ts`   | Auto-generated — run type gen instead               |
+| Edit `src/components/ui/` files             | shadcn/ui managed — run `npx shadcn-ui add`         |
+| `SELECT *` on any table                     | Specify columns — secrets must be in separate table |
+| Put secrets in `VITE_` variables            | Bundled into the client                             |
+| Edit an existing migration file             | Append-only — create a new one                      |
+| Push directly to `dev` or `main`            | Always open a PR                                    |
+| `useEffect + useState` for data fetching    | Use `useQuery`                                      |
+| Inline subqueries in RLS policies           | Use security definer functions                      |
+| `Math.random()` in production data paths    | Use stable data sources                             |
+| Hardcode colours in components              | Use semantic Tailwind tokens                        |
+| Expose stack traces in edge function errors | Return `"Internal server error"`                    |
 
 ---
 

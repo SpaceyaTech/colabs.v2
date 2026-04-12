@@ -149,15 +149,13 @@ These rules are non-negotiable. CI enforces the code quality ones automatically;
 Any variable prefixed `VITE_` is bundled into the client. Secrets must never use this prefix.
 
 ### `access_token` security
- 
- The `access_token` column must never be reachable by the client. Protection for sensitive tokens must be enforced at the database schema level by moving them to a separate table (e.g., `github_integration_secrets`) with RLS enabled but NO policies. This ensures that only the service role key (inside edge functions) can access them.
- 
- ```typescript
- // ✅ Client query — selects from the public metadata table
- supabase
-   .from('github_integrations')
-   .select('id, user_id, github_username, avatar_url, is_active');
- ```
+
+The `access_token` column must never be reachable by the client. Protection for sensitive tokens must be enforced at the database schema level by moving them to a separate table (e.g., `github_integration_secrets`) with RLS enabled but NO policies. This ensures that only the service role key (inside edge functions) can access them.
+
+```typescript
+// ✅ Client query — selects from the public metadata table
+supabase.from('github_integrations').select('id, user_id, github_username, avatar_url, is_active');
+```
 
 ### File uploads
 
