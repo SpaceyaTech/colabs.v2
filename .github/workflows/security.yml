@@ -53,7 +53,7 @@ jobs:
   #
   # Scans the FULL git history of the PR diff — a secret added in commit 1 and
   # "removed" in commit 3 is still caught. fetch-depth: 0 is required for this.
-  # Free for public repos — no GITLEAKS_LICENSE needed.
+  # Required for repositories owned by organizations (SpaceyaTech).
   # ─────────────────────────────────────────────────────────────────────────────
   secret-scan:
     name: Security / secret-scan
@@ -73,6 +73,7 @@ jobs:
         uses: gitleaks/gitleaks-action@ff98106e4c7b2bc287b24eaf42907196329070c7 # v2.3.9
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
           GITLEAKS_ENABLE_SARIF: true
 
 
