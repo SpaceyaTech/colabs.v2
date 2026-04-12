@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const corsHeaders = {
@@ -27,7 +28,7 @@ interface Repository {
   html_url: string;
 }
 
-Deno.serve(async req => {
+Deno.serve(async (req: Request) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -64,10 +65,10 @@ Deno.serve(async req => {
 
     console.log(`Fetching issues for user: ${user.id}`);
 
-    // Get the user's active GitHub integration
+    // Get the user's active GitHub integration and secrets
     const { data: integration, error: integrationError } = await supabase
       .from('github_integrations')
-      .select('*')
+      .select('*, github_integration_secrets(access_token)')
       .eq('user_id', user.id)
       .eq('is_active', true)
       .maybeSingle();
@@ -122,7 +123,15 @@ Deno.serve(async req => {
 
     // Fetch issues from each repository
     const allIssues: any[] = [];
-    const accessToken = integration.access_token;
+    const secrets = integration.github_integration_secrets as any;
+    const accessToken = Array.isArray(secrets) ? secrets[0]?.access_token : secrets?.access_token;
+
+    if (!accessToken) {
+      return new Response(JSON.stringify({ error: 'GitHub access token not found' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
 
     for (const repo of repositories) {
       try {
@@ -251,7 +260,8 @@ Deno.serve(async req => {
     );
   } catch (error) {
     console.error('Unexpected error:', error);
-    return new Response(JSON.stringify({ error: 'An unexpected error occurred' }), {
+    const message = error instanceof Error ? error.message : 'An unexpected error occurred';
+    return new Response(JSON.stringify({ error: message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

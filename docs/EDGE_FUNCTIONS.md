@@ -133,7 +133,15 @@ Handles the GitHub OAuth code exchange for the integration flow (not the auth lo
 ```json
 {
   "success": true,
-  "integration": { "id": "...", "github_username": "...", "avatar_url": "..." }
+  "integration": {
+    "id": "...",
+    "user_id": "...",
+    "github_user_id": "...",
+    "github_username": "...",
+    "avatar_url": "...",
+    "is_active": true
+  },
+  "github_user": { "id": "...", "login": "...", "avatar_url": "..." }
 }
 ```
 

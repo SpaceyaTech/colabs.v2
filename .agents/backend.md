@@ -200,28 +200,19 @@ CREATE POLICY "Org admins can update or delete"
 
 **RLS filters rows, not columns.** A SELECT policy controls _which rows_ a user can read — it has no ability to hide individual columns within those rows. There is no PostgreSQL RLS equivalent of a column-level filter.
 
-For sensitive columns that must never reach the client (like `access_token`), the only reliable protection is **never selecting that column in client-side queries**:
-
-```sql
--- ✅ Row-level policy — users can only see their own integration ROW
-CREATE POLICY "Users can read own integration"
-  ON public.github_integrations FOR SELECT
-  USING (auth.uid() = user_id);
-```
+For sensitive columns that must never reach the client (like `access_token`), the only reliable protection is a **DB-level restriction**: move sensitive columns to a separate table (e.g., `github_integration_secrets`) with RLS enabled but NO policies. This ensures that only the service role key can access them.
 
 ```typescript
-// ✅ Client query — access_token is simply never requested
+// ✅ Client query — selects from the public metadata table
+// Even if the client used .select('*'), the secrets are in a different table
 supabase
   .from('github_integrations')
   .select('id, user_id, github_username, avatar_url, is_active')
   .eq('user_id', userId)
   .single();
-
-// ❌ Never — SELECT * would return access_token even with an RLS SELECT policy
-supabase.from('github_integrations').select('*');
 ```
 
-The service role key bypasses all RLS. Inside Edge Functions, the service role client can select `access_token` directly — and must never return it in the response body.
+The service role key bypasses all RLS. Inside Edge Functions, the service role client can join with the secrets table to retrieve tokens — and must never return them in the response body.
 
 ---
 

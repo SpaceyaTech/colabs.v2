@@ -286,7 +286,7 @@ supabase
   .single();
 ```
 
-**RLS does not filter columns — it filters rows.** There is no way to use a policy to hide a specific column from a query that explicitly selects it. Protection for `access_token` is enforced entirely at the query level:
+**RLS does not filter columns — it filters rows.** There is no way to use a policy to hide a specific column from a query that explicitly selects it. Protection for sensitive tokens must be enforced at the database schema level by moving them to a separate table (e.g., `github_integration_secrets`) with RLS enabled but NO policies:
 
 ````typescript
 // ✅ Never include access_token in any client-side SELECT list
@@ -295,6 +295,8 @@ supabase
   .select('id, user_id, github_username, avatar_url, is_active, github_user_id')
   .eq('user_id', userId)
   .single();
+
+```
 
 ### Token reads inside edge functions only
 

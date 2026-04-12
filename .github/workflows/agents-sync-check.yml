@@ -49,10 +49,10 @@ jobs:
         run: npm run sync-agents
 
       - name: Auto-commit changes
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403 # v5.2.0
         with:
-          commit_message: "chore(agents): auto-sync AI agent adapters [skip ci]"
-          file_pattern: "CLAUDE.md .cursor/rules/** .github/copilot-instructions.md .windsurfrules .agents/rules/context.md"
+          commit_message: 'chore(agents): auto-sync AI agent adapters [skip ci]'
+          file_pattern: 'CLAUDE.md .cursor/rules/** .github/copilot-instructions.md .windsurfrules .agents/rules/context.md'
 
       - name: Final sync check (fail-safe)
         run: |

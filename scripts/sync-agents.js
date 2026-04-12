@@ -253,7 +253,8 @@ for (const adapter of ADAPTERS) {
   let existing = null;
   try {
     existing = readFileSync(outputPath, 'utf8');
-  } catch {
+  } catch (error) {
+    if (error.code !== 'ENOENT') throw error;
     // File does not exist yet — will be created below
   }
 

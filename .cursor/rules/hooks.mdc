@@ -98,17 +98,16 @@ These rules are non-negotiable. CI enforces the code quality ones automatically;
 
 Any variable prefixed `VITE_` is bundled into the client. Secrets must never use this prefix.
 
-### `access_token` in `github_integrations`
-
-The `access_token` column must never be returned to the client. RLS does not filter columns — it filters rows. Enforce this exclusively by never including `access_token` in any SELECT list:
-
-```typescript
-// ❌ Never — returns access_token
-supabase.from('github_integrations').select('*');
-
-// ✅ Always explicit
-supabase.from('github_integrations').select('id, user_id, github_username, avatar_url, is_active');
-```
+### `access_token` security
+ 
+ The `access_token` column must never be reachable by the client. Protection for sensitive tokens must be enforced at the database schema level by moving them to a separate table (e.g., `github_integration_secrets`) with RLS enabled but NO policies. This ensures that only the service role key (inside edge functions) can access them.
+ 
+ ```typescript
+ // ✅ Client query — selects from the public metadata table
+ supabase
+   .from('github_integrations')
+   .select('id, user_id, github_username, avatar_url, is_active');
+ ```
 
 ### File uploads
 
