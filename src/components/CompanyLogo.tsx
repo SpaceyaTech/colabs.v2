@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 
 interface CompanyLogoProps {
@@ -60,6 +60,11 @@ export function CompanyLogo({ logoUrl, companyName, size = 'md', className }: Co
     md: 'w-10 h-10',
     lg: 'w-12 h-12',
   };
+
+  // Reset error state when logoUrl changes
+  useEffect(() => {
+    setHasError(false);
+  }, [logoUrl]);
 
   if (!logoUrl || hasError) {
     return (

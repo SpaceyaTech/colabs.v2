@@ -16,7 +16,6 @@ import {
   CheckCircle,
   Loader2,
   Folder,
-  Users,
   GitBranch,
   AlertCircle,
 } from 'lucide-react';
@@ -49,12 +48,6 @@ const OrganizationSetup = () => {
   const [loading, setLoading] = useState(true);
   const [connecting, setConnecting] = useState(false);
   const [saving, setSaving] = useState(false);
-
-  useEffect(() => {
-    if (slug && user) {
-      fetchOrganization();
-    }
-  }, [slug, user, fetchOrganization]);
 
   const fetchOrganization = useCallback(async () => {
     try {
@@ -113,6 +106,7 @@ const OrganizationSetup = () => {
         ]);
       }
     } catch (error: any) {
+      console.error('Organization fetch error:', error);
       toast({
         title: 'Error',
         description: 'Failed to load organization details',
@@ -122,6 +116,12 @@ const OrganizationSetup = () => {
       setLoading(false);
     }
   }, [slug]);
+
+  useEffect(() => {
+    if (slug && user) {
+      fetchOrganization();
+    }
+  }, [slug, user, fetchOrganization]);
 
   const connectGitHub = async () => {
     if (!organization) return;
@@ -183,6 +183,7 @@ const OrganizationSetup = () => {
           'Successfully connected your GitHub account. Now select repositories to monitor.',
       });
     } catch (error: any) {
+      console.error('GitHub connection error:', error);
       toast({
         title: 'Connection failed',
         description: 'Unable to connect GitHub. Please try again.',
@@ -226,6 +227,7 @@ const OrganizationSetup = () => {
 
       navigate(`/organizations/${organization.slug}`);
     } catch (error: any) {
+      console.error('Save configuration error:', error);
       toast({
         title: 'Save failed',
         description: 'Unable to save configuration. Please try again.',
@@ -301,57 +303,7 @@ const OrganizationSetup = () => {
               </div>
             </div>
 
-            {!isConnected ? (
-              <Card className="max-w-2xl mx-auto">
-                <CardHeader className="text-center pb-6">
-                  <div className="w-16 h-16 bg-gray-900 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <Github className="h-8 w-8 text-white" />
-                  </div>
-                  <CardTitle className="text-2xl">Connect your GitHub account</CardTitle>
-                  <p className="text-muted-foreground">
-                    Connect GitHub to monitor repositories, track issues, and automate workflows
-                  </p>
-                </CardHeader>
-                <CardContent className="text-center">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div className="flex flex-col items-center space-y-2">
-                      <Folder className="h-8 w-8 text-blue-500" />
-                      <h4 className="font-semibold">Repository Sync</h4>
-                      <p className="text-xs text-muted-foreground">Monitor commits and releases</p>
-                    </div>
-                    <div className="flex flex-col items-center space-y-2">
-                      <AlertCircle className="h-8 w-8 text-orange-500" />
-                      <h4 className="font-semibold">Issue Tracking</h4>
-                      <p className="text-xs text-muted-foreground">Track and manage issues</p>
-                    </div>
-                    <div className="flex flex-col items-center space-y-2">
-                      <GitBranch className="h-8 w-8 text-green-500" />
-                      <h4 className="font-semibold">PR Notifications</h4>
-                      <p className="text-xs text-muted-foreground">Get notified on pull requests</p>
-                    </div>
-                  </div>
-
-                  <Button
-                    size="lg"
-                    onClick={connectGitHub}
-                    disabled={connecting}
-                    className="bg-gray-900 hover:bg-gray-800 text-white"
-                  >
-                    {connecting ? (
-                      <>
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        Connecting...
-                      </>
-                    ) : (
-                      <>
-                        <Github className="h-4 w-4 mr-2" />
-                        Connect with GitHub
-                      </>
-                    )}
-                  </Button>
-                </CardContent>
-              </Card>
-            ) : (
+            {isConnected ? (
               <div className="space-y-6">
                 <Card>
                   <CardHeader>
@@ -433,6 +385,56 @@ const OrganizationSetup = () => {
                   </div>
                 </div>
               </div>
+            ) : (
+              <Card className="max-w-2xl mx-auto">
+                <CardHeader className="text-center pb-6">
+                  <div className="w-16 h-16 bg-gray-900 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <Github className="h-8 w-8 text-white" />
+                  </div>
+                  <CardTitle className="text-2xl">Connect your GitHub account</CardTitle>
+                  <p className="text-muted-foreground">
+                    Connect GitHub to monitor repositories, track issues, and automate workflows
+                  </p>
+                </CardHeader>
+                <CardContent className="text-center">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div className="flex flex-col items-center space-y-2">
+                      <Folder className="h-8 w-8 text-blue-500" />
+                      <h4 className="font-semibold">Repository Sync</h4>
+                      <p className="text-xs text-muted-foreground">Monitor commits and releases</p>
+                    </div>
+                    <div className="flex flex-col items-center space-y-2">
+                      <AlertCircle className="h-8 w-8 text-orange-500" />
+                      <h4 className="font-semibold">Issue Tracking</h4>
+                      <p className="text-xs text-muted-foreground">Track and manage issues</p>
+                    </div>
+                    <div className="flex flex-col items-center space-y-2">
+                      <GitBranch className="h-8 w-8 text-green-500" />
+                      <h4 className="font-semibold">PR Notifications</h4>
+                      <p className="text-xs text-muted-foreground">Get notified on pull requests</p>
+                    </div>
+                  </div>
+
+                  <Button
+                    size="lg"
+                    onClick={connectGitHub}
+                    disabled={connecting}
+                    className="bg-gray-900 hover:bg-gray-800 text-white"
+                  >
+                    {connecting ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Connecting...
+                      </>
+                    ) : (
+                      <>
+                        <Github className="h-4 w-4 mr-2" />
+                        Connect with GitHub
+                      </>
+                    )}
+                  </Button>
+                </CardContent>
+              </Card>
             )}
           </div>
         </main>

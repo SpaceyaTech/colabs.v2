@@ -17,3 +17,6 @@ CHANGELOG.md
 # Minified files
 *.min.js
 *.min.css
+
+# Machine-generated files
+src/integrations/supabase/types.ts

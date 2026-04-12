@@ -7,7 +7,13 @@ import prettier from 'eslint-plugin-prettier';
 import prettierConfig from 'eslint-config-prettier';
 
 export default tseslint.config(
-  { ignores: ['dist'] },
+  { ignores: [
+    'dist', 
+    'node_modules', 
+    'public', 
+    'src/integrations/supabase/types.ts',
+    'src/components/ui'
+  ] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {

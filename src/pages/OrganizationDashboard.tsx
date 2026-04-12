@@ -22,7 +22,6 @@ import {
   Globe,
   CheckCircle,
   AlertCircle,
-  Clock,
 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
@@ -67,12 +66,6 @@ const OrganizationDashboard = () => {
   const [integrations, setIntegrations] = useState<Integration[]>([]);
   const [workflows, setWorkflows] = useState<Workflow[]>([]);
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (slug && user) {
-      fetchOrganizationData();
-    }
-  }, [slug, user, fetchOrganizationData]);
 
   const fetchOrganizationData = useCallback(async () => {
     try {
@@ -133,6 +126,12 @@ const OrganizationDashboard = () => {
       setLoading(false);
     }
   }, [slug, user]);
+
+  useEffect(() => {
+    if (slug && user) {
+      fetchOrganizationData();
+    }
+  }, [slug, user, fetchOrganizationData]);
 
   const getIntegrationIcon = (type: string) => {
     switch (type) {

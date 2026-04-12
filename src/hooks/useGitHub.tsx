@@ -42,7 +42,7 @@ export const useGitHub = () => {
 
     try {
       const clientId = 'Ov23liAiZ90Kg7Y6Vdzf'; // Your GitHub OAuth App Client ID
-      const redirectUri = `${window.location.origin}/github-callback`;
+      const redirectUri = `${globalThis.location.origin}/github-callback`;
       const scope = 'repo,user:email';
       const state = crypto.randomUUID();
 
@@ -51,10 +51,34 @@ export const useGitHub = () => {
 
       const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scope)}&state=${state}`;
 
-      window.location.href = githubAuthUrl;
+      globalThis.location.href = githubAuthUrl;
     } catch (error) {
       console.error('GitHub connection error:', error);
       toast.error('Failed to connect to GitHub');
+    } finally {
+      setLoading(false);
+    }
+  }, [user]);
+
+  const syncRepositories = useCallback(async () => {
+    if (!user) return;
+
+    setLoading(true);
+
+    try {
+      const { data, error } = await supabase.functions.invoke('github-repositories', {
+        method: 'GET',
+      });
+
+      if (error) throw error;
+
+      if (data.success) {
+        setRepositories(data.repositories);
+        toast.success(`Synced ${data.synced_count} repositories`);
+      }
+    } catch (error) {
+      console.error('Repository sync error:', error);
+      toast.error('Failed to sync repositories');
     } finally {
       setLoading(false);
     }
@@ -96,30 +120,6 @@ export const useGitHub = () => {
     },
     [user, syncRepositories]
   );
-
-  const syncRepositories = useCallback(async () => {
-    if (!user) return;
-
-    setLoading(true);
-
-    try {
-      const { data, error } = await supabase.functions.invoke('github-repositories', {
-        method: 'GET',
-      });
-
-      if (error) throw error;
-
-      if (data.success) {
-        setRepositories(data.repositories);
-        toast.success(`Synced ${data.synced_count} repositories`);
-      }
-    } catch (error) {
-      console.error('Repository sync error:', error);
-      toast.error('Failed to sync repositories');
-    } finally {
-      setLoading(false);
-    }
-  }, [user]);
 
   const updateRepositoryCollaboration = useCallback(
     async (repositoryIds: string[], allowCollaboration: boolean) => {

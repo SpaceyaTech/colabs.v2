@@ -19,15 +19,6 @@ export const useOrganizations = () => {
   const [error, setError] = useState<string | null>(null);
   const { user } = useAuth();
 
-  useEffect(() => {
-    if (user) {
-      fetchUserOrganizations();
-    } else {
-      setOrganizations([]);
-      setLoading(false);
-    }
-  }, [user, fetchUserOrganizations]);
-
   const fetchUserOrganizations = useCallback(async () => {
     try {
       setLoading(true);
@@ -66,6 +57,15 @@ export const useOrganizations = () => {
       setLoading(false);
     }
   }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      fetchUserOrganizations();
+    } else {
+      setOrganizations([]);
+      setLoading(false);
+    }
+  }, [user, fetchUserOrganizations]);
 
   const createOrganization = async (orgData: {
     name: string;
