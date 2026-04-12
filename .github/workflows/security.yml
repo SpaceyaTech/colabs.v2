@@ -76,7 +76,6 @@ jobs:
           GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
           GITLEAKS_ENABLE_SARIF: true
 
-
   # ─────────────────────────────────────────────────────────────────────────────
   # JOB 2 — Dependency vulnerability audit (npm audit)
   #
@@ -107,7 +106,7 @@ jobs:
         run: npm ci
 
       - name: Audit for high and critical CVEs
-        # Focus on production dependencies to ensure application security 
+        # Focus on production dependencies to ensure application security
         # while avoiding blocks from unfixable build-tool vulnerabilities.
         run: npm audit --audit-level=high --omit=dev
         # 3. Add a comment above it explaining the CVE, why it is acceptable
