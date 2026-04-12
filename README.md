@@ -22,7 +22,7 @@
 
 <br />
 
-[Live Demo](https://colabs.dev) · [Report a Bug](https://github.com/SpaceyaTech/colabs.v2/issues/new?template=bug_report.md) · [Request a Feature](https://github.com/SpaceyaTech/colabs.v2/issues/new?template=feature_request.md) · [Product Roadmap](./PRD.md)
+[Live Demo](https://sytcolabs.vercel.app/) · [Report a Bug](https://github.com/SpaceyaTech/colabs.v2/issues/new?template=bug_report.md) · [Request a Feature](https://github.com/SpaceyaTech/colabs.v2/issues/new?template=feature_request.md) · [Product Roadmap](./PRD.md)
 
 <br />
 
@@ -113,8 +113,8 @@ Colabs connects developers with open-source projects, freelance gigs, and collab
 | Layer                 | Technology                                                                                      | Version  |
 | --------------------- | ----------------------------------------------------------------------------------------------- | -------- |
 | Framework             | [React](https://react.dev) + [TypeScript](https://www.typescriptlang.org)                       | 18 / 5.x |
-| Build Tool            | [Vite](https://vitejs.dev)                                                                      | 5        |
-| Styling               | [Tailwind CSS](https://tailwindcss.com) + [shadcn/ui](https://ui.shadcn.com) (Radix primitives) | 3.x      |
+| Build Tool            | [Vite](https://vitejs.dev)                                                                      | 8        |
+| Styling               | [Tailwind CSS](https://tailwindcss.com) + [shadcn/ui](https://ui.shadcn.com) (Radix primitives) | 4.x      |
 | Routing               | [React Router DOM](https://reactrouter.com)                                                     | v6       |
 | Data Fetching / State | [TanStack React Query](https://tanstack.com/query)                                              | v5       |
 | Backend               | [Supabase](https://supabase.com) — Auth, PostgreSQL, Edge Functions, Storage                    | latest   |
@@ -184,7 +184,7 @@ Ensure the following are installed and available before continuing:
 
 | Requirement                                                  | Version | Notes                                                       |
 | ------------------------------------------------------------ | ------- | ----------------------------------------------------------- |
-| [Node.js](https://nodejs.org)                                | 18+     | Use [nvm](https://github.com/nvm-sh/nvm) to manage versions |
+| [Node.js](https://nodejs.org)                                | 20.19+  | Use [nvm](https://github.com/nvm-sh/nvm) to manage versions |
 | [npm](https://www.npmjs.com)                                 | 9+      | Comes with Node.js                                          |
 | [Supabase CLI](https://supabase.com/docs/guides/cli)         | latest  | `npm install -g supabase`                                   |
 | [Git](https://git-scm.com)                                   | any     | —                                                           |
