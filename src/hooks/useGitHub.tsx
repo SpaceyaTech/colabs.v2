@@ -39,10 +39,10 @@ export const useGitHub = () => {
     }
 
     setLoading(true);
-    
+
     try {
       const clientId = 'Ov23liAiZ90Kg7Y6Vdzf'; // Your GitHub OAuth App Client ID
-      const redirectUri = `${window.location.origin}/github-callback`;
+      const redirectUri = `${globalThis.location.origin}/github-callback`;
       const scope = 'repo,user:email';
       const state = crypto.randomUUID();
 
@@ -50,45 +50,11 @@ export const useGitHub = () => {
       localStorage.setItem('github_oauth_state', state);
 
       const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scope)}&state=${state}`;
-      
-      window.location.href = githubAuthUrl;
+
+      globalThis.location.href = githubAuthUrl;
     } catch (error) {
       console.error('GitHub connection error:', error);
       toast.error('Failed to connect to GitHub');
-    } finally {
-      setLoading(false);
-    }
-  }, [user]);
-
-  const handleOAuthCallback = useCallback(async (code: string, state: string) => {
-    if (!user) return;
-
-    const storedState = localStorage.getItem('github_oauth_state');
-    if (state !== storedState) {
-      toast.error('Invalid OAuth state');
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      const { data, error } = await supabase.functions.invoke('github-oauth', {
-        body: { code, state }
-      });
-
-      if (error) throw error;
-
-      if (data.success) {
-        setIntegration(data.integration);
-        toast.success(`Connected to GitHub as ${data.github_user.login}`);
-        localStorage.removeItem('github_oauth_state');
-        
-        // Automatically sync repositories after connection
-        await syncRepositories();
-      }
-    } catch (error) {
-      console.error('OAuth callback error:', error);
-      toast.error('Failed to complete GitHub connection');
     } finally {
       setLoading(false);
     }
@@ -101,7 +67,7 @@ export const useGitHub = () => {
 
     try {
       const { data, error } = await supabase.functions.invoke('github-repositories', {
-        method: 'GET'
+        method: 'GET',
       });
 
       if (error) throw error;
@@ -118,38 +84,78 @@ export const useGitHub = () => {
     }
   }, [user]);
 
-  const updateRepositoryCollaboration = useCallback(async (repositoryIds: string[], allowCollaboration: boolean) => {
-    if (!user) return;
+  const handleOAuthCallback = useCallback(
+    async (code: string, state: string) => {
+      if (!user) return;
 
-    setLoading(true);
-
-    try {
-      const { data, error } = await supabase.functions.invoke('github-repositories', {
-        method: 'POST',
-        body: { repositoryIds, allowCollaboration }
-      });
-
-      if (error) throw error;
-
-      if (data.success) {
-        // Update local state
-        setRepositories(prev => 
-          prev.map(repo => 
-            repositoryIds.includes(repo.id) 
-              ? { ...repo, allow_collaboration: allowCollaboration }
-              : repo
-          )
-        );
-        
-        toast.success(`Updated ${repositoryIds.length} repositories`);
+      const storedState = localStorage.getItem('github_oauth_state');
+      if (state !== storedState) {
+        toast.error('Invalid OAuth state');
+        return;
       }
-    } catch (error) {
-      console.error('Repository update error:', error);
-      toast.error('Failed to update repositories');
-    } finally {
-      setLoading(false);
-    }
-  }, [user]);
+
+      setLoading(true);
+
+      try {
+        const { data, error } = await supabase.functions.invoke('github-oauth', {
+          body: { code, state },
+        });
+
+        if (error) throw error;
+
+        if (data.success) {
+          setIntegration(data.integration);
+          toast.success(`Connected to GitHub as ${data.github_user.login}`);
+          localStorage.removeItem('github_oauth_state');
+
+          // Automatically sync repositories after connection
+          await syncRepositories();
+        }
+      } catch (error) {
+        console.error('OAuth callback error:', error);
+        toast.error('Failed to complete GitHub connection');
+      } finally {
+        setLoading(false);
+      }
+    },
+    [user, syncRepositories]
+  );
+
+  const updateRepositoryCollaboration = useCallback(
+    async (repositoryIds: string[], allowCollaboration: boolean) => {
+      if (!user) return;
+
+      setLoading(true);
+
+      try {
+        const { data, error } = await supabase.functions.invoke('github-repositories', {
+          method: 'POST',
+          body: { repositoryIds, allowCollaboration },
+        });
+
+        if (error) throw error;
+
+        if (data.success) {
+          // Update local state
+          setRepositories(prev =>
+            prev.map(repo =>
+              repositoryIds.includes(repo.id)
+                ? { ...repo, allow_collaboration: allowCollaboration }
+                : repo
+            )
+          );
+
+          toast.success(`Updated ${repositoryIds.length} repositories`);
+        }
+      } catch (error) {
+        console.error('Repository update error:', error);
+        toast.error('Failed to update repositories');
+      } finally {
+        setLoading(false);
+      }
+    },
+    [user]
+  );
 
   const disconnectGitHub = useCallback(async () => {
     if (!user || !integration) return;
@@ -181,7 +187,9 @@ export const useGitHub = () => {
     try {
       const { data, error } = await supabase
         .from('github_integrations')
-        .select('id, user_id, github_user_id, github_username, avatar_url, connected_at, updated_at, is_active')
+        .select(
+          'id, user_id, github_user_id, github_username, avatar_url, connected_at, updated_at, is_active'
+        )
         .eq('user_id', user.id)
         .eq('is_active', true)
         .maybeSingle();
@@ -218,15 +226,18 @@ export const useGitHub = () => {
 
         if (!countError && requestCounts) {
           // Count requests per repository
-          const countMap = requestCounts.reduce((acc, req) => {
-            acc[req.repository_id] = (acc[req.repository_id] || 0) + 1;
-            return acc;
-          }, {} as Record<string, number>);
+          const countMap = requestCounts.reduce(
+            (acc, req) => {
+              acc[req.repository_id] = (acc[req.repository_id] || 0) + 1;
+              return acc;
+            },
+            {} as Record<string, number>
+          );
 
           // Merge counts into repositories
           const reposWithCounts = repos.map(repo => ({
             ...repo,
-            collaboration_requests_count: countMap[repo.id] || 0
+            collaboration_requests_count: countMap[repo.id] || 0,
           }));
 
           setRepositories(reposWithCounts);

@@ -1,17 +1,17 @@
-import { useEffect, useState } from "react";
-import { useNavigate, Routes, Route } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
-import { User } from "@supabase/supabase-js";
-import { AppLayout } from "@/components/AppLayout";
-import { OverviewTab } from "@/components/dashboard/OverviewTab";
-import { IssuesTab } from "@/components/dashboard/IssuesTab";
-import { ProjectsTab } from "@/components/dashboard/ProjectsTab";
-import { GigsTab } from "@/components/dashboard/GigsTab";
-import { TeamsTab } from "@/components/dashboard/TeamsTab";
-import { TeamWorkspace } from "@/components/dashboard/TeamWorkspace";
-import { AnalyticsTab } from "@/components/dashboard/AnalyticsTab";
-import { SettingsTab } from "@/components/dashboard/SettingsTab";
-import AIChat from "@/components/AIChat";
+import { useEffect, useState } from 'react';
+import { useNavigate, Routes, Route } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
+import { User } from '@supabase/supabase-js';
+import { AppLayout } from '@/components/AppLayout';
+import { OverviewTab } from '@/components/dashboard/OverviewTab';
+import { IssuesTab } from '@/components/dashboard/IssuesTab';
+import { ProjectsTab } from '@/components/dashboard/ProjectsTab';
+import { GigsTab } from '@/components/dashboard/GigsTab';
+import { TeamsTab } from '@/components/dashboard/TeamsTab';
+import { TeamWorkspace } from '@/components/dashboard/TeamWorkspace';
+import { AnalyticsTab } from '@/components/dashboard/AnalyticsTab';
+import { SettingsTab } from '@/components/dashboard/SettingsTab';
+import AIChat from '@/components/AIChat';
 
 interface Project {
   id: string;
@@ -38,22 +38,22 @@ const Dashboard = () => {
         setUser(session.user);
         fetchProjects();
       } else {
-        navigate("/sign-up");
+        navigate('/sign-up');
       }
       setLoading(false);
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        if (session?.user) {
-          setUser(session.user);
-          fetchProjects();
-        } else {
-          navigate("/sign-up");
-        }
-        setLoading(false);
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session?.user) {
+        setUser(session.user);
+        fetchProjects();
+      } else {
+        navigate('/sign-up');
       }
-    );
+      setLoading(false);
+    });
 
     return () => subscription.unsubscribe();
   }, [navigate]);

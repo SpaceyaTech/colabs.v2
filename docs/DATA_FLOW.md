@@ -52,29 +52,29 @@ This document maps how every data entity in Colabs is **sourced**, **fetched**, 
 
 ## Data Source Inventory
 
-| Data Entity | Source | Fetch Method | Hook | Caching |
-|---|---|---|---|---|
-| Auth User | Supabase Auth | `onAuthStateChange` listener | `useAuth()` | Context (app-wide) |
-| Gigs (active) | `gigs` table | Direct query | `useGigs()` | React Query `["gigs"]` |
-| Gigs (user's) | `gigs` table | Direct query | `useMyGigs(userId)` | React Query `["my-gigs", userId]` |
-| Single Gig | `gigs` table | Direct query | `useGigById(id)` | React Query `["gig", id]` |
-| GitHub Integration | `github_integrations` table | Direct query (safe columns only) | `useGitHub()` | Local state |
-| GitHub Repositories | `github_repositories` table + edge fn | Edge function + direct query | `useGitHub()` | Local state |
-| GitHub Issues | GitHub API via edge function | `supabase.functions.invoke('github-issues')` | `useGitHubIssues()` | Local state |
-| Project Data (GitHub) | GitHub API via edge function | `supabase.functions.invoke('github-project-data')` | Direct invocation | None |
-| Claimed Issues | `claimed_issues` table | Direct query | `useClaimedIssues()` | Local state |
-| Projects | `projects` table | Direct query | Inline `useQuery` | React Query `["projects"]` |
-| Teams | `teams` + `team_members` + `team_projects` | Direct query (parallel) | `useTeams()` | React Query `["teams", userId]` |
-| Organizations | `organizations` + `organization_members` | Join query | `useOrganizations()` | Local state |
-| Proposals | `proposals` + `proposal_milestones` | Direct query | Inline queries | React Query |
-| Saved Jobs | `saved_jobs` table | Direct query | Inline queries | React Query |
-| Contribution Stats | **Mock data** | Hardcoded constants | None | N/A |
-| Tech Stack | **Mock data** | Hardcoded constants | None | N/A |
-| Activity Charts | **Mock data** | Hardcoded constants | None | N/A |
-| Contribution Heatmap | **Mock data** | `Math.random()` generator | None | N/A |
-| Weekly Activity | **Mock data** | Hardcoded constants | None | N/A |
-| Dashboard Issues | **Mock data** | Hardcoded constants | None | N/A |
-| Recent Activity Feed | **Mock data** | Hardcoded constants | None | N/A |
+| Data Entity           | Source                                     | Fetch Method                                       | Hook                 | Caching                           |
+| --------------------- | ------------------------------------------ | -------------------------------------------------- | -------------------- | --------------------------------- |
+| Auth User             | Supabase Auth                              | `onAuthStateChange` listener                       | `useAuth()`          | Context (app-wide)                |
+| Gigs (active)         | `gigs` table                               | Direct query                                       | `useGigs()`          | React Query `["gigs"]`            |
+| Gigs (user's)         | `gigs` table                               | Direct query                                       | `useMyGigs(userId)`  | React Query `["my-gigs", userId]` |
+| Single Gig            | `gigs` table                               | Direct query                                       | `useGigById(id)`     | React Query `["gig", id]`         |
+| GitHub Integration    | `github_integrations` table                | Direct query (safe columns only)                   | `useGitHub()`        | Local state                       |
+| GitHub Repositories   | `github_repositories` table + edge fn      | Edge function + direct query                       | `useGitHub()`        | Local state                       |
+| GitHub Issues         | GitHub API via edge function               | `supabase.functions.invoke('github-issues')`       | `useGitHubIssues()`  | Local state                       |
+| Project Data (GitHub) | GitHub API via edge function               | `supabase.functions.invoke('github-project-data')` | Direct invocation    | None                              |
+| Claimed Issues        | `claimed_issues` table                     | Direct query                                       | `useClaimedIssues()` | Local state                       |
+| Projects              | `projects` table                           | Direct query                                       | Inline `useQuery`    | React Query `["projects"]`        |
+| Teams                 | `teams` + `team_members` + `team_projects` | Direct query (parallel)                            | `useTeams()`         | React Query `["teams", userId]`   |
+| Organizations         | `organizations` + `organization_members`   | Join query                                         | `useOrganizations()` | Local state                       |
+| Proposals             | `proposals` + `proposal_milestones`        | Direct query                                       | Inline queries       | React Query                       |
+| Saved Jobs            | `saved_jobs` table                         | Direct query                                       | Inline queries       | React Query                       |
+| Contribution Stats    | **Mock data**                              | Hardcoded constants                                | None                 | N/A                               |
+| Tech Stack            | **Mock data**                              | Hardcoded constants                                | None                 | N/A                               |
+| Activity Charts       | **Mock data**                              | Hardcoded constants                                | None                 | N/A                               |
+| Contribution Heatmap  | **Mock data**                              | `Math.random()` generator                          | None                 | N/A                               |
+| Weekly Activity       | **Mock data**                              | Hardcoded constants                                | None                 | N/A                               |
+| Dashboard Issues      | **Mock data**                              | Hardcoded constants                                | None                 | N/A                               |
+| Recent Activity Feed  | **Mock data**                              | Hardcoded constants                                | None                 | N/A                               |
 
 ---
 
@@ -184,6 +184,7 @@ AllIssues.tsx
 ```
 
 **Edge function flow**:
+
 ```
 User browser
   → useGitHubIssues() hook
@@ -245,6 +246,7 @@ interface ContributionHeatmapProps {
 ```
 
 **Renders**: GitHub-style heatmap grid. Color intensity mapped via `count` thresholds:
+
 - `0` → `bg-muted`
 - `1-2` → `bg-primary/30`
 - `3-5` → `bg-primary/50`
@@ -259,9 +261,9 @@ interface ContributionHeatmapProps {
 interface TechStackChartProps {
   techStack: Array<{
     name: string;
-    proficiency: number;  // 0-100
+    proficiency: number; // 0-100
     projects: number;
-    color: string;        // HEX or HSL color for dot indicator
+    color: string; // HEX or HSL color for dot indicator
   }>;
 }
 ```
@@ -308,7 +310,7 @@ interface ProjectsContributedListProps {
     stars: number;
     prsCount: number;
     commitsCount: number;
-    role: "contributor" | "maintainer" | "owner";
+    role: 'contributor' | 'maintainer' | 'owner';
   }>;
 }
 ```
@@ -321,37 +323,37 @@ interface ProjectsContributedListProps {
 
 ### ✅ Live Data (Supabase / Edge Functions)
 
-| Feature | Hook | Table / Source | Status |
-|---|---|---|---|
-| User auth state | `useAuth()` | Supabase Auth | Production-ready |
-| Active gigs | `useGigs()` | `gigs` | Production-ready |
-| User's gigs | `useMyGigs()` | `gigs` | Production-ready |
-| Gig detail | `useGigById()` | `gigs` | Production-ready |
-| GitHub integration | `useGitHub()` | `github_integrations` | Production-ready |
-| GitHub repos | `useGitHub()` | `github_repositories` + edge fn | Production-ready |
-| GitHub issues | `useGitHubIssues()` | Edge function → GitHub API | Production-ready |
-| Claimed issues | `useClaimedIssues()` | `claimed_issues` | Production-ready |
-| Projects | `useQuery` | `projects` | Production-ready |
-| Teams | `useTeams()` | `teams` + `team_members` + `team_projects` | Production-ready |
-| Organizations | `useOrganizations()` | `organizations` + `organization_members` | Production-ready |
-| Proposals | `useQuery` | `proposals` + `proposal_milestones` | Production-ready |
-| Saved jobs | `useQuery` | `saved_jobs` | Production-ready |
-| File uploads | Direct Supabase Storage | `project-logos`, `resumes` buckets | Production-ready |
+| Feature            | Hook                    | Table / Source                             | Status           |
+| ------------------ | ----------------------- | ------------------------------------------ | ---------------- |
+| User auth state    | `useAuth()`             | Supabase Auth                              | Production-ready |
+| Active gigs        | `useGigs()`             | `gigs`                                     | Production-ready |
+| User's gigs        | `useMyGigs()`           | `gigs`                                     | Production-ready |
+| Gig detail         | `useGigById()`          | `gigs`                                     | Production-ready |
+| GitHub integration | `useGitHub()`           | `github_integrations`                      | Production-ready |
+| GitHub repos       | `useGitHub()`           | `github_repositories` + edge fn            | Production-ready |
+| GitHub issues      | `useGitHubIssues()`     | Edge function → GitHub API                 | Production-ready |
+| Claimed issues     | `useClaimedIssues()`    | `claimed_issues`                           | Production-ready |
+| Projects           | `useQuery`              | `projects`                                 | Production-ready |
+| Teams              | `useTeams()`            | `teams` + `team_members` + `team_projects` | Production-ready |
+| Organizations      | `useOrganizations()`    | `organizations` + `organization_members`   | Production-ready |
+| Proposals          | `useQuery`              | `proposals` + `proposal_milestones`        | Production-ready |
+| Saved jobs         | `useQuery`              | `saved_jobs`                               | Production-ready |
+| File uploads       | Direct Supabase Storage | `project-logos`, `resumes` buckets         | Production-ready |
 
 ### ⚠️ Mock Data (Hardcoded / Random)
 
-| Feature | Location | Mock Type | Impact |
-|---|---|---|---|
-| Contribution stats (PRs, commits, hours) | `Profile.tsx`, `AnalyticsTab.tsx` | Hardcoded object | Shows static numbers |
-| Tech stack proficiency | `Profile.tsx`, `AnalyticsTab.tsx` | Hardcoded array | Fake language skills |
-| Contribution heatmap | `Profile.tsx`, `AnalyticsTab.tsx` | `Math.random()` | Changes on every render |
-| Weekly activity (hours/day) | `AnalyticsTab.tsx` | Hardcoded array | Static chart |
-| Monthly activity (commits/PRs) | `AnalyticsTab.tsx` | Hardcoded array | Static chart |
-| Dashboard "My Issues" | `OverviewTab.tsx` | Hardcoded array (`mockIssues`) | Fake issue list |
-| Recent activity feed | `Profile.tsx` | Hardcoded array | Static timeline |
-| Projects contributed | `Profile.tsx` | Hardcoded array | Fake project list |
-| Project card meta (stars, forks) | `OverviewTab.tsx` | Deterministic random | Consistent but fake |
-| Landing page stats | `StatsSection.tsx` | Hardcoded numbers | Marketing numbers |
+| Feature                                  | Location                          | Mock Type                      | Impact                  |
+| ---------------------------------------- | --------------------------------- | ------------------------------ | ----------------------- |
+| Contribution stats (PRs, commits, hours) | `Profile.tsx`, `AnalyticsTab.tsx` | Hardcoded object               | Shows static numbers    |
+| Tech stack proficiency                   | `Profile.tsx`, `AnalyticsTab.tsx` | Hardcoded array                | Fake language skills    |
+| Contribution heatmap                     | `Profile.tsx`, `AnalyticsTab.tsx` | `Math.random()`                | Changes on every render |
+| Weekly activity (hours/day)              | `AnalyticsTab.tsx`                | Hardcoded array                | Static chart            |
+| Monthly activity (commits/PRs)           | `AnalyticsTab.tsx`                | Hardcoded array                | Static chart            |
+| Dashboard "My Issues"                    | `OverviewTab.tsx`                 | Hardcoded array (`mockIssues`) | Fake issue list         |
+| Recent activity feed                     | `Profile.tsx`                     | Hardcoded array                | Static timeline         |
+| Projects contributed                     | `Profile.tsx`                     | Hardcoded array                | Fake project list       |
+| Project card meta (stars, forks)         | `OverviewTab.tsx`                 | Deterministic random           | Consistent but fake     |
+| Landing page stats                       | `StatsSection.tsx`                | Hardcoded numbers              | Marketing numbers       |
 
 ---
 
@@ -413,13 +415,13 @@ const { data: teams } = useTeams();
 
 All Recharts components **must** use semantic CSS custom properties:
 
-| Use | Token | Example |
-|---|---|---|
-| Primary data line/bar | `hsl(var(--primary))` | Main metric |
-| Grid lines | `hsl(var(--border))` | CartesianGrid |
-| Axis text | `hsl(var(--muted-foreground))` | XAxis/YAxis labels |
-| Empty cells | `bg-muted` | Heatmap zero state |
-| Background | `bg-card` | Chart card wrapper |
+| Use                   | Token                          | Example            |
+| --------------------- | ------------------------------ | ------------------ |
+| Primary data line/bar | `hsl(var(--primary))`          | Main metric        |
+| Grid lines            | `hsl(var(--border))`           | CartesianGrid      |
+| Axis text             | `hsl(var(--muted-foreground))` | XAxis/YAxis labels |
+| Empty cells           | `bg-muted`                     | Heatmap zero state |
+| Background            | `bg-card`                      | Chart card wrapper |
 
 ### Card Wrapper Pattern
 
@@ -454,22 +456,22 @@ Every data visualization is wrapped in a `Card` from shadcn/ui:
 
 These metrics can be computed from data already in the database:
 
-| Mock Metric | Derivation Strategy |
-|---|---|
-| `projectsContributed` | `COUNT(DISTINCT repo_full_name)` from `claimed_issues` |
-| Dashboard "My Issues" | Replace `mockIssues` with `useClaimedIssues()` data |
-| Tech stack | Aggregate `technologies[]` from `projects` user contributed to |
-| Projects contributed list | Query `claimed_issues` grouped by `repo_full_name` |
+| Mock Metric               | Derivation Strategy                                            |
+| ------------------------- | -------------------------------------------------------------- |
+| `projectsContributed`     | `COUNT(DISTINCT repo_full_name)` from `claimed_issues`         |
+| Dashboard "My Issues"     | Replace `mockIssues` with `useClaimedIssues()` data            |
+| Tech stack                | Aggregate `technologies[]` from `projects` user contributed to |
+| Projects contributed list | Query `claimed_issues` grouped by `repo_full_name`             |
 
 ### Phase 2 — GitHub API Enrichment (Edge Function Updates)
 
-| Mock Metric | Live Source | Required Work |
-|---|---|---|
-| Total PRs | GitHub Events API | New edge function: `github-user-stats` |
-| Total commits | GitHub Events API | Same edge function |
-| Contribution heatmap | GitHub Contributions API | New edge function or GraphQL query |
-| Recent activity feed | GitHub Events API | New edge function: `github-activity` |
-| Hours coded | Estimated from commit timestamps | Heuristic calculation |
+| Mock Metric          | Live Source                      | Required Work                          |
+| -------------------- | -------------------------------- | -------------------------------------- |
+| Total PRs            | GitHub Events API                | New edge function: `github-user-stats` |
+| Total commits        | GitHub Events API                | Same edge function                     |
+| Contribution heatmap | GitHub Contributions API         | New edge function or GraphQL query     |
+| Recent activity feed | GitHub Events API                | New edge function: `github-activity`   |
+| Hours coded          | Estimated from commit timestamps | Heuristic calculation                  |
 
 ### Phase 3 — Dedicated Analytics Tables
 
@@ -517,13 +519,13 @@ CREATE TABLE user_tech_stack (
 
 ## Data Fetching Anti-Patterns to Avoid
 
-| ❌ Anti-Pattern | ✅ Correct Pattern |
-|---|---|
-| Fetching inside presentational components | Fetch in page/container, pass via props |
-| Using `select('*')` on sensitive tables | Explicit column list (e.g., `github_integrations`) |
-| No `enabled` flag on dependent queries | Always gate with `enabled: !!dependency` |
-| Ignoring RLS empty results | Show `EmptyState` component for empty arrays |
-| Hardcoded colors in chart components | Use `hsl(var(--primary))` and semantic tokens |
-| Raw `fetch()` to Supabase | Always use `supabase` client from `@/integrations` |
-| Missing error boundaries around charts | Wrap chart sections in error boundaries |
-| `Math.random()` in render for visual data | Use stable mock data or real data |
+| ❌ Anti-Pattern                           | ✅ Correct Pattern                                 |
+| ----------------------------------------- | -------------------------------------------------- |
+| Fetching inside presentational components | Fetch in page/container, pass via props            |
+| Using `select('*')` on sensitive tables   | Explicit column list (e.g., `github_integrations`) |
+| No `enabled` flag on dependent queries    | Always gate with `enabled: !!dependency`           |
+| Ignoring RLS empty results                | Show `EmptyState` component for empty arrays       |
+| Hardcoded colors in chart components      | Use `hsl(var(--primary))` and semantic tokens      |
+| Raw `fetch()` to Supabase                 | Always use `supabase` client from `@/integrations` |
+| Missing error boundaries around charts    | Wrap chart sections in error boundaries            |
+| `Math.random()` in render for visual data | Use stable mock data or real data                  |

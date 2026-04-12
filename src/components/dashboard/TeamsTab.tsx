@@ -1,13 +1,13 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Plus, Users, ChevronRight, Loader2, Trash2, UserMinus, MoreVertical } from "lucide-react";
-import { CreateTeamDialog } from "./CreateTeamDialog";
-import { useTeams, Team } from "@/hooks/useTeams";
-import { useAuth } from "@/hooks/useAuth";
-import { toast } from "sonner";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Plus, Users, ChevronRight, Loader2, Trash2, UserMinus, MoreVertical } from 'lucide-react';
+import { CreateTeamDialog } from './CreateTeamDialog';
+import { useTeams, Team } from '@/hooks/useTeams';
+import { useAuth } from '@/hooks/useAuth';
+import { toast } from 'sonner';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,21 +17,21 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+} from '@/components/ui/alert-dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu';
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetDescription,
-} from "@/components/ui/sheet";
+} from '@/components/ui/sheet';
 
 export function TeamsTab() {
   const navigate = useNavigate();
@@ -46,10 +46,10 @@ export function TeamsTab() {
     if (!deleteTarget) return;
     deleteTeam.mutate(deleteTarget, {
       onSuccess: () => {
-        toast.success("Team deleted");
+        toast.success('Team deleted');
         setDeleteTarget(null);
       },
-      onError: (err: any) => toast.error(err.message || "Failed to delete team"),
+      onError: (err: any) => toast.error(err.message || 'Failed to delete team'),
     });
   };
 
@@ -63,11 +63,11 @@ export function TeamsTab() {
           if (membersTeam) {
             setMembersTeam({
               ...membersTeam,
-              members: membersTeam.members.filter((m) => m.id !== memberId),
+              members: membersTeam.members.filter(m => m.id !== memberId),
             });
           }
         },
-        onError: (err: any) => toast.error(err.message || "Failed to remove member"),
+        onError: (err: any) => toast.error(err.message || 'Failed to remove member'),
       }
     );
   };
@@ -122,7 +122,7 @@ export function TeamsTab() {
             <div
               key={team.id}
               className={`flex items-center gap-4 px-4 py-3.5 hover:bg-muted/50 transition-colors ${
-                i < teams.length - 1 ? "border-b border-border" : ""
+                i < teams.length - 1 ? 'border-b border-border' : ''
               }`}
             >
               <button
@@ -142,7 +142,7 @@ export function TeamsTab() {
 
               <div className="flex items-center gap-3 shrink-0">
                 <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-5">
-                  {team.members.length} member{team.members.length !== 1 ? "s" : ""}
+                  {team.members.length} member{team.members.length !== 1 ? 's' : ''}
                 </Badge>
 
                 <div className="flex -space-x-1.5">
@@ -154,14 +154,21 @@ export function TeamsTab() {
                     </Avatar>
                   ))}
                   {team.members.length > 4 && (
-                    <span className="text-[10px] text-muted-foreground ml-1">+{team.members.length - 4}</span>
+                    <span className="text-[10px] text-muted-foreground ml-1">
+                      +{team.members.length - 4}
+                    </span>
                   )}
                 </div>
 
                 {isOwner ? (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-7 w-7" onClick={(e) => e.stopPropagation()}>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7"
+                        onClick={e => e.stopPropagation()}
+                      >
                         <MoreVertical className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
@@ -192,12 +199,13 @@ export function TeamsTab() {
       <CreateTeamDialog open={dialogOpen} onOpenChange={setDialogOpen} />
 
       {/* Delete confirmation */}
-      <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+      <AlertDialog open={!!deleteTarget} onOpenChange={open => !open && setDeleteTarget(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete this team?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently remove the team, all members, and linked projects. This action cannot be undone.
+              This will permanently remove the team, all members, and linked projects. This action
+              cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -214,18 +222,24 @@ export function TeamsTab() {
       </AlertDialog>
 
       {/* Members sheet */}
-      <Sheet open={!!membersTeam} onOpenChange={(open) => !open && setMembersTeam(null)}>
+      <Sheet open={!!membersTeam} onOpenChange={open => !open && setMembersTeam(null)}>
         <SheetContent>
           <SheetHeader>
             <SheetTitle>Members — {membersTeam?.name}</SheetTitle>
-            <SheetDescription>{membersTeam?.members.length} member{(membersTeam?.members.length || 0) !== 1 ? "s" : ""}</SheetDescription>
+            <SheetDescription>
+              {membersTeam?.members.length} member
+              {(membersTeam?.members.length || 0) !== 1 ? 's' : ''}
+            </SheetDescription>
           </SheetHeader>
           <div className="mt-4 space-y-1">
-            {membersTeam?.members.map((member) => {
+            {membersTeam?.members.map(member => {
               const isCurrentUser = member.user_id === user?.id;
 
               return (
-                <div key={member.id} className="flex items-center gap-3 py-2 px-2 rounded hover:bg-muted/50">
+                <div
+                  key={member.id}
+                  className="flex items-center gap-3 py-2 px-2 rounded hover:bg-muted/50"
+                >
                   <Avatar className="h-7 w-7">
                     <AvatarFallback className="text-[10px] bg-muted">
                       {member.email.slice(0, 2).toUpperCase()}
@@ -234,13 +248,18 @@ export function TeamsTab() {
                   <div className="flex-1 min-w-0">
                     <p className="text-sm truncate">{member.email}</p>
                     <div className="flex items-center gap-1.5">
-                      <Badge variant="outline" className="text-[10px] h-4 px-1">{member.role}</Badge>
-                      <Badge variant={member.status === "active" ? "default" : "secondary"} className="text-[10px] h-4 px-1">
+                      <Badge variant="outline" className="text-[10px] h-4 px-1">
+                        {member.role}
+                      </Badge>
+                      <Badge
+                        variant={member.status === 'active' ? 'default' : 'secondary'}
+                        className="text-[10px] h-4 px-1"
+                      >
                         {member.status}
                       </Badge>
                     </div>
                   </div>
-                  {!isCurrentUser && member.role !== "owner" && (
+                  {!isCurrentUser && member.role !== 'owner' && (
                     <Button
                       variant="ghost"
                       size="icon"

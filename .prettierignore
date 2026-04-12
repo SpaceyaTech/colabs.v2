@@ -1,0 +1,22 @@
+# Build outputs
+dist/
+dist-ssr/
+
+# Dependencies
+node_modules/
+
+# Public assets (binary/vendor files)
+public/
+
+# Lock files (managed by npm, not hand-edited)
+package-lock.json
+
+# Auto-generated changelog (managed by semantic-release)
+CHANGELOG.md
+
+# Minified files
+*.min.js
+*.min.css
+
+# Machine-generated files
+src/integrations/supabase/types.ts

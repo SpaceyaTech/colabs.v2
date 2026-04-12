@@ -1,6 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
 import {
   RadarChart,
   PolarGrid,
@@ -8,8 +8,8 @@ import {
   PolarRadiusAxis,
   Radar,
   ResponsiveContainer,
-} from "recharts";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+} from 'recharts';
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 
 interface TechStackChartProps {
   techStack: Array<{
@@ -22,13 +22,13 @@ interface TechStackChartProps {
 
 const chartConfig = {
   proficiency: {
-    label: "Proficiency",
-    color: "hsl(var(--primary))",
+    label: 'Proficiency',
+    color: 'hsl(var(--primary))',
   },
 };
 
 export function TechStackChart({ techStack }: TechStackChartProps) {
-  const radarData = techStack.map((tech) => ({
+  const radarData = techStack.map(tech => ({
     skill: tech.name,
     value: tech.proficiency,
     fullMark: 100,
@@ -37,9 +37,7 @@ export function TechStackChart({ techStack }: TechStackChartProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          Tech Stack Proficiency
-        </CardTitle>
+        <CardTitle className="flex items-center gap-2">Tech Stack Proficiency</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Radar Chart */}
@@ -47,14 +45,14 @@ export function TechStackChart({ techStack }: TechStackChartProps) {
           <ChartContainer config={chartConfig} className="h-full w-full">
             <RadarChart data={radarData} cx="50%" cy="50%" outerRadius="70%">
               <PolarGrid stroke="hsl(var(--border))" />
-              <PolarAngleAxis 
-                dataKey="skill" 
-                tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
+              <PolarAngleAxis
+                dataKey="skill"
+                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
               />
-              <PolarRadiusAxis 
-                angle={30} 
-                domain={[0, 100]} 
-                tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }}
+              <PolarRadiusAxis
+                angle={30}
+                domain={[0, 100]}
+                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }}
               />
               <ChartTooltip content={<ChartTooltipContent />} />
               <Radar
@@ -71,14 +69,11 @@ export function TechStackChart({ techStack }: TechStackChartProps) {
 
         {/* Progress bars */}
         <div className="space-y-3">
-          {techStack.slice(0, 5).map((tech) => (
+          {techStack.slice(0, 5).map(tech => (
             <div key={tech.name} className="space-y-1">
               <div className="flex items-center justify-between text-sm">
                 <div className="flex items-center gap-2">
-                  <div 
-                    className="h-3 w-3 rounded-full" 
-                    style={{ backgroundColor: tech.color }}
-                  />
+                  <div className="h-3 w-3 rounded-full" style={{ backgroundColor: tech.color }} />
                   <span className="font-medium">{tech.name}</span>
                 </div>
                 <span className="text-muted-foreground">{tech.projects} projects</span>
@@ -90,12 +85,8 @@ export function TechStackChart({ techStack }: TechStackChartProps) {
 
         {/* All tech badges */}
         <div className="flex flex-wrap gap-2 pt-2 border-t">
-          {techStack.map((tech) => (
-            <Badge 
-              key={tech.name} 
-              variant="secondary"
-              className="text-xs"
-            >
+          {techStack.map(tech => (
+            <Badge key={tech.name} variant="secondary" className="text-xs">
               {tech.name}
             </Badge>
           ))}

@@ -1,28 +1,27 @@
-
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
-import { toast } from "@/hooks/use-toast";
-import { AuthGuard } from "@/components/AuthGuard";
-import { ArrowLeft, Building, Globe, Users, AlertCircle } from "lucide-react";
-import { NavLink } from "react-router-dom";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
+import { useNavigate } from 'react-router-dom';
+import { toast } from '@/hooks/use-toast';
+import { AuthGuard } from '@/components/AuthGuard';
+import { ArrowLeft, Building, Globe, Users, AlertCircle } from 'lucide-react';
+import { NavLink } from 'react-router-dom';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 const CreateOrganization = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [formData, setFormData] = useState({
-    name: "",
-    slug: "",
-    description: "",
-    website_url: ""
+    name: '',
+    slug: '',
+    description: '',
+    website_url: '',
   });
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -38,31 +37,31 @@ const CreateOrganization = () => {
     setFormData(prev => ({
       ...prev,
       name,
-      slug: generateSlug(name)
+      slug: generateSlug(name),
     }));
     // Clear name error when user starts typing
     if (errors.name) {
-      setErrors(prev => ({ ...prev, name: "" }));
+      setErrors(prev => ({ ...prev, name: '' }));
     }
   };
 
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
-    
+
     if (!formData.name.trim()) {
-      newErrors.name = "Organization name is required";
+      newErrors.name = 'Organization name is required';
     }
-    
+
     if (!formData.slug.trim()) {
-      newErrors.slug = "URL slug is required";
+      newErrors.slug = 'URL slug is required';
     } else if (formData.slug.length < 3) {
-      newErrors.slug = "URL slug must be at least 3 characters";
+      newErrors.slug = 'URL slug must be at least 3 characters';
     }
-    
+
     if (formData.website_url && !formData.website_url.startsWith('http')) {
-      newErrors.website_url = "Website URL must start with http:// or https://";
+      newErrors.website_url = 'Website URL must start with http:// or https://';
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -79,9 +78,9 @@ const CreateOrganization = () => {
         .select('id')
         .eq('slug', formData.slug)
         .single();
-        
+
       if (existingOrg) {
-        setErrors({ slug: "This URL slug is already taken. Please choose another." });
+        setErrors({ slug: 'This URL slug is already taken. Please choose another.' });
         setIsLoading(false);
         return;
       }
@@ -93,34 +92,35 @@ const CreateOrganization = () => {
           name: formData.name,
           slug: formData.slug,
           description: formData.description,
-          website_url: formData.website_url || null
+          website_url: formData.website_url || null,
         })
         .select()
         .single();
 
       if (orgError) {
-        if (orgError.code === '23505') { // Unique constraint violation
-          setErrors({ slug: "This URL slug is already taken. Please choose another." });
+        if (orgError.code === '23505') {
+          // Unique constraint violation
+          setErrors({ slug: 'This URL slug is already taken. Please choose another.' });
           return;
         }
-        throw new Error("Failed to create organization. Please try again.");
+        throw new Error('Failed to create organization. Please try again.');
       }
 
       // Add user as owner
-      const { error: memberError } = await supabase
-        .from('organization_members')
-        .insert({
-          organization_id: organization.id,
-          user_id: user.id,
-          role: 'owner'
-        });
+      const { error: memberError } = await supabase.from('organization_members').insert({
+        organization_id: organization.id,
+        user_id: user.id,
+        role: 'owner',
+      });
 
       if (memberError) {
-        throw new Error("Organization created but failed to set up membership. Please contact support.");
+        throw new Error(
+          'Organization created but failed to set up membership. Please contact support.'
+        );
       }
 
       toast({
-        title: "Organization created successfully!",
+        title: 'Organization created successfully!',
         description: "Welcome to your new organization. Let's connect your GitHub repositories.",
       });
 
@@ -128,9 +128,9 @@ const CreateOrganization = () => {
       navigate(`/organizations/${organization.slug}/setup`);
     } catch (error: any) {
       toast({
-        title: "Something went wrong",
-        description: error.message || "Unable to create organization. Please try again.",
-        variant: "destructive",
+        title: 'Something went wrong',
+        description: error.message || 'Unable to create organization. Please try again.',
+        variant: 'destructive',
       });
     } finally {
       setIsLoading(false);
@@ -170,9 +170,9 @@ const CreateOrganization = () => {
                     <Input
                       id="name"
                       value={formData.name}
-                      onChange={(e) => handleNameChange(e.target.value)}
+                      onChange={e => handleNameChange(e.target.value)}
                       placeholder="Acme Inc."
-                      className={errors.name ? "border-destructive" : ""}
+                      className={errors.name ? 'border-destructive' : ''}
                     />
                     {errors.name && (
                       <div className="flex items-center gap-2 text-sm text-destructive">
@@ -185,20 +185,18 @@ const CreateOrganization = () => {
                   <div className="space-y-2">
                     <Label htmlFor="slug">URL Slug *</Label>
                     <div className="flex items-center">
-                      <span className="text-sm text-muted-foreground mr-2">
-                        /organizations/
-                      </span>
+                      <span className="text-sm text-muted-foreground mr-2">/organizations/</span>
                       <Input
                         id="slug"
                         value={formData.slug}
-                        onChange={(e) => {
+                        onChange={e => {
                           setFormData(prev => ({ ...prev, slug: e.target.value }));
                           if (errors.slug) {
-                            setErrors(prev => ({ ...prev, slug: "" }));
+                            setErrors(prev => ({ ...prev, slug: '' }));
                           }
                         }}
                         placeholder="acme-inc"
-                        className={`flex-1 ${errors.slug ? "border-destructive" : ""}`}
+                        className={`flex-1 ${errors.slug ? 'border-destructive' : ''}`}
                       />
                     </div>
                     {errors.slug && (
@@ -217,7 +215,9 @@ const CreateOrganization = () => {
                     <Textarea
                       id="description"
                       value={formData.description}
-                      onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                      onChange={e =>
+                        setFormData(prev => ({ ...prev, description: e.target.value }))
+                      }
                       placeholder="Brief description of your organization..."
                       rows={3}
                     />
@@ -231,14 +231,14 @@ const CreateOrganization = () => {
                         id="website_url"
                         type="url"
                         value={formData.website_url}
-                        onChange={(e) => {
+                        onChange={e => {
                           setFormData(prev => ({ ...prev, website_url: e.target.value }));
                           if (errors.website_url) {
-                            setErrors(prev => ({ ...prev, website_url: "" }));
+                            setErrors(prev => ({ ...prev, website_url: '' }));
                           }
                         }}
                         placeholder="https://acme.com"
-                        className={`flex-1 ${errors.website_url ? "border-destructive" : ""}`}
+                        className={`flex-1 ${errors.website_url ? 'border-destructive' : ''}`}
                       />
                     </div>
                     {errors.website_url && (
@@ -255,19 +255,16 @@ const CreateOrganization = () => {
                       <div>
                         <h4 className="font-medium">What's Next?</h4>
                         <p className="text-sm text-muted-foreground mt-1">
-                          After creating your organization, you'll connect your GitHub account to select 
-                          repositories for monitoring, then set up team members and automated workflows.
+                          After creating your organization, you'll connect your GitHub account to
+                          select repositories for monitoring, then set up team members and automated
+                          workflows.
                         </p>
                       </div>
                     </div>
                   </div>
 
-                  <Button 
-                    type="submit" 
-                    className="w-full" 
-                    disabled={isLoading}
-                  >
-                    {isLoading ? "Creating..." : "Create Organization"}
+                  <Button type="submit" className="w-full" disabled={isLoading}>
+                    {isLoading ? 'Creating...' : 'Create Organization'}
                   </Button>
                 </form>
               </CardContent>

@@ -1,7 +1,7 @@
-import { ReactNode } from "react";
-import { useSubscription, PlanType } from "@/hooks/useSubscription";
-import { useAuth } from "@/hooks/useAuth";
-import UpgradePrompt from "@/components/UpgradePrompt";
+import { ReactNode } from 'react';
+import { useSubscription, PlanType } from '@/hooks/useSubscription';
+import { useAuth } from '@/hooks/useAuth';
+import UpgradePrompt from '@/components/UpgradePrompt';
 
 interface SubscriptionGuardProps {
   children: ReactNode;
@@ -30,7 +30,7 @@ export const SubscriptionGuard = ({ children, requiredPlan, feature }: Subscript
   }
 
   if (PLAN_HIERARCHY[plan] < PLAN_HIERARCHY[requiredPlan]) {
-    return <UpgradePrompt plan={requiredPlan} feature={feature ?? "this feature"} />;
+    return <UpgradePrompt plan={requiredPlan} feature={feature ?? 'this feature'} />;
   }
 
   return <>{children}</>;

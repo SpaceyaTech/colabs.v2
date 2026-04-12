@@ -1,31 +1,80 @@
-## Summary
+# Summary
 
 Brief description of what this PR does.
 
-## Changes
+---
 
-- 
+## 🏷️ Type of Change
 
-## Screenshots
+<!-- Required: select one -->
 
-<!-- If UI changes — include before/after screenshots -->
+- [ ] feature (minor release)
+- [ ] bug (patch release)
+- [ ] breaking (major release)
+- [ ] enhancement
+- [ ] refactor
+- [ ] docs
+- [ ] ci
 
-## Testing
+---
 
-- Steps to verify the changes manually
+## 🌍 Scope
+
+<!-- Optional but recommended -->
+
+- [ ] frontend
+- [ ] backend
+- [ ] ui/ux
+
+---
+
+## 🔗 Related Issues
+
+<!-- Example: Closes #123 -->
+
+Closes #<issue-number>
+
+---
+
+## 📸 Screenshots
+
+<!-- Required if UI changes -->
+
+Before / After (if applicable)
+
+---
+
+## 🧪 Testing
+
+- **Steps to verify the changes manually**
+
+- [ ] Tested locally
 - [ ] Tested on desktop
-- [ ] Tested on mobile viewport
+- [ ] Tested on mobile
 
-## Checklist
+---
 
+## ✅ Checklist
+
+- [ ] PR is linked to an issue
 - [ ] Branch is up to date with `main`
-- [ ] Code compiles without errors (`npm run build`)
-- [ ] Linting passes (`npm run lint`)
-- [ ] Components use design system tokens — no hardcoded colors
-- [ ] No secrets, tokens, or API keys in the diff
-- [ ] Responsive across viewports
-- [ ] Accessible: semantic HTML, alt text, keyboard navigation
+- [ ] Build passes (`npm run build`)
+- [ ] Lint passes (`npm run lint`)
+- [ ] No sensitive data (tokens, secrets)
+- [ ] Follows project conventions
+- [ ] UI is responsive (if applicable)
+- [ ] Accessibility considered (semantic HTML, alt text, keyboard nav)
 
-## Related Issues
+---
 
-<!-- Closes #XX -->
+## ⚠️ Breaking Changes
+
+<!-- If applicable -->
+
+- Describe impact and migration steps
+
+---
+
+## 📝 Notes for Reviewers
+
+<!-- Optional -->

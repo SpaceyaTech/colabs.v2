@@ -1,6 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import type { ExploreGig } from "@/components/ExploreGigCard";
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import type { ExploreGig } from '@/components/ExploreGigCard';
 
 export interface GigRow {
   id: string;
@@ -51,7 +51,7 @@ export function gigRowToExploreGig(g: GigRow): ExploreGig {
     description: g.description,
     location: g.location,
     proposals: g.proposals_count,
-    difficulty: g.difficulty as ExploreGig["difficulty"],
+    difficulty: g.difficulty as ExploreGig['difficulty'],
     category: g.category ?? undefined,
     isUrgent: g.is_urgent,
     featured: g.featured,
@@ -61,22 +61,26 @@ export function gigRowToExploreGig(g: GigRow): ExploreGig {
 function formatPostedAt(dateStr: string): string {
   const diff = Date.now() - new Date(dateStr).getTime();
   const hours = Math.floor(diff / 3600000);
-  if (hours < 1) return "Just now";
-  if (hours < 24) return `${hours} hour${hours > 1 ? "s" : ""} ago`;
+  if (hours < 1) return 'Just now';
+  if (hours < 24) return `${hours} hour${hours > 1 ? 's' : ''} ago`;
   const days = Math.floor(hours / 24);
-  if (days < 7) return `${days} day${days > 1 ? "s" : ""} ago`;
-  return new Date(dateStr).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  if (days < 7) return `${days} day${days > 1 ? 's' : ''} ago`;
+  return new Date(dateStr).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
 }
 
 export function useGigs() {
   return useQuery({
-    queryKey: ["gigs"],
+    queryKey: ['gigs'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("gigs" as any)
-        .select("*")
-        .eq("status", "active")
-        .order("created_at", { ascending: false });
+        .from('gigs' as any)
+        .select('*')
+        .eq('status', 'active')
+        .order('created_at', { ascending: false });
       if (error) throw error;
       return (data as unknown as GigRow[]) ?? [];
     },
@@ -85,14 +89,14 @@ export function useGigs() {
 
 export function useMyGigs(userId: string | undefined) {
   return useQuery({
-    queryKey: ["my-gigs", userId],
+    queryKey: ['my-gigs', userId],
     queryFn: async () => {
       if (!userId) return [];
       const { data, error } = await supabase
-        .from("gigs" as any)
-        .select("*")
-        .eq("creator_id", userId)
-        .order("created_at", { ascending: false });
+        .from('gigs' as any)
+        .select('*')
+        .eq('creator_id', userId)
+        .order('created_at', { ascending: false });
       if (error) throw error;
       return (data as unknown as GigRow[]) ?? [];
     },
@@ -102,13 +106,13 @@ export function useMyGigs(userId: string | undefined) {
 
 export function useGigById(id: string | undefined) {
   return useQuery({
-    queryKey: ["gig", id],
+    queryKey: ['gig', id],
     queryFn: async () => {
       if (!id) return null;
       const { data, error } = await supabase
-        .from("gigs" as any)
-        .select("*")
-        .eq("id", id)
+        .from('gigs' as any)
+        .select('*')
+        .eq('id', id)
         .maybeSingle();
       if (error) throw error;
       return (data as unknown as GigRow) ?? null;

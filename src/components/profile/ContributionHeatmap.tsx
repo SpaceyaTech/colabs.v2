@@ -1,5 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface ContributionHeatmapProps {
   data: Array<{
@@ -10,11 +10,11 @@ interface ContributionHeatmapProps {
 
 export function ContributionHeatmap({ data }: ContributionHeatmapProps) {
   const getColor = (count: number) => {
-    if (count === 0) return "bg-muted";
-    if (count <= 2) return "bg-primary/30";
-    if (count <= 5) return "bg-primary/50";
-    if (count <= 8) return "bg-primary/70";
-    return "bg-primary";
+    if (count === 0) return 'bg-muted';
+    if (count <= 2) return 'bg-primary/30';
+    if (count <= 5) return 'bg-primary/50';
+    if (count <= 8) return 'bg-primary/70';
+    return 'bg-primary';
   };
 
   // Generate last 52 weeks of data (simplified grid)
@@ -23,7 +23,7 @@ export function ContributionHeatmap({ data }: ContributionHeatmapProps) {
     const days = [];
     for (let day = 0; day < 7; day++) {
       const index = week * 7 + day;
-      const contribution = data[index] || { date: "", count: 0 };
+      const contribution = data[index] || { date: '', count: 0 };
       days.push(contribution);
     }
     weeks.push(days);
@@ -56,7 +56,8 @@ export function ContributionHeatmap({ data }: ContributionHeatmapProps) {
                       </TooltipTrigger>
                       <TooltipContent>
                         <p>
-                          {day.count} contribution{day.count !== 1 ? "s" : ""} on {day.date || "N/A"}
+                          {day.count} contribution{day.count !== 1 ? 's' : ''} on{' '}
+                          {day.date || 'N/A'}
                         </p>
                       </TooltipContent>
                     </Tooltip>

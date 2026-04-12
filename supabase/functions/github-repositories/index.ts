@@ -1,36 +1,39 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
+};
 
-Deno.serve(async (req) => {
+Deno.serve(async req => {
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders })
+    return new Response(null, { headers: corsHeaders });
   }
 
   try {
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    )
+    );
 
-    const authHeader = req.headers.get('Authorization')
+    const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
-      throw new Error('No authorization header')
+      throw new Error('No authorization header');
     }
 
-    const token = authHeader.replace('Bearer ', '')
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token)
-    
+    const token = authHeader.replace('Bearer ', '');
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser(token);
+
     if (authError || !user) {
-      throw new Error('Authentication failed')
+      throw new Error('Authentication failed');
     }
 
     if (req.method === 'GET') {
       // Fetch repositories from GitHub and sync to database
-      console.log(`Fetching repositories for user ${user.id}`)
+      console.log(`Fetching repositories for user ${user.id}`);
 
       // Get user's GitHub integration
       const { data: integration, error: integrationError } = await supabase
@@ -38,26 +41,29 @@ Deno.serve(async (req) => {
         .select('*')
         .eq('user_id', user.id)
         .eq('is_active', true)
-        .single()
+        .single();
 
       if (integrationError || !integration) {
-        throw new Error('GitHub integration not found or inactive')
+        throw new Error('GitHub integration not found or inactive');
       }
 
       // Fetch repositories from GitHub API
-      const reposResponse = await fetch('https://api.github.com/user/repos?per_page=100&sort=updated', {
-        headers: {
-          'Authorization': `Bearer ${integration.access_token}`,
-          'Accept': 'application/vnd.github.v3+json',
-        },
-      })
+      const reposResponse = await fetch(
+        'https://api.github.com/user/repos?per_page=100&sort=updated',
+        {
+          headers: {
+            Authorization: `Bearer ${integration.access_token}`,
+            Accept: 'application/vnd.github.v3+json',
+          },
+        }
+      );
 
       if (!reposResponse.ok) {
-        throw new Error('Failed to fetch repositories from GitHub')
+        throw new Error('Failed to fetch repositories from GitHub');
       }
 
-      const githubRepos = await reposResponse.json()
-      console.log(`Found ${githubRepos.length} repositories`)
+      const githubRepos = await reposResponse.json();
+      console.log(`Found ${githubRepos.length} repositories`);
 
       // Sync repositories to database
       const repoInserts = githubRepos.map((repo: any) => ({
@@ -79,85 +85,79 @@ Deno.serve(async (req) => {
         is_template: repo.is_template,
         allow_collaboration: false, // Default to false, user can enable later
         synced_at: new Date().toISOString(),
-      }))
+      }));
 
       const { data: syncedRepos, error: syncError } = await supabase
         .from('github_repositories')
         .upsert(repoInserts, {
           onConflict: 'integration_id,github_repo_id',
-          ignoreDuplicates: false
+          ignoreDuplicates: false,
         })
-        .select()
+        .select();
 
       if (syncError) {
-        console.error('Sync error:', syncError)
-        throw new Error('Failed to sync repositories')
+        console.error('Sync error:', syncError);
+        throw new Error('Failed to sync repositories');
       }
 
       return new Response(
-        JSON.stringify({ 
-          success: true, 
+        JSON.stringify({
+          success: true,
           repositories: syncedRepos,
-          synced_count: syncedRepos?.length || 0
+          synced_count: syncedRepos?.length || 0,
         }),
-        { 
+        {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          status: 200 
+          status: 200,
         }
-      )
+      );
     }
 
     if (req.method === 'POST') {
       // Update repository collaboration settings
-      const { repositoryIds, allowCollaboration } = await req.json()
+      const { repositoryIds, allowCollaboration } = await req.json();
 
       if (!Array.isArray(repositoryIds)) {
-        throw new Error('Repository IDs must be an array')
+        throw new Error('Repository IDs must be an array');
       }
 
       const { data: updatedRepos, error: updateError } = await supabase
         .from('github_repositories')
-        .update({ 
+        .update({
           allow_collaboration: allowCollaboration,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .in('id', repositoryIds)
-        .eq('integration_id', (
-          await supabase
-            .from('github_integrations')
-            .select('id')
-            .eq('user_id', user.id)
-            .single()
-        ).data?.id)
-        .select()
+        .eq(
+          'integration_id',
+          (await supabase.from('github_integrations').select('id').eq('user_id', user.id).single())
+            .data?.id
+        )
+        .select();
 
       if (updateError) {
-        console.error('Update error:', updateError)
-        throw new Error('Failed to update repositories')
+        console.error('Update error:', updateError);
+        throw new Error('Failed to update repositories');
       }
 
       return new Response(
-        JSON.stringify({ 
-          success: true, 
-          updated_repositories: updatedRepos
+        JSON.stringify({
+          success: true,
+          updated_repositories: updatedRepos,
         }),
-        { 
+        {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          status: 200 
+          status: 200,
         }
-      )
+      );
     }
 
-    throw new Error('Method not allowed')
-
+    throw new Error('Method not allowed');
   } catch (error) {
-    console.error('GitHub repositories error:', error)
-    return new Response(
-      JSON.stringify({ error: error.message }),
-      { 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 400 
-      }
-    )
+    console.error('GitHub repositories error:', error);
+    return new Response(JSON.stringify({ error: error.message }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 400,
+    });
   }
-})
+});

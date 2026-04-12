@@ -54,85 +54,94 @@ export const useClaimedIssues = () => {
     if (user) fetchClaimed();
   }, [user, fetchClaimed]);
 
-  const claimIssue = useCallback(async (issue: UnifiedIssue) => {
-    if (!user) {
-      toast.error('Please sign in to claim issues');
-      return false;
-    }
-
-    const { error } = await supabase.from('claimed_issues').insert({
-      user_id: user.id,
-      issue_id: issue.id,
-      title: issue.title,
-      description: issue.description,
-      status: issue.status,
-      priority: issue.priority,
-      assignee_name: issue.assignee.name,
-      assignee_avatar: issue.assignee.avatar,
-      repo_name: issue.repo.name,
-      repo_owner: issue.repo.owner,
-      repo_full_name: issue.repo.full_name || `${issue.repo.owner}/${issue.repo.name}`,
-      labels: issue.labels,
-      category: issue.category || null,
-      comments: issue.comments,
-      is_good_first_issue: issue.isGoodFirstIssue || false,
-      html_url: issue.html_url || null,
-      created_at: issue.createdAt,
-    });
-
-    if (error) {
-      if (error.code === '23505') {
-        toast.info('You already claimed this issue');
-      } else {
-        console.error('Claim error:', error);
-        toast.error('Failed to claim issue');
+  const claimIssue = useCallback(
+    async (issue: UnifiedIssue) => {
+      if (!user) {
+        toast.error('Please sign in to claim issues');
+        return false;
       }
-      return false;
-    }
 
-    toast.success('Issue claimed! Find it in My Issues.');
-    await fetchClaimed();
-    return true;
-  }, [user, fetchClaimed]);
+      const { error } = await supabase.from('claimed_issues').insert({
+        user_id: user.id,
+        issue_id: issue.id,
+        title: issue.title,
+        description: issue.description,
+        status: issue.status,
+        priority: issue.priority,
+        assignee_name: issue.assignee.name,
+        assignee_avatar: issue.assignee.avatar,
+        repo_name: issue.repo.name,
+        repo_owner: issue.repo.owner,
+        repo_full_name: issue.repo.full_name || `${issue.repo.owner}/${issue.repo.name}`,
+        labels: issue.labels,
+        category: issue.category || null,
+        comments: issue.comments,
+        is_good_first_issue: issue.isGoodFirstIssue || false,
+        html_url: issue.html_url || null,
+        created_at: issue.createdAt,
+      });
 
-  const unclaimIssue = useCallback(async (issueId: string) => {
-    if (!user) return false;
+      if (error) {
+        if (error.code === '23505') {
+          toast.info('You already claimed this issue');
+        } else {
+          console.error('Claim error:', error);
+          toast.error('Failed to claim issue');
+        }
+        return false;
+      }
 
-    const { error } = await supabase
-      .from('claimed_issues')
-      .delete()
-      .eq('user_id', user.id)
-      .eq('issue_id', issueId);
+      toast.success('Issue claimed! Find it in My Issues.');
+      await fetchClaimed();
+      return true;
+    },
+    [user, fetchClaimed]
+  );
 
-    if (error) {
-      console.error('Unclaim error:', error);
-      toast.error('Failed to unclaim issue');
-      return false;
-    }
+  const unclaimIssue = useCallback(
+    async (issueId: string) => {
+      if (!user) return false;
 
-    toast.success('Issue unclaimed');
-    await fetchClaimed();
-    return true;
-  }, [user, fetchClaimed]);
+      const { error } = await supabase
+        .from('claimed_issues')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('issue_id', issueId);
 
-  const updateStatus = useCallback(async (issueId: string, newStatus: string) => {
-    if (!user) return false;
+      if (error) {
+        console.error('Unclaim error:', error);
+        toast.error('Failed to unclaim issue');
+        return false;
+      }
 
-    const { error } = await supabase
-      .from('claimed_issues')
-      .update({ status: newStatus })
-      .eq('user_id', user.id)
-      .eq('issue_id', issueId);
+      toast.success('Issue unclaimed');
+      await fetchClaimed();
+      return true;
+    },
+    [user, fetchClaimed]
+  );
 
-    if (error) {
-      console.error('Status update error:', error);
-      toast.error('Failed to update status');
-      return false;
-    }
+  const updateStatus = useCallback(
+    async (issueId: string, newStatus: string) => {
+      if (!user) return false;
 
-    await fetchClaimed();
-    return true;
-  }, [user, fetchClaimed]);
+      const { error } = await supabase
+        .from('claimed_issues')
+        .update({ status: newStatus })
+        .eq('user_id', user.id)
+        .eq('issue_id', issueId);
+
+      if (error) {
+        console.error('Status update error:', error);
+        toast.error('Failed to update status');
+        return false;
+      }
+
+      await fetchClaimed();
+      return true;
+    },
+    [user, fetchClaimed]
+  );
 
   const toUnifiedIssue = (ci: ClaimedIssue): UnifiedIssue => ({
     id: ci.issue_id,

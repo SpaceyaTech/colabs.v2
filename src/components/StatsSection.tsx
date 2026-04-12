@@ -1,9 +1,8 @@
-
 const StatsSection = () => {
   const stats = [
-    { number: "1013", label: "Contributors", sublabel: "Active this month" },
-    { number: "474", label: "Projects", sublabel: "Open source" },
-    { number: "14", label: "Countries", sublabel: "Worldwide" },
+    { number: '1013', label: 'Contributors', sublabel: 'Active this month' },
+    { number: '474', label: 'Projects', sublabel: 'Open source' },
+    { number: '14', label: 'Countries', sublabel: 'Worldwide' },
   ];
 
   return (
@@ -11,8 +10,7 @@ const StatsSection = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4">
-            You're in{" "}
-            <span className="gradient-text">good company</span>
+            You're in <span className="gradient-text">good company</span>
           </h2>
         </div>
 

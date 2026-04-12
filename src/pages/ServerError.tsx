@@ -1,7 +1,7 @@
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Home, RefreshCw, Mail } from "lucide-react";
-import { motion } from "framer-motion";
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Home, RefreshCw, Mail } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const ServerError = () => {
   return (
@@ -50,15 +50,33 @@ const ServerError = () => {
             />
 
             {/* Robot body */}
-            <rect x="150" y="120" width="100" height="80" rx="10" fill="hsl(var(--card))" stroke="hsl(var(--border))" strokeWidth="2" />
-            
+            <rect
+              x="150"
+              y="120"
+              width="100"
+              height="80"
+              rx="10"
+              fill="hsl(var(--card))"
+              stroke="hsl(var(--border))"
+              strokeWidth="2"
+            />
+
             {/* Robot head */}
-            <rect x="160" y="70" width="80" height="60" rx="8" fill="hsl(var(--card))" stroke="hsl(var(--border))" strokeWidth="2" />
-            
+            <rect
+              x="160"
+              y="70"
+              width="80"
+              height="60"
+              rx="8"
+              fill="hsl(var(--card))"
+              stroke="hsl(var(--border))"
+              strokeWidth="2"
+            />
+
             {/* Antenna */}
             <line x1="200" y1="70" x2="200" y2="50" stroke="hsl(var(--border))" strokeWidth="3" />
             <circle cx="200" cy="45" r="6" fill="hsl(var(--destructive))" />
-            
+
             {/* Eyes - X marks */}
             <g stroke="hsl(var(--destructive))" strokeWidth="3">
               <line x1="175" y1="90" x2="185" y2="100" />
@@ -66,18 +84,60 @@ const ServerError = () => {
               <line x1="215" y1="90" x2="225" y2="100" />
               <line x1="225" y1="90" x2="215" y2="100" />
             </g>
-            
+
             {/* Dizzy mouth */}
-            <path d="M185 115 Q200 120 215 115" stroke="hsl(var(--muted-foreground))" strokeWidth="2" fill="none" />
-            
+            <path
+              d="M185 115 Q200 120 215 115"
+              stroke="hsl(var(--muted-foreground))"
+              strokeWidth="2"
+              fill="none"
+            />
+
             {/* Arms */}
-            <rect x="120" y="130" width="30" height="15" rx="5" fill="hsl(var(--card))" stroke="hsl(var(--border))" strokeWidth="2" />
-            <rect x="250" y="130" width="30" height="15" rx="5" fill="hsl(var(--card))" stroke="hsl(var(--border))" strokeWidth="2" transform="rotate(15 265 137)" />
-            
+            <rect
+              x="120"
+              y="130"
+              width="30"
+              height="15"
+              rx="5"
+              fill="hsl(var(--card))"
+              stroke="hsl(var(--border))"
+              strokeWidth="2"
+            />
+            <rect
+              x="250"
+              y="130"
+              width="30"
+              height="15"
+              rx="5"
+              fill="hsl(var(--card))"
+              stroke="hsl(var(--border))"
+              strokeWidth="2"
+              transform="rotate(15 265 137)"
+            />
+
             {/* Legs */}
-            <rect x="165" y="200" width="20" height="40" rx="5" fill="hsl(var(--card))" stroke="hsl(var(--border))" strokeWidth="2" />
-            <rect x="215" y="200" width="20" height="40" rx="5" fill="hsl(var(--card))" stroke="hsl(var(--border))" strokeWidth="2" />
-            
+            <rect
+              x="165"
+              y="200"
+              width="20"
+              height="40"
+              rx="5"
+              fill="hsl(var(--card))"
+              stroke="hsl(var(--border))"
+              strokeWidth="2"
+            />
+            <rect
+              x="215"
+              y="200"
+              width="20"
+              height="40"
+              rx="5"
+              fill="hsl(var(--card))"
+              stroke="hsl(var(--border))"
+              strokeWidth="2"
+            />
+
             {/* Sparks */}
             <motion.g
               animate={{ opacity: [0, 1, 0] }}
@@ -86,11 +146,28 @@ const ServerError = () => {
               <polygon points="280,100 290,105 285,115 275,110" fill="hsl(var(--primary))" />
               <polygon points="290,120 298,122 295,132 287,130" fill="hsl(var(--primary))" />
             </motion.g>
-            
+
             {/* Error badge */}
-            <rect x="165" y="145" width="70" height="25" rx="4" fill="hsl(var(--destructive))" opacity="0.2" />
-            <text x="200" y="163" fontSize="12" fill="hsl(var(--destructive))" textAnchor="middle" fontWeight="bold">ERROR</text>
-            
+            <rect
+              x="165"
+              y="145"
+              width="70"
+              height="25"
+              rx="4"
+              fill="hsl(var(--destructive))"
+              opacity="0.2"
+            />
+            <text
+              x="200"
+              y="163"
+              fontSize="12"
+              fill="hsl(var(--destructive))"
+              textAnchor="middle"
+              fontWeight="bold"
+            >
+              ERROR
+            </text>
+
             {/* 500 floating */}
             <motion.text
               x="50"
@@ -114,12 +191,10 @@ const ServerError = () => {
           transition={{ duration: 0.5, delay: 0.2 }}
         >
           <h1 className="text-6xl font-bold text-destructive mb-4">500</h1>
-          <h2 className="text-2xl font-semibold text-foreground mb-3">
-            Server Meltdown
-          </h2>
+          <h2 className="text-2xl font-semibold text-foreground mb-3">Server Meltdown</h2>
           <p className="text-muted-foreground mb-8 max-w-md mx-auto">
-            Oops! Our servers are having a bit of a moment. Don't worry, our engineering 
-            robots are already on it. This is on us, not you!
+            Oops! Our servers are having a bit of a moment. Don't worry, our engineering robots are
+            already on it. This is on us, not you!
           </p>
 
           {/* Helpful suggestions */}
