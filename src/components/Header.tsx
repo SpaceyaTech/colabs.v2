@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { ChevronDown, Menu, X } from 'lucide-react';
+import { ChevronDown, Menu } from 'lucide-react';
 import { useState } from 'react';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/sheet';
 
@@ -174,7 +174,13 @@ const Header = () => {
 
       {/* Overlay to close dropdown */}
       {showFeaturesDropdown && (
-        <div className="fixed inset-0 z-40" onClick={() => setShowFeaturesDropdown(false)} />
+        <button
+          type="button"
+          className="fixed inset-0 z-40 w-full h-full cursor-default bg-transparent border-none p-0"
+          onClick={() => setShowFeaturesDropdown(false)}
+          aria-label="Close dropdown overlay"
+          tabIndex={-1}
+        />
       )}
     </header>
   );

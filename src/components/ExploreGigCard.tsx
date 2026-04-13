@@ -1,5 +1,5 @@
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+
 import { Button } from '@/components/ui/button';
 import {
   DollarSign,
@@ -44,10 +44,10 @@ const difficultyColor: Record<string, string> = {
 };
 
 interface ExploreGigCardProps {
-  gig: ExploreGig;
-  isSaved?: boolean;
-  onToggleSave?: (id: string) => void;
-  showApply?: boolean;
+  readonly gig: ExploreGig;
+  readonly isSaved?: boolean;
+  readonly onToggleSave?: (id: string) => void;
+  readonly showApply?: boolean;
 }
 
 export function ExploreGigCard({
@@ -92,7 +92,7 @@ export function ExploreGigCard({
                   ✓
                 </span>
               )}
-              {gig.companyRating && (
+              {!!gig.companyRating && (
                 <span className="flex items-center gap-0.5 text-[10px] text-muted-foreground">
                   <Star className="h-2.5 w-2.5 fill-current text-yellow-500" />
                   {gig.companyRating}
@@ -154,13 +154,16 @@ export function ExploreGigCard({
               <MessageSquare className="h-2.5 w-2.5" /> {gig.proposals} proposals
             </span>
           </div>
-          <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+          <div className="flex items-center gap-1">
             {onToggleSave && (
               <Button
                 variant="ghost"
                 size="sm"
                 className={`h-6 w-6 p-0 ${isSaved ? 'text-primary' : 'text-muted-foreground'}`}
-                onClick={() => onToggleSave(gig.id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onToggleSave(gig.id);
+                }}
               >
                 {isSaved ? <BookmarkCheck className="h-3 w-3" /> : <Bookmark className="h-3 w-3" />}
               </Button>
@@ -170,7 +173,10 @@ export function ExploreGigCard({
                 variant="outline"
                 size="sm"
                 className="h-6 text-[10px] px-2 gap-1"
-                onClick={() => navigate(`/submit-proposal/${gig.id}`)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate(`/submit-proposal/${gig.id}`);
+                }}
               >
                 <Send className="h-2.5 w-2.5" /> Apply
               </Button>

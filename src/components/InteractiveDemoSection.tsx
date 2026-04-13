@@ -1,15 +1,7 @@
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-  BarChart3,
-  TrendingUp,
-  Activity,
-  GitCommit,
-  GitPullRequest,
-  Clock,
-  ArrowRight,
-} from 'lucide-react';
+import { TrendingUp, GitCommit, GitPullRequest, Clock, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ScrollReveal from '@/components/ScrollReveal';
 import { motion } from 'framer-motion';

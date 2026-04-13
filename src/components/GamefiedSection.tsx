@@ -1,7 +1,6 @@
 import { Card } from '@/components/ui/card';
 import { Trophy, Flame, GitPullRequest, Star } from 'lucide-react';
 import ScrollReveal from '@/components/ScrollReveal';
-import { motion } from 'framer-motion';
 
 const GamefiedSection = () => {
   const leaderboardUsers = [
