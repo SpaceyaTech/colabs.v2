@@ -27,3 +27,5 @@ CLAUDE.md
 .windsurfrules
 .cursor/rules/
 .agents/rules/context.md
+
+vercel.json
