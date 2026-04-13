@@ -7,7 +7,15 @@
   "imageSize": 60,
   "commit": true,
   "commitConvention": "eslint",
-  "contributors": [],
+  "contributors": [
+    {
+      "login": "jumalaw98",
+      "name": "Lawrence Juma",
+      "avatar_url": "https://avatars.githubusercontent.com/jumalaw98",
+      "profile": "https://github.com/jumalaw98",
+      "contributions": ["infra", "code", "doc"]
+    }
+  ],
   "contributorsPerLine": 7,
   "linkToUsage": true
 }

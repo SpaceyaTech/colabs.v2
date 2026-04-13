@@ -1,6 +1,6 @@
-# Colabs Documentation
+# Colabs Documentation Hub
 
-Welcome to the Colabs project documentation. This directory contains comprehensive technical documentation for the platform.
+Welcome to the Colabs project documentation. This directory contains comprehensive technical and process documentation for the platform. For a brief overview and quick start, see the main [README.md](../README.md).
 
 ## Table of Contents
 
@@ -19,7 +19,7 @@ Welcome to the Colabs project documentation. This directory contains comprehensi
 | [Security](./SECURITY.md)                     | Vulnerability disclosure policy and responsible reporting                 |
 | [Subscriptions](./SUBSCRIPTIONS.md)           | Pricing tiers, subscription lifecycle, auto-demotion, and feature gating  |
 | [Stripe Integration](./STRIPE_INTEGRATION.md) | Stripe payment setup, webhook handling, checkout flow, and TODO checklist |
-| [Setup & Contributing](./SETUP.md)            | Local development setup, environment variables, and contribution guide    |
+| [Setup & Configuration](./SETUP.md)           | Local development setup, environment variables, Supabase CLI              |
 
 ## Tech Stack
 
