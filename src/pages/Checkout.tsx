@@ -1,15 +1,14 @@
-
-import { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
-import { CreditCard, Smartphone, Shield, ArrowLeft } from "lucide-react";
+import { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
+import { CreditCard, Smartphone, Shield, ArrowLeft } from 'lucide-react';
 
 interface Project {
   id: number;
@@ -24,35 +23,35 @@ const Checkout = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [project, setProject] = useState<Project | null>(null);
-  const [paymentMethod, setPaymentMethod] = useState<"card" | "mpesa">("card");
+  const [paymentMethod, setPaymentMethod] = useState<'card' | 'mpesa'>('card');
   const [formData, setFormData] = useState({
-    email: "",
-    fullName: "",
-    phone: "",
-    cardNumber: "",
-    expiryDate: "",
-    cvv: ""
+    email: '',
+    fullName: '',
+    phone: '',
+    cardNumber: '',
+    expiryDate: '',
+    cvv: '',
   });
   const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     const projectData = location.state?.project;
     if (!projectData) {
-      navigate("/marketplace");
+      navigate('/marketplace');
       return;
     }
     setProject(projectData);
   }, [location.state, navigate]);
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   /**
    * TODO: STRIPE INTEGRATION - Marketplace Payments
-   * 
+   *
    * Replace the simulated payment with Stripe Checkout:
-   * 
+   *
    * Option A: Stripe Checkout (Recommended)
    *   1. Call `create-marketplace-checkout` edge function:
    *      const { data, error } = await supabase.functions.invoke('create-marketplace-checkout', {
@@ -64,20 +63,20 @@ const Checkout = () => {
    *          email: formData.email
    *        }
    *      });
-   * 
+   *
    *   2. Redirect to Stripe hosted checkout:
    *      window.location.href = data.url;
-   * 
+   *
    *   3. Stripe redirects to /purchase-success?session_id={SESSION_ID}
-   * 
+   *
    * Option B: Stripe Payment Intents (Embedded Elements)
    *   - Requires @stripe/react-stripe-js package
    *   - Use <CardElement> for card input
    *   - Call create-payment-intent, then confirmCardPayment()
-   * 
+   *
    * For M-PESA integration, consider Stripe + local payment method
    * or a separate M-PESA provider (e.g., Africa's Talking, Flutterwave).
-   * 
+   *
    * See docs/STRIPE_INTEGRATION.md for full implementation details.
    */
   const handleSubmit = async (e: React.FormEvent) => {
@@ -92,17 +91,17 @@ const Checkout = () => {
       // if (data?.url) window.location.href = data.url;
 
       // Current: Simulated payment processing
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      navigate("/purchase-success", { 
-        state: { 
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      navigate('/purchase-success', {
+        state: {
           project,
           paymentMethod,
-          transactionId: `TXN-${Date.now()}`  // TODO: Replace with Stripe session_id
-        }
+          transactionId: `TXN-${Date.now()}`, // TODO: Replace with Stripe session_id
+        },
       });
     } catch (error) {
-      console.error("Payment failed:", error);
+      console.error('Payment failed:', error);
       setIsProcessing(false);
     }
   };
@@ -117,15 +116,11 @@ const Checkout = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
+
       <main className="pt-32 pb-20">
         <div className="container mx-auto px-4 max-w-4xl">
           {/* Back Button */}
-          <Button
-            variant="ghost"
-            onClick={() => navigate("/marketplace")}
-            className="mb-6"
-          >
+          <Button variant="ghost" onClick={() => navigate('/marketplace')} className="mb-6">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Marketplace
           </Button>
@@ -134,7 +129,7 @@ const Checkout = () => {
             {/* Order Summary */}
             <Card className="p-6 h-fit">
               <h2 className="text-xl font-bold mb-6">Order Summary</h2>
-              
+
               <div className="flex gap-4 mb-6">
                 <img
                   src={project.image}
@@ -195,7 +190,7 @@ const Checkout = () => {
                       <Input
                         id="fullName"
                         value={formData.fullName}
-                        onChange={(e) => handleInputChange("fullName", e.target.value)}
+                        onChange={(e) => handleInputChange('fullName', e.target.value)}
                         required
                       />
                     </div>
@@ -205,7 +200,7 @@ const Checkout = () => {
                         id="email"
                         type="email"
                         value={formData.email}
-                        onChange={(e) => handleInputChange("email", e.target.value)}
+                        onChange={(e) => handleInputChange('email', e.target.value)}
                         required
                       />
                     </div>
@@ -215,7 +210,7 @@ const Checkout = () => {
                     <Input
                       id="phone"
                       value={formData.phone}
-                      onChange={(e) => handleInputChange("phone", e.target.value)}
+                      onChange={(e) => handleInputChange('phone', e.target.value)}
                       required
                     />
                   </div>
@@ -227,8 +222,8 @@ const Checkout = () => {
                   <div className="grid grid-cols-2 gap-4">
                     <Button
                       type="button"
-                      variant={paymentMethod === "card" ? "default" : "outline"}
-                      onClick={() => setPaymentMethod("card")}
+                      variant={paymentMethod === 'card' ? 'default' : 'outline'}
+                      onClick={() => setPaymentMethod('card')}
                       className="h-12 justify-start"
                     >
                       <CreditCard className="h-4 w-4 mr-2" />
@@ -236,8 +231,8 @@ const Checkout = () => {
                     </Button>
                     <Button
                       type="button"
-                      variant={paymentMethod === "mpesa" ? "default" : "outline"}
-                      onClick={() => setPaymentMethod("mpesa")}
+                      variant={paymentMethod === 'mpesa' ? 'default' : 'outline'}
+                      onClick={() => setPaymentMethod('mpesa')}
                       className="h-12 justify-start"
                     >
                       <Smartphone className="h-4 w-4 mr-2" />
@@ -247,7 +242,7 @@ const Checkout = () => {
                 </div>
 
                 {/* Payment Fields */}
-                {paymentMethod === "card" ? (
+                {paymentMethod === 'card' ? (
                   <div className="space-y-4">
                     <div>
                       <Label htmlFor="cardNumber">Card Number</Label>
@@ -255,7 +250,7 @@ const Checkout = () => {
                         id="cardNumber"
                         placeholder="1234 5678 9012 3456"
                         value={formData.cardNumber}
-                        onChange={(e) => handleInputChange("cardNumber", e.target.value)}
+                        onChange={(e) => handleInputChange('cardNumber', e.target.value)}
                         required
                       />
                     </div>
@@ -266,7 +261,7 @@ const Checkout = () => {
                           id="expiryDate"
                           placeholder="MM/YY"
                           value={formData.expiryDate}
-                          onChange={(e) => handleInputChange("expiryDate", e.target.value)}
+                          onChange={(e) => handleInputChange('expiryDate', e.target.value)}
                           required
                         />
                       </div>
@@ -276,7 +271,7 @@ const Checkout = () => {
                           id="cvv"
                           placeholder="123"
                           value={formData.cvv}
-                          onChange={(e) => handleInputChange("cvv", e.target.value)}
+                          onChange={(e) => handleInputChange('cvv', e.target.value)}
                           required
                         />
                       </div>
@@ -285,18 +280,15 @@ const Checkout = () => {
                 ) : (
                   <div className="p-4 bg-muted/50 rounded-lg">
                     <p className="text-sm text-muted-foreground">
-                      You will be redirected to M-PESA to complete your payment of KES {Math.round(total * 130)}.
+                      You will be redirected to M-PESA to complete your payment of KES{' '}
+                      {Math.round(total * 130)}.
                     </p>
                   </div>
                 )}
 
                 {/* Submit Button */}
-                <Button
-                  type="submit"
-                  className="w-full h-12 text-lg"
-                  disabled={isProcessing}
-                >
-                  {isProcessing ? "Processing..." : `Pay $${total}`}
+                <Button type="submit" className="w-full h-12 text-lg" disabled={isProcessing}>
+                  {isProcessing ? 'Processing...' : `Pay $${total}`}
                 </Button>
               </form>
             </Card>

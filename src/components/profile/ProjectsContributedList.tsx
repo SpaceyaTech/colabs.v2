@@ -1,8 +1,8 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { GitPullRequest, GitCommit, Star, ExternalLink } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { GitPullRequest, GitCommit, Star, ExternalLink } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface Project {
   id: string;
@@ -13,7 +13,7 @@ interface Project {
   stars: number;
   prsCount: number;
   commitsCount: number;
-  role: "contributor" | "maintainer" | "owner";
+  role: 'contributor' | 'maintainer' | 'owner';
 }
 
 interface ProjectsContributedListProps {
@@ -21,14 +21,14 @@ interface ProjectsContributedListProps {
 }
 
 export function ProjectsContributedList({ projects }: ProjectsContributedListProps) {
-  const getRoleBadgeVariant = (role: Project["role"]) => {
+  const getRoleBadgeVariant = (role: Project['role']) => {
     switch (role) {
-      case "owner":
-        return "default";
-      case "maintainer":
-        return "secondary";
+      case 'owner':
+        return 'default';
+      case 'maintainer':
+        return 'secondary';
       default:
-        return "outline";
+        return 'outline';
     }
   };
 
@@ -55,7 +55,9 @@ export function ProjectsContributedList({ projects }: ProjectsContributedListPro
               </Avatar>
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="font-medium">{project.owner}/{project.name}</span>
+                  <span className="font-medium">
+                    {project.owner}/{project.name}
+                  </span>
                   <Badge variant={getRoleBadgeVariant(project.role)} className="text-xs capitalize">
                     {project.role}
                   </Badge>

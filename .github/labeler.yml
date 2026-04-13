@@ -1,0 +1,78 @@
+# .github/labeler.yml
+#
+# Maps changed file paths to PR labels.
+# Used by the auto-label workflow (.github/workflows/auto-label.yml).
+#
+# Syntax:
+#   "label-name":
+#     - changed-files:
+#         - any-glob-to-any-file: "path/pattern/**"
+#
+# A PR gets a label if ANY of the listed patterns match at least one changed file.
+# Multiple labels can match the same PR — a PR touching auth AND migrations gets both.
+
+# ── Type labels ──────────────────────────────────────────────────────────────
+
+'documentation':
+  - changed-files:
+      - any-glob-to-any-file:
+          - '*.md'
+          - '**/*.md'
+          - 'docs/**'
+
+'chore':
+  - changed-files:
+      - any-glob-to-any-file:
+          - '.github/**'
+          - '*.config.*'
+          - 'tsconfig*.json'
+          - 'components.json'
+          - 'package.json'
+          - 'package-lock.json'
+          - '.eslintrc*'
+          - '.eslintignore'
+          - '.gitignore'
+          - '.nvmrc'
+
+# ── Area labels ──────────────────────────────────────────────────────────────
+
+'area: database':
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'supabase/migrations/**'
+          - 'supabase/functions/**'
+          - 'src/integrations/supabase/**'
+
+'area: auth':
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'src/hooks/useAuth*'
+          - 'src/hooks/useSession*'
+          - 'src/components/auth/**'
+          - 'src/pages/auth/**'
+          - 'src/lib/supabase.ts'
+          - 'supabase/functions/github-oauth/**'
+
+'area: github-integration':
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'supabase/functions/github-**'
+          - 'src/hooks/useGithub*'
+          - 'src/components/github/**'
+
+'area: marketplace':
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'src/components/gigs/**'
+          - 'src/hooks/useGigs*'
+          - 'src/pages/**/*gig*'
+          - 'src/pages/**/*marketplace*'
+
+# ── CI / DevOps label (useful for tracking pipeline changes) ─────────────────
+
+'ci':
+  - changed-files:
+      - any-glob-to-any-file:
+          - '.github/workflows/**'
+          - '.github/labeler.yml'
+          - '.github/CODEOWNERS'

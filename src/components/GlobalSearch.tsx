@@ -139,7 +139,7 @@ export function GlobalSearch() {
   const handleSelect = (result: SearchResult) => {
     setOpen(false);
     setQuery('');
-    
+
     switch (result.type) {
       case 'project':
         navigate(`/project/${result.id}`);
@@ -222,17 +222,18 @@ export function GlobalSearch() {
                     key={`${result.type}-${result.id}`}
                     onClick={() => handleSelect(result)}
                     className={cn(
-                      "w-full flex items-start gap-3 p-3 rounded-lg text-left transition-colors",
-                      selectedIndex === index
-                        ? "bg-accent"
-                        : "hover:bg-muted/50"
+                      'w-full flex items-start gap-3 p-3 rounded-lg text-left transition-colors',
+                      selectedIndex === index ? 'bg-accent' : 'hover:bg-muted/50'
                     )}
                   >
                     <div className="mt-0.5">{getIcon(result.type)}</div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <span className="font-medium truncate">{result.title}</span>
-                        <Badge variant="outline" className={cn("text-xs shrink-0", getTypeColor(result.type))}>
+                        <Badge
+                          variant="outline"
+                          className={cn('text-xs shrink-0', getTypeColor(result.type))}
+                        >
                           {result.type}
                         </Badge>
                       </div>

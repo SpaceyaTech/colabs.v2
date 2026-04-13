@@ -1,10 +1,10 @@
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { BarChart3, TrendingUp, Activity, GitCommit, GitPullRequest, Clock, ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
-import ScrollReveal from "@/components/ScrollReveal";
-import { motion } from "framer-motion";
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { TrendingUp, GitCommit, GitPullRequest, Clock, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import ScrollReveal from '@/components/ScrollReveal';
+import { motion } from 'framer-motion';
 import {
   LineChart,
   Line,
@@ -19,36 +19,36 @@ import {
   PolarGrid,
   PolarAngleAxis,
   Radar,
-} from "recharts";
+} from 'recharts';
 
 const InteractiveDemoSection = () => {
   // Sample data for charts
   const activityData = [
-    { month: "Jan", commits: 45, prs: 8 },
-    { month: "Feb", commits: 62, prs: 12 },
-    { month: "Mar", commits: 78, prs: 15 },
-    { month: "Apr", commits: 55, prs: 10 },
-    { month: "May", commits: 89, prs: 18 },
-    { month: "Jun", commits: 95, prs: 22 },
+    { month: 'Jan', commits: 45, prs: 8 },
+    { month: 'Feb', commits: 62, prs: 12 },
+    { month: 'Mar', commits: 78, prs: 15 },
+    { month: 'Apr', commits: 55, prs: 10 },
+    { month: 'May', commits: 89, prs: 18 },
+    { month: 'Jun', commits: 95, prs: 22 },
   ];
 
   const weeklyData = [
-    { day: "Mon", hours: 6 },
-    { day: "Tue", hours: 8 },
-    { day: "Wed", hours: 5 },
-    { day: "Thu", hours: 9 },
-    { day: "Fri", hours: 7 },
-    { day: "Sat", hours: 3 },
-    { day: "Sun", hours: 2 },
+    { day: 'Mon', hours: 6 },
+    { day: 'Tue', hours: 8 },
+    { day: 'Wed', hours: 5 },
+    { day: 'Thu', hours: 9 },
+    { day: 'Fri', hours: 7 },
+    { day: 'Sat', hours: 3 },
+    { day: 'Sun', hours: 2 },
   ];
 
   const radarData = [
-    { skill: "React", value: 90 },
-    { skill: "TypeScript", value: 85 },
-    { skill: "Node.js", value: 75 },
-    { skill: "Python", value: 60 },
-    { skill: "Go", value: 45 },
-    { skill: "Docker", value: 70 },
+    { skill: 'React', value: 90 },
+    { skill: 'TypeScript', value: 85 },
+    { skill: 'Node.js', value: 75 },
+    { skill: 'Python', value: 60 },
+    { skill: 'Go', value: 45 },
+    { skill: 'Docker', value: 70 },
   ];
 
   // Generate heatmap data
@@ -65,33 +65,33 @@ const InteractiveDemoSection = () => {
   const heatmapData = generateHeatmapData();
 
   const getHeatmapColor = (count: number) => {
-    if (count === 0) return "bg-muted/30";
-    if (count <= 2) return "bg-primary/20";
-    if (count <= 5) return "bg-primary/40";
-    if (count <= 7) return "bg-primary/60";
-    return "bg-primary";
+    if (count === 0) return 'bg-muted/30';
+    if (count <= 2) return 'bg-primary/20';
+    if (count <= 5) return 'bg-primary/40';
+    if (count <= 7) return 'bg-primary/60';
+    return 'bg-primary';
   };
 
   const features = [
     {
       icon: GitCommit,
-      title: "Commit Tracking",
-      description: "Every commit counts towards your profile",
+      title: 'Commit Tracking',
+      description: 'Every commit counts towards your profile',
     },
     {
       icon: GitPullRequest,
-      title: "PR Analytics",
-      description: "Track pull request velocity over time",
+      title: 'PR Analytics',
+      description: 'Track pull request velocity over time',
     },
     {
       icon: Clock,
-      title: "Time Insights",
-      description: "Understand your coding patterns",
+      title: 'Time Insights',
+      description: 'Understand your coding patterns',
     },
     {
       icon: TrendingUp,
-      title: "Growth Metrics",
-      description: "Visualize your improvement journey",
+      title: 'Growth Metrics',
+      description: 'Visualize your improvement journey',
     },
   ];
 
@@ -99,19 +99,17 @@ const InteractiveDemoSection = () => {
     <section className="py-24 relative overflow-hidden">
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-spotlight" />
-      
+
       <div className="container mx-auto px-4 max-w-6xl relative z-10">
         {/* Section header */}
         <ScrollReveal className="text-center mb-16">
           <Badge variant="outline" className="mb-4 text-muted-foreground border-border">
             Analytics
           </Badge>
-          <h2 className="text-headline text-gradient-subtle mb-6">
-            Visualize your contributions
-          </h2>
+          <h2 className="text-headline text-gradient-subtle mb-6">Visualize your contributions</h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Beautiful charts and graphs that tell the story of your open-source journey. 
-            Track commits, pull requests, and coding patterns in real-time.
+            Beautiful charts and graphs that tell the story of your open-source journey. Track
+            commits, pull requests, and coding patterns in real-time.
           </p>
         </ScrollReveal>
 
@@ -138,30 +136,33 @@ const InteractiveDemoSection = () => {
               </div>
               <div className="h-[220px]">
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={activityData} margin={{ top: 5, right: 10, left: -10, bottom: 0 }}>
+                  <LineChart
+                    data={activityData}
+                    margin={{ top: 5, right: 10, left: -10, bottom: 0 }}
+                  >
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                    <XAxis 
-                      dataKey="month" 
-                      tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
-                      axisLine={{ stroke: "hsl(var(--border))" }}
+                    <XAxis
+                      dataKey="month"
+                      tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                      axisLine={{ stroke: 'hsl(var(--border))' }}
                     />
-                    <YAxis 
-                      tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
-                      axisLine={{ stroke: "hsl(var(--border))" }}
+                    <YAxis
+                      tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                      axisLine={{ stroke: 'hsl(var(--border))' }}
                     />
                     <Line
                       type="monotone"
                       dataKey="commits"
                       stroke="hsl(142, 76%, 36%)"
                       strokeWidth={2}
-                      dot={{ fill: "hsl(142, 76%, 36%)", strokeWidth: 0, r: 4 }}
+                      dot={{ fill: 'hsl(142, 76%, 36%)', strokeWidth: 0, r: 4 }}
                     />
                     <Line
                       type="monotone"
                       dataKey="prs"
                       stroke="hsl(var(--primary))"
                       strokeWidth={2}
-                      dot={{ fill: "hsl(var(--primary))", strokeWidth: 0, r: 4 }}
+                      dot={{ fill: 'hsl(var(--primary))', strokeWidth: 0, r: 4 }}
                     />
                   </LineChart>
                 </ResponsiveContainer>
@@ -178,9 +179,9 @@ const InteractiveDemoSection = () => {
                 <ResponsiveContainer width="100%" height="100%">
                   <RadarChart data={radarData} cx="50%" cy="50%" outerRadius="70%">
                     <PolarGrid stroke="hsl(var(--border))" />
-                    <PolarAngleAxis 
-                      dataKey="skill" 
-                      tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }}
+                    <PolarAngleAxis
+                      dataKey="skill"
+                      tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }}
                     />
                     <Radar
                       dataKey="value"
@@ -203,7 +204,9 @@ const InteractiveDemoSection = () => {
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h3 className="font-medium text-foreground">Contribution Graph</h3>
-                  <p className="text-sm text-muted-foreground">424 contributions in the last 4 months</p>
+                  <p className="text-sm text-muted-foreground">
+                    424 contributions in the last 4 months
+                  </p>
                 </div>
               </div>
               <div className="overflow-x-auto">
@@ -216,9 +219,9 @@ const InteractiveDemoSection = () => {
                           initial={{ opacity: 0, scale: 0 }}
                           whileInView={{ opacity: 1, scale: 1 }}
                           viewport={{ once: true }}
-                          transition={{ 
-                            duration: 0.2, 
-                            delay: (weekIndex * 7 + dayIndex) * 0.005 
+                          transition={{
+                            duration: 0.2,
+                            delay: (weekIndex * 7 + dayIndex) * 0.005,
                           }}
                           className={`w-3 h-3 rounded-sm ${getHeatmapColor(heatmapData[weekIndex * 7 + dayIndex])}`}
                         />
@@ -250,24 +253,30 @@ const InteractiveDemoSection = () => {
               <div className="h-[140px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={weeklyData} margin={{ top: 5, right: 0, left: -20, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
-                    <XAxis 
-                      dataKey="day" 
-                      tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }}
-                      axisLine={{ stroke: "hsl(var(--border))" }}
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      stroke="hsl(var(--border))"
+                      vertical={false}
                     />
-                    <YAxis 
-                      tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }}
-                      axisLine={{ stroke: "hsl(var(--border))" }}
+                    <XAxis
+                      dataKey="day"
+                      tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }}
+                      axisLine={{ stroke: 'hsl(var(--border))' }}
+                    />
+                    <YAxis
+                      tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }}
+                      axisLine={{ stroke: 'hsl(var(--border))' }}
                       tickFormatter={(value) => `${value}h`}
                     />
                     <Bar dataKey="hours" radius={[4, 4, 0, 0]}>
                       {weeklyData.map((entry, index) => (
                         <Cell
                           key={`cell-${index}`}
-                          fill={entry.hours === Math.max(...weeklyData.map(d => d.hours)) 
-                            ? "hsl(var(--primary))" 
-                            : "hsl(var(--primary) / 0.4)"}
+                          fill={
+                            entry.hours === Math.max(...weeklyData.map((d) => d.hours))
+                              ? 'hsl(var(--primary))'
+                              : 'hsl(var(--primary) / 0.4)'
+                          }
                         />
                       ))}
                     </Bar>

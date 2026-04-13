@@ -1,29 +1,59 @@
 # GitHub Integration
 
-The app integrates with GitHub via OAuth for repository management, issue tracking, and project data fetching.
+Colabs integrates with GitHub for two independent purposes. Understanding the distinction between them is essential before working on anything in `src/hooks/useGitHub.tsx`, `src/hooks/useAuth.tsx`, or any of the GitHub edge functions.
 
-## Sign Up / Sign In with GitHub
+---
 
-Users can authenticate using their GitHub account through Supabase Auth's built-in GitHub provider.
+## Table of Contents
 
-### How It Works
+- [Two Separate OAuth Flows](#two-separate-oauth-flows)
+- [Sign In with GitHub (Auth)](#sign-in-with-github-auth)
+- [GitHub Integration (Repository Sync)](#github-integration-repository-sync)
+- [Repository Collaboration](#repository-collaboration)
+- [Issue Fetching](#issue-fetching)
+- [Client-Side Hooks](#client-side-hooks)
+- [Local Testing](#local-testing)
 
-1. On the **Sign Up** or **Sign In** page, the user clicks **"Continue with GitHub"**
+---
+
+## Two Separate OAuth Flows
+
+|                      | Auth flow                                                               | Integration flow                                                                                  |
+| -------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| **What it does**     | Authenticates the user — creates or restores a Supabase session         | Connects a GitHub account to sync repos and fetch issues                                          |
+| **When it runs**     | On `/sign-in` or `/sign-up`                                             | Inside Settings, after the user is already logged in                                              |
+| **GitHub OAuth App** | GitHub Auth App (configured in Supabase)                                | GitHub Integration App (configured in GitHub)                                                     |
+| **Callback URL**     | `https://<project>.supabase.co/auth/v1/callback`                        | Local: `http://localhost:5173/github-callback`<br>Prod: `https://your-domain.com/github-callback` |
+| **Token stored**     | Supabase Auth JWT — managed by Supabase                                 | GitHub access token — stored in `github_integrations.access_token` (server-side only)             |
+| **Client-side code** | `useAuth.tsx` → `supabase.auth.signInWithOAuth({ provider: 'github' })` | `useGitHub.tsx` → manual redirect → `github-oauth` edge function                                  |
+
+**Why two separate apps?** A user can sign in with Google and still use the GitHub integration. A user can sign in with one GitHub account and connect a different GitHub account for repo syncing. Separating the flows keeps the scopes right-sized and the systems independently maintainable.
+
+The two flows are completely independent code paths. Changes to auth must not affect the integration and vice versa.
+
+---
+
+## Sign In with GitHub (Auth)
+
+### How it works
+
+1. User clicks "Continue with GitHub" on `/sign-in` or `/sign-up`
 2. Supabase redirects to GitHub's OAuth consent screen
-3. The user authorizes the app
-4. GitHub redirects back to the app with a session token
-5. Supabase creates or links the user account automatically
+3. User authorises the app
+4. GitHub redirects to the Supabase Auth callback URL
+5. Supabase creates or links the user account and returns a JWT session
+6. The user is redirected to `/dashboard`
 
 ### Configuration
 
-GitHub OAuth as an auth provider is configured in the **Supabase Dashboard**:
+Configured entirely in the Supabase Dashboard:
 
 1. Go to **Authentication → Providers → GitHub**
 2. Enable the GitHub provider
-3. Set the **Client ID** and **Client Secret** from your [GitHub OAuth App](https://github.com/settings/developers)
-4. Set the **Redirect URL** to: `https://<your-supabase-ref>.supabase.co/auth/v1/callback`
+3. Enter the **Client ID** and **Client Secret** from your GitHub Auth App
+4. The **Redirect URL** (recorded in GitHub) is: `https://<your-project-ref>.supabase.co/auth/v1/callback`
 
-### Client-Side Usage (`src/hooks/useAuth.tsx`)
+### Client-side code (`src/hooks/useAuth.tsx`)
 
 ```tsx
 const { data, error } = await supabase.auth.signInWithOAuth({
@@ -34,135 +64,182 @@ const { data, error } = await supabase.auth.signInWithOAuth({
 });
 ```
 
-> **Note:** This is separate from the GitHub **integration** OAuth flow below, which connects a user's GitHub account for repository syncing and issue tracking after they are already signed in.
+---
+
+## GitHub Integration (Repository Sync)
+
+This is the flow for connecting a GitHub account to sync repositories and fetch issues. It is separate from authentication.
+
+### Flow diagram
+
+```
+┌──────────┐  1. Redirect to GitHub OAuth  ┌───────────┐
+│  Browser │ ─────────────────────────────→ │  GitHub   │
+│          │ ←───────────────────────────── │  OAuth    │
+└──────────┘  2. Redirect with code+state   └───────────┘
+     │
+     │  3. POST code to edge function
+     ↓
+┌──────────────────┐
+│  github-oauth    │ → Exchange code for access token
+│  (edge function) │ → Fetch GitHub user info (/user)
+│                  │ → Upsert github_integrations record
+└──────────────────┘
+     │
+     │  4. Auto-sync repositories
+     ↓
+┌──────────────────┐
+│  github-repos    │ → Fetch user repos from GitHub API
+│  (edge function) │ → Upsert into github_repositories table
+└──────────────────┘
+```
+
+### Implementation details (`src/hooks/useGitHub.tsx`)
+
+| Method                                      | What it does                                                                 |
+| ------------------------------------------- | ---------------------------------------------------------------------------- |
+| `connectToGitHub()`                         | Redirects to GitHub OAuth authorize URL with `repo,user:email` scopes        |
+| `handleOAuthCallback(code, state)`          | Invokes `github-oauth` edge function with the code from GitHub               |
+| `syncRepositories()`                        | Invokes `github-repositories` (GET) to fetch and sync repos                  |
+| `updateRepositoryCollaboration(ids, allow)` | Invokes `github-repositories` (POST) to toggle per-repo collaboration        |
+| `disconnectGitHub()`                        | Soft-deletes by setting `is_active = false` on the integration record        |
+| `checkIntegration()`                        | Queries `github_integrations` for an active integration for the current user |
+| `loadRepositories()`                        | Loads repos from `github_repositories` with collaboration request counts     |
+
+### Callback page (`src/pages/GitHubCallback.tsx`)
+
+After GitHub redirects back to `/github-callback`:
+
+1. Extracts `code` and `state` from URL search params
+2. Calls `handleOAuthCallback(code, state)`
+3. Redirects to `/settings` on success
+
+### Required secrets (Edge Functions)
+
+| Secret                 | Where to set               | Value                               |
+| ---------------------- | -------------------------- | ----------------------------------- |
+| `GITHUB_CLIENT_ID`     | `npx supabase secrets set` | Integration OAuth App client ID     |
+| `GITHUB_CLIENT_SECRET` | `npx supabase secrets set` | Integration OAuth App client secret |
+
+The `VITE_GITHUB_CLIENT_ID` environment variable (in `.env`) is the same Client ID — safe to expose in the client because it is only used to construct the OAuth authorize URL. The Client Secret is always server-side only.
 
 ---
 
-## Integration OAuth Flow (Repository Sync)
-
-```
-┌──────────┐    1. Redirect     ┌──────────┐
-│  Browser  │ ─────────────────→ │  GitHub   │
-│           │                    │  OAuth    │
-│           │ ←───────────────── │           │
-└──────────┘    2. Code + State  └──────────┘
-      │
-      │ 3. POST code to edge function
-      ▼
-┌──────────────────┐
-│ github-oauth     │ ← Exchange code for access token
-│ (edge function)  │ ← Fetch GitHub user info
-│                  │ ← Upsert github_integrations record
-└──────────────────┘
-      │
-      │ 4. Auto-sync repositories
-      ▼
-┌──────────────────┐
-│ github-repos     │ ← Fetch user repos from GitHub API
-│ (edge function)  │ ← Upsert into github_repositories
-└──────────────────┘
-```
-
-### Implementation Details
-
-**Client-side** (`src/hooks/useGitHub.tsx`):
-
-1. `connectToGitHub()` — Redirects to GitHub OAuth authorize URL with `repo,user:email` scopes
-2. `handleOAuthCallback(code, state)` — Invokes `github-oauth` edge function, stores integration
-3. `syncRepositories()` — Invokes `github-repositories` GET to fetch and sync repos
-4. `updateRepositoryCollaboration()` — Invokes `github-repositories` POST to toggle collaboration
-5. `disconnectGitHub()` — Soft-deletes by setting `is_active = false`
-6. `checkIntegration()` — Queries `github_integrations` for active connection
-7. `loadRepositories()` — Loads repos from DB with collaboration request counts
-
-**Callback page** (`src/pages/GitHubCallback.tsx`):
-- Extracts `code` and `state` from URL params
-- Calls `handleOAuthCallback()` and redirects to `/settings`
-
-### Required Secrets
-
-| Secret | Where Set | Purpose |
-|---|---|---|
-| `GITHUB_CLIENT_ID` | Edge function env | OAuth App client ID |
-| `GITHUB_CLIENT_SECRET` | Edge function env | OAuth App client secret |
-
-The client-side uses a publishable client ID hardcoded in `useGitHub.tsx`.
-
 ## Repository Collaboration
 
-Users can toggle `allow_collaboration` on individual repositories. When enabled:
-- The repository's open issues become visible to other authenticated users
-- Issues are fetched via the `github-issues` edge function
-- Other users can claim issues and track progress
+Users opt in individual repos by toggling `allow_collaboration = true`. When enabled:
+
+- The repo's open issues become visible to other authenticated users on the `/issues` page
+- Issues are fetched live via the `github-issues` edge function
+- Other users can claim issues and track their status through `claimed_issues`
+- The repo appears in the public repository discovery list
+
+Toggling off (`allow_collaboration = false`) removes the repo's issues from the public feed immediately. Existing claimed issues from the repo are not deleted — they remain in the `claimed_issues` table.
+
+---
 
 ## Issue Fetching
 
-### From User's Repositories (`github-issues` edge function)
+### From the user's own repos (`github-issues` edge function)
 
 Fetches open issues from all collaboration-enabled repos for the authenticated user.
 
-**Flow:**
-1. Verify JWT → Get user's `github_integrations` record
-2. Query `github_repositories` where `allow_collaboration = true`
+**Full flow:**
+
+1. Verify JWT → retrieve the user's `github_integrations` record
+2. Query `github_repositories` where `allow_collaboration = true` for this user
 3. For each repo, call `GET /repos/{owner}/{repo}/issues?state=open`
-4. Filter out PRs, categorize by labels, determine priority
-5. Return sorted issues (newest first)
+4. Filter out pull requests (the GitHub Issues API returns PRs too)
+5. Apply label-based categorisation and priority mapping (see [EDGE_FUNCTIONS.md](./EDGE_FUNCTIONS.md#github-issues))
+6. Return sorted by `created_at` descending (newest first)
 
-**Label → Category Mapping:**
-| Label Contains | Category |
-|---|---|
-| `bug` | bug |
-| `documentation`, `docs` | documentation |
-| `enhancement` | enhancement |
-| `help wanted` | help-wanted |
-| (default) | feature |
+**Client hook:** `useGitHubIssues()` in `src/hooks/useGitHubIssues.tsx`
 
-**Label → Priority Mapping:**
-| Label Contains | Priority |
-|---|---|
-| `urgent`, `critical` | urgent |
-| `high`, `important` | high |
-| `low` | low |
-| (default) | medium |
+```tsx
+const { issues, repositories, loading, error, refetch } = useGitHubIssues();
+```
 
-### From Any Public Repository (`github-project-data` edge function)
+### From any public repo (`github-project-data` edge function)
 
-Fetches live data for the project detail page (no auth required):
+Fetches live data for the project detail page. No authentication required.
 
 **Endpoint:** POST with `{ repoUrl: "https://github.com/owner/repo" }`
 
 **Returns:**
+
 - Repository metadata (stars, forks, language, topics, license)
-- Contributors list (top 12)
-- Open issues (top 15, sorted with "good first issues" first)
+- Top 12 contributors
+- Top 15 open issues (good first issues sorted to the top)
 - README URL
+
+---
 
 ## Client-Side Hooks
 
-### `useGitHub()`
+### `useGitHub()` — `src/hooks/useGitHub.tsx`
 
-Full GitHub integration management hook. See methods above.
+Full GitHub integration management. See method table above under [GitHub Integration (Repository Sync)](#github-integration-repository-sync).
 
-### `useGitHubIssues()`
+### `useGitHubIssues()` — `src/hooks/useGitHubIssues.tsx`
 
-Fetches issues from the user's collaboration-enabled repos.
+Fetches issues from the user's collaboration-enabled repos via the edge function. Auto-fetches on mount when authenticated.
 
 ```tsx
 const { issues, repositories, loading, error, message, refetch } = useGitHubIssues();
 ```
 
-- Auto-fetches on mount when authenticated
-- Returns typed `GitHubIssue[]` with category, priority, and assignee info
+Returns `GitHubIssue[]` with `id`, `title`, `category`, `priority`, `labels`, `repo`, and `html_url`.
 
-### `useClaimedIssues()`
+### `useClaimedIssues()` — `src/hooks/useClaimedIssues.tsx`
 
-Manages the user's claimed issues (persisted in `claimed_issues` table).
+Manages the user's claimed issues (persisted in `claimed_issues`).
 
 ```tsx
 const { claimedIssues, claimIssue, unclaimIssue, updateStatus } = useClaimedIssues();
 ```
 
-- `claimIssue(issue)` — Inserts into `claimed_issues`, handles duplicates
-- `unclaimIssue(issueId)` — Removes claim
-- `updateStatus(issueId, status)` — Updates issue status (todo → in-progress → done)
-- `toUnifiedIssue(claimed)` — Converts DB record to UI format
+- `claimIssue(issue)` — inserts into `claimed_issues`, handles duplicates
+- `unclaimIssue(issueId)` — removes the claim
+- `updateStatus(issueId, status)` — moves the issue through `todo → in-progress → in-review → done`
+
+---
+
+## Local Testing
+
+### Testing the auth flow locally
+
+1. Create a GitHub OAuth App with callback URL `http://localhost:5173` (not the Supabase URL — use localhost for local auth testing)
+2. Add it to Supabase Auth providers in the dashboard
+3. Run `npm run dev` and sign in with GitHub
+
+### Testing the integration flow locally
+
+1. Create a second GitHub OAuth App with callback URL `http://localhost:5173/github-callback`
+2. Add `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` to `.env.local`
+3. Start the local Supabase stack: `npx supabase start`
+4. Serve the edge function: `npx supabase functions serve github-oauth --env-file .env.local`
+5. Run `npm run dev` and connect GitHub from Settings
+
+### Testing edge functions directly with curl
+
+```bash
+# First, get a local JWT by signing in and copying it from the browser DevTools
+# Application → Local Storage → supabase.auth.token → access_token
+
+curl -X POST \
+  http://localhost:54321/functions/v1/github-issues \
+  -H "Authorization: Bearer YOUR_JWT" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+### Common local testing issues
+
+**"No integration found"** when testing `github-issues`:
+The user has not connected their GitHub account. Go through the integration OAuth flow first.
+
+**Callback redirects to an error page**:
+Check that the Authorization callback URL in the GitHub OAuth App matches exactly. Local testing uses `http://localhost:5173/github-callback`, not the Supabase URL.
+
+**Edge function returns `Unauthorized`**:
+The JWT is expired or the function was not restarted after a secret change. Re-authenticate and restart `supabase functions serve`.

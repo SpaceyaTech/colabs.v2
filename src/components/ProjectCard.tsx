@@ -15,34 +15,37 @@ interface ProjectCardProps {
   technologies?: string[];
   status?: string;
   isPaid?: boolean;
-  role?: "owner" | "contributor" | "maintainer";
+  role?: 'owner' | 'contributor' | 'maintainer';
   githubUrl?: string;
   onClick?: () => void;
 }
 
 const getLanguageColor = (lang: string) => {
   const colors: Record<string, string> = {
-    TypeScript: "bg-blue-500",
-    JavaScript: "bg-yellow-500",
-    Python: "bg-green-500",
-    "Vue.js": "bg-emerald-500",
-    Go: "bg-cyan-500",
-    Rust: "bg-orange-500",
-    React: "bg-blue-400",
+    TypeScript: 'bg-blue-500',
+    JavaScript: 'bg-yellow-500',
+    Python: 'bg-green-500',
+    'Vue.js': 'bg-emerald-500',
+    Go: 'bg-cyan-500',
+    Rust: 'bg-orange-500',
+    React: 'bg-blue-400',
   };
-  return colors[lang] || "bg-muted-foreground";
+  return colors[lang] || 'bg-muted-foreground';
 };
 
 const formatNumber = (num: number) => {
-  if (num >= 1000) return (num / 1000).toFixed(1) + "k";
+  if (num >= 1000) return (num / 1000).toFixed(1) + 'k';
   return num.toString();
 };
 
 const getRoleBadgeVariant = (role: string) => {
   switch (role) {
-    case "owner": return "default" as const;
-    case "maintainer": return "secondary" as const;
-    default: return "outline" as const;
+    case 'owner':
+      return 'default' as const;
+    case 'maintainer':
+      return 'secondary' as const;
+    default:
+      return 'outline' as const;
   }
 };
 
@@ -83,12 +86,16 @@ export function ProjectCard({
                   className="text-sm font-semibold text-primary hover:underline truncate flex items-center gap-1"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  {owner ? `${owner}/` : ""}{name}
+                  {owner ? `${owner}/` : ''}
+                  {name}
                   <ExternalLink className="h-3 w-3 shrink-0" />
                 </a>
               ) : (
                 <h3 className="text-sm font-semibold text-foreground truncate group-hover:text-primary transition-colors">
-                  {owner ? <span className="text-muted-foreground font-normal">{owner}/</span> : null}{name}
+                  {owner ? (
+                    <span className="text-muted-foreground font-normal">{owner}/</span>
+                  ) : null}
+                  {name}
                 </h3>
               )}
             </div>
@@ -101,7 +108,7 @@ export function ProjectCard({
             )}
             {status && (
               <Badge
-                variant={status === "active" ? "default" : "secondary"}
+                variant={status === 'active' ? 'default' : 'secondary'}
                 className="text-[10px]"
               >
                 {status}
@@ -111,20 +118,20 @@ export function ProjectCard({
         </div>
 
         {/* Description */}
-        <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
-          {description}
-        </p>
+        <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">{description}</p>
 
         {/* Tech/topic tags */}
         {technologies && technologies.length > 0 && (
           <div className="flex flex-wrap gap-1">
-            {technologies.slice(0, 4).map(tech => (
+            {technologies.slice(0, 4).map((tech) => (
               <Badge key={tech} variant="secondary" className="text-[10px]">
                 {tech}
               </Badge>
             ))}
             {technologies.length > 4 && (
-              <span className="text-[10px] text-muted-foreground self-center">+{technologies.length - 4}</span>
+              <span className="text-[10px] text-muted-foreground self-center">
+                +{technologies.length - 4}
+              </span>
             )}
           </div>
         )}
@@ -156,7 +163,10 @@ export function ProjectCard({
             </div>
           )}
           {isPaid && (
-            <Badge variant="outline" className="text-[9px] px-1 py-0 ml-auto border-primary/30 text-primary">
+            <Badge
+              variant="outline"
+              className="text-[9px] px-1 py-0 ml-auto border-primary/30 text-primary"
+            >
               Paid
             </Badge>
           )}

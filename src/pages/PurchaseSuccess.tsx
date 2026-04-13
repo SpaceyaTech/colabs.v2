@@ -1,12 +1,11 @@
-
-import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { CheckCircle, Download, Mail, ArrowLeft } from "lucide-react";
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { CheckCircle, Download, Mail, ArrowLeft } from 'lucide-react';
 
 interface Project {
   id: number;
@@ -20,37 +19,54 @@ const PurchaseSuccess = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [project, setProject] = useState<Project | null>(null);
-  const [transactionId, setTransactionId] = useState<string>("");
-  const [paymentMethod, setPaymentMethod] = useState<string>("");
+  const [transactionId, setTransactionId] = useState<string>('');
+  const [paymentMethod, setPaymentMethod] = useState<string>('');
 
   /**
    * TODO: STRIPE INTEGRATION - Verify Purchase
-   * 
+   *
    * When redirected from Stripe Checkout, verify the session:
-   * 
+   *
    * 1. Extract session_id from URL params:
    *    const searchParams = new URLSearchParams(window.location.search);
    *    const sessionId = searchParams.get('session_id');
-   * 
+   *
    * 2. Verify the session with backend (optional but recommended):
    *    const { data } = await supabase.functions.invoke('verify-checkout-session', {
    *      body: { sessionId }
    *    });
-   * 
+   *
    * 3. Fetch purchase details from `purchases` table
-   * 
+   *
    * See docs/STRIPE_INTEGRATION.md for full implementation details.
    */
   useEffect(() => {
-    // TODO: Check for Stripe session_id in URL params
-    // const searchParams = new URLSearchParams(window.location.search);
-    // const sessionId = searchParams.get('session_id');
-    // if (sessionId) { /* verify with backend */ }
+    // Phase 2: Verify the Stripe session via a backend edge function
+    // This prevents users from accessing the success page by manually setting URL params
+    const searchParams = new URLSearchParams(window.location.search);
+    const sessionId = searchParams.get('session_id');
 
-    const { project: projectData, transactionId: txnId, paymentMethod: method } = location.state || {};
-    
+    // if (sessionId) {
+    //   const verifySession = async () => {
+    //     const { data, error } = await supabase.functions.invoke('verify-checkout-session', {
+    //       body: { sessionId }
+    //     });
+    //     if (error) {
+    //       console.error('Session verification failed:', error);
+    //       navigate('/marketplace');
+    //     }
+    //   };
+    //   verifySession();
+    // }
+
+    const {
+      project: projectData,
+      transactionId: txnId,
+      paymentMethod: method,
+    } = location.state || {};
+
     if (!projectData || !txnId) {
-      navigate("/marketplace");
+      navigate('/marketplace');
       return;
     }
 
@@ -74,7 +90,7 @@ const PurchaseSuccess = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
+
       <main className="pt-32 pb-20">
         <div className="container mx-auto px-4 max-w-2xl">
           <div className="text-center mb-8">
@@ -156,17 +172,11 @@ const PurchaseSuccess = () => {
           </Card>
 
           <div className="text-center space-y-4">
-            <Button
-              variant="outline"
-              onClick={() => navigate("/marketplace")}
-              className="mr-4"
-            >
+            <Button variant="outline" onClick={() => navigate('/marketplace')} className="mr-4">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Continue Shopping
             </Button>
-            <Button onClick={() => navigate("/dashboard")}>
-              Go to Dashboard
-            </Button>
+            <Button onClick={() => navigate('/dashboard')}>Go to Dashboard</Button>
           </div>
         </div>
       </main>

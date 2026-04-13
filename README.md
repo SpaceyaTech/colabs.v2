@@ -22,7 +22,7 @@
 
 <br />
 
-[Live Demo](https://colabs.dev) · [Report a Bug](https://github.com/SpaceyaTech/colabs.v2/issues/new?template=bug_report.md) · [Request a Feature](https://github.com/SpaceyaTech/colabs.v2/issues/new?template=feature_request.md) · [Product Roadmap](./PRD.md)
+[Live Demo](https://sytcolabs.vercel.app/) · [Report a Bug](https://github.com/SpaceyaTech/colabs.v2/issues/new?template=bug_report.md) · [Request a Feature](https://github.com/SpaceyaTech/colabs.v2/issues/new?template=feature_request.md) · [Product Roadmap](./PRD.md)
 
 <br />
 
@@ -57,6 +57,7 @@
 - [Community & Support](#-community--support)
 - [License](#-license)
 - [Acknowledgements](#-acknowledgements)
+- [Contributors](#contributors-)
 
 ---
 
@@ -68,12 +69,12 @@ Colabs connects developers with open-source projects, freelance gigs, and collab
 
 ### Who is it for?
 
-| Persona | What they get |
-|---|---|
-| **Developer / Contributor** | Discover projects and gigs matching their skills, claim GitHub issues, track progress, and build a verifiable contribution profile |
-| **Project Owner** | Post open-source or paid projects, manage collaboration requests, review proposals, and hire contributors with proven GitHub track records |
-| **Team Lead** | Create teams, invite members by email, assign projects, and manage a shared team workspace |
-| **Organisation Admin** | Manage organisations with role-based access control, configure integrations, and oversee contributor activity at scale |
+| Persona                     | What they get                                                                                                                              |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Developer / Contributor** | Discover projects and gigs matching their skills, claim GitHub issues, track progress, and build a verifiable contribution profile         |
+| **Project Owner**           | Post open-source or paid projects, manage collaboration requests, review proposals, and hire contributors with proven GitHub track records |
+| **Team Lead**               | Create teams, invite members by email, assign projects, and manage a shared team workspace                                                 |
+| **Organisation Admin**      | Manage organisations with role-based access control, configure integrations, and oversee contributor activity at scale                     |
 
 ---
 
@@ -96,7 +97,7 @@ Colabs connects developers with open-source projects, freelance gigs, and collab
 
 > Coming soon — add screenshots of the dashboard, marketplace, and issue explorer here.
 
-<!-- 
+<!--
   Suggested screenshots to add:
   - Landing page hero
   - Dashboard (My Issues tab)
@@ -110,18 +111,18 @@ Colabs connects developers with open-source projects, freelance gigs, and collab
 
 ## 🗂️ Tech Stack
 
-| Layer | Technology | Version |
-|---|---|---|
-| Framework | [React](https://react.dev) + [TypeScript](https://www.typescriptlang.org) | 18 / 5.x |
-| Build Tool | [Vite](https://vitejs.dev) | 5 |
-| Styling | [Tailwind CSS](https://tailwindcss.com) + [shadcn/ui](https://ui.shadcn.com) (Radix primitives) | 3.x |
-| Routing | [React Router DOM](https://reactrouter.com) | v6 |
-| Data Fetching / State | [TanStack React Query](https://tanstack.com/query) | v5 |
-| Backend | [Supabase](https://supabase.com) — Auth, PostgreSQL, Edge Functions, Storage | latest |
-| Forms | [React Hook Form](https://react-hook-form.com) + [Zod](https://zod.dev) | — |
-| Animation | [Framer Motion](https://www.framer.com/motion/) | — |
-| Charts | [Recharts](https://recharts.org) | — |
-| Drag & Drop | [@hello-pangea/dnd](https://github.com/hello-pangea/dnd) | — |
+| Layer                 | Technology                                                                                      | Version  |
+| --------------------- | ----------------------------------------------------------------------------------------------- | -------- |
+| Framework             | [React](https://react.dev) + [TypeScript](https://www.typescriptlang.org)                       | 18 / 5.x |
+| Build Tool            | [Vite](https://vitejs.dev)                                                                      | 8        |
+| Styling               | [Tailwind CSS](https://tailwindcss.com) + [shadcn/ui](https://ui.shadcn.com) (Radix primitives) | 4.x      |
+| Routing               | [React Router DOM](https://reactrouter.com)                                                     | v6       |
+| Data Fetching / State | [TanStack React Query](https://tanstack.com/query)                                              | v5       |
+| Backend               | [Supabase](https://supabase.com) — Auth, PostgreSQL, Edge Functions, Storage                    | latest   |
+| Forms                 | [React Hook Form](https://react-hook-form.com) + [Zod](https://zod.dev)                         | —        |
+| Animation             | [Framer Motion](https://www.framer.com/motion/)                                                 | —        |
+| Charts                | [Recharts](https://recharts.org)                                                                | —        |
+| Drag & Drop           | [@hello-pangea/dnd](https://github.com/hello-pangea/dnd)                                        | —        |
 
 ---
 
@@ -159,11 +160,11 @@ Colabs is a **single-page application (SPA)** backed by a fully managed [Supabas
 
 ### Layout System
 
-| Layout Component | Used For |
-|---|---|
-| `AppLayout` | Authenticated dashboard pages (sidebar + header) |
-| `TopNavLayout` | Public-facing pages (top navigation bar) |
-| `BottomNav` | Mobile navigation (visible on small screens only) |
+| Layout Component | Used For                                          |
+| ---------------- | ------------------------------------------------- |
+| `AppLayout`      | Authenticated dashboard pages (sidebar + header)  |
+| `TopNavLayout`   | Public-facing pages (top navigation bar)          |
+| `BottomNav`      | Mobile navigation (visible on small screens only) |
 
 ### Design System
 
@@ -182,14 +183,14 @@ For a full data-flow mapping (hooks → components → data sources), see [DATA_
 
 Ensure the following are installed and available before continuing:
 
-| Requirement | Version | Notes |
-|---|---|---|
-| [Node.js](https://nodejs.org) | 18+ | Use [nvm](https://github.com/nvm-sh/nvm) to manage versions |
-| [npm](https://www.npmjs.com) | 9+ | Comes with Node.js |
-| [Supabase CLI](https://supabase.com/docs/guides/cli) | latest | `npm install -g supabase` |
-| [Git](https://git-scm.com) | any | — |
-| A [Supabase](https://supabase.com) account | — | Free tier is sufficient |
-| A [GitHub OAuth App](https://github.com/settings/developers) | — | See [Step 5](#5-configure-github-oauth) |
+| Requirement                                                  | Version | Notes                                                       |
+| ------------------------------------------------------------ | ------- | ----------------------------------------------------------- |
+| [Node.js](https://nodejs.org)                                | 20.19+  | Use [nvm](https://github.com/nvm-sh/nvm) to manage versions |
+| [npm](https://www.npmjs.com)                                 | 9+      | Comes with Node.js                                          |
+| [Supabase CLI](https://supabase.com/docs/guides/cli)         | latest  | `npm install -g supabase`                                   |
+| [Git](https://git-scm.com)                                   | any     | —                                                           |
+| A [Supabase](https://supabase.com) account                   | —       | Free tier is sufficient                                     |
+| A [GitHub OAuth App](https://github.com/settings/developers) | —       | See [Step 5](#5-configure-github-oauth)                     |
 
 ---
 
@@ -208,6 +209,7 @@ cd colabs.v2
 ```
 
 > The upstream repository is at `git@github.com:SpaceyaTech/colabs.v2.git`. Add it as a remote so you can keep your fork in sync:
+>
 > ```bash
 > git remote add upstream git@github.com:SpaceyaTech/colabs.v2.git
 > git fetch upstream
@@ -288,9 +290,9 @@ You need **two separate GitHub OAuth Apps** — one for each purpose.
 
 Go to [GitHub Developer Settings → OAuth Apps](https://github.com/settings/developers) and create two apps:
 
-| App | Homepage URL | Callback URL |
-|---|---|---|
-| Colabs Auth | `http://localhost:5173` | `https://your-project-ref.supabase.co/auth/v1/callback` |
+| App                | Homepage URL            | Callback URL                                                           |
+| ------------------ | ----------------------- | ---------------------------------------------------------------------- |
+| Colabs Auth        | `http://localhost:5173` | `https://your-project-ref.supabase.co/auth/v1/callback`                |
 | Colabs Integration | `http://localhost:5173` | `http://localhost:5173/dashboard` (or your Supabase edge function URL) |
 
 #### 5b. Configure Supabase Auth for GitHub sign-in
@@ -325,14 +327,14 @@ npx supabase functions deploy github-project-data
 
 Verify deployment in your Supabase dashboard under **Edge Functions**.
 
-| Function | Purpose |
-|---|---|
-| `github-oauth` | Exchanges OAuth code for an access token; upserts the integration record |
-| `github-repositories` | Fetches repos from the GitHub API and syncs to `github_repositories` |
-| `github-issues` | Fetches open issues from collaboration-enabled repos with label categorisation |
-| `github-project-data` | Retrieves detailed project/repo metadata |
+| Function              | Purpose                                                                        |
+| --------------------- | ------------------------------------------------------------------------------ |
+| `github-oauth`        | Exchanges OAuth code for an access token; upserts the integration record       |
+| `github-repositories` | Fetches repos from the GitHub API and syncs to `github_repositories`           |
+| `github-issues`       | Fetches open issues from collaboration-enabled repos with label categorisation |
+| `github-project-data` | Retrieves detailed project/repo metadata                                       |
 
-> **Security note:** Access tokens are stored server-side only. They are never returned to or readable by the client — Supabase RLS column-level filtering enforces this.
+> **Security note:** Access tokens are stored server-side only. They are never returned to the client — protection is enforced by never including `access_token` in any client-side SELECT query. Edge Functions read the token via the service role key.
 
 ---
 
@@ -350,12 +352,12 @@ You should see the Colabs landing page. Sign up with email or GitHub to access t
 
 ## 📜 Available Scripts
 
-| Script | Description |
-|---|---|
-| `npm run dev` | Start the Vite development server with HMR |
-| `npm run build` | Build the app for production (`dist/`) |
-| `npm run preview` | Preview the production build locally |
-| `npm run lint` | Run ESLint across the codebase |
+| Script               | Description                                   |
+| -------------------- | --------------------------------------------- |
+| `npm run dev`        | Start the Vite development server with HMR    |
+| `npm run build`      | Build the app for production (`dist/`)        |
+| `npm run preview`    | Preview the production build locally          |
+| `npm run lint`       | Run ESLint across the codebase                |
 | `npm run type-check` | Run TypeScript type-checking (`tsc --noEmit`) |
 
 ---
@@ -433,41 +435,41 @@ colabs/
 
 Colabs uses **15 PostgreSQL tables**, all with Row Level Security (RLS) enabled.
 
-| Table | Description |
-|---|---|
-| `profiles` | User profile data linked to Supabase Auth |
-| `projects` | Open-source and paid collaborative projects |
-| `gigs` | Freelance job listings in the marketplace |
-| `proposals` | Contributor applications to gigs/projects |
-| `proposal_milestones` | Milestone breakdowns within a proposal |
-| `claimed_issues` | Issues a user has claimed from GitHub |
-| `github_integrations` | Connected GitHub accounts per user |
-| `github_repositories` | Synced repos from connected GitHub accounts |
-| `teams` | Platform teams within the application |
-| `team_members` | Membership records for each team |
-| `team_projects` | Projects assigned to a team |
-| `organizations` | Organisations with role-based membership |
-| `organization_members` | Member records with roles (owner/admin/member) |
-| `user_subscriptions` | Subscription plan and expiry per user |
-| `collaboration_requests` | Requests to collaborate on a repository |
-| `saved_jobs` | Bookmarked projects/gigs per user |
+| Table                    | Description                                    |
+| ------------------------ | ---------------------------------------------- |
+| `profiles`               | User profile data linked to Supabase Auth      |
+| `projects`               | Open-source and paid collaborative projects    |
+| `gigs`                   | Freelance job listings in the marketplace      |
+| `proposals`              | Contributor applications to gigs/projects      |
+| `proposal_milestones`    | Milestone breakdowns within a proposal         |
+| `claimed_issues`         | Issues a user has claimed from GitHub          |
+| `github_integrations`    | Connected GitHub accounts per user             |
+| `github_repositories`    | Synced repos from connected GitHub accounts    |
+| `teams`                  | Platform teams within the application          |
+| `team_members`           | Membership records for each team               |
+| `team_projects`          | Projects assigned to a team                    |
+| `organizations`          | Organisations with role-based membership       |
+| `organization_members`   | Member records with roles (owner/admin/member) |
+| `user_subscriptions`     | Subscription plan and expiry per user          |
+| `collaboration_requests` | Requests to collaborate on a repository        |
+| `saved_jobs`             | Bookmarked projects/gigs per user              |
 
 ### Security Functions
 
 Three **security definer functions** are used to prevent recursive RLS evaluation:
 
-| Function | Purpose |
-|---|---|
-| `has_role(user_id, role)` | Checks a user's role without triggering RLS recursion |
-| `is_team_member(user_id, team_id)` | Used in team RLS policies |
-| `get_user_org_role(user_id, org_id)` | Returns a user's role within an organisation |
+| Function                             | Purpose                                               |
+| ------------------------------------ | ----------------------------------------------------- |
+| `has_role(user_id, role)`            | Checks a user's role without triggering RLS recursion |
+| `is_team_member(user_id, team_id)`   | Used in team RLS policies                             |
+| `get_user_org_role(user_id, org_id)` | Returns a user's role within an organisation          |
 
 ### Storage Buckets
 
-| Bucket | Access | Contents |
-|---|---|---|
-| `project-logos` | Public | Project logo images (JPEG/PNG/WebP/GIF, ≤ 2 MB) |
-| `resumes` | Private (owner only) | Uploaded CVs/resumes (PDF/DOC/DOCX, ≤ 10 MB) |
+| Bucket          | Access               | Contents                                        |
+| --------------- | -------------------- | ----------------------------------------------- |
+| `project-logos` | Public               | Project logo images (JPEG/PNG/WebP/GIF, ≤ 2 MB) |
+| `resumes`       | Private (owner only) | Uploaded CVs/resumes (PDF/DOC/DOCX, ≤ 10 MB)    |
 
 ---
 
@@ -498,6 +500,7 @@ VITE_APP_URL=http://localhost:5173
 ```
 
 > **Important:** The `GITHUB_CLIENT_SECRET` is **never** set in `.env`. It is stored exclusively as a Supabase Edge Function secret to prevent client-side exposure:
+>
 > ```bash
 > npx supabase secrets set GITHUB_CLIENT_SECRET=your-secret
 > ```
@@ -541,15 +544,15 @@ git push origin feat/your-feature-name
 
 This project uses [Conventional Commits](https://www.conventionalcommits.org/):
 
-| Prefix | Use for |
-|---|---|
-| `feat:` | A new feature |
-| `fix:` | A bug fix |
-| `docs:` | Documentation changes only |
-| `style:` | Formatting, missing semicolons, etc. (no logic change) |
+| Prefix      | Use for                                                 |
+| ----------- | ------------------------------------------------------- |
+| `feat:`     | A new feature                                           |
+| `fix:`      | A bug fix                                               |
+| `docs:`     | Documentation changes only                              |
+| `style:`    | Formatting, missing semicolons, etc. (no logic change)  |
 | `refactor:` | Code change that neither fixes a bug nor adds a feature |
-| `test:` | Adding or updating tests |
-| `chore:` | Tooling, config, dependencies |
+| `test:`     | Adding or updating tests                                |
+| `chore:`    | Tooling, config, dependencies                           |
 
 ### Issue and PR templates
 
@@ -602,15 +605,15 @@ See the full [Product Requirements Document](./PRD.md) for detailed feature spec
 
 We'd love to have you in the community — whether you're contributing code, sharing feedback, or just following along.
 
-| Channel | Link | Purpose |
-|---|---|---|
-| 💬 Discord | [discord.gg/UKjtBDDFHH](https://discord.gg/UKjtBDDFHH) | Real-time chat — ask questions, share ideas, meet contributors |
-| 🐛 GitHub Issues | [colabs.v2/issues](https://github.com/SpaceyaTech/colabs.v2/issues) | Bug reports and feature requests |
-| 💡 GitHub Discussions | [colabs.v2/discussions](https://github.com/SpaceyaTech/colabs.v2/discussions) | Long-form questions, proposals, and community conversation |
-| 𝕏 X (Twitter) | [@SpaceYaTech](https://x.com/SpaceYaTech) | Announcements, updates, and release notes |
-| 📸 Instagram | [@SpaceYaTech](https://instagram.com/SpaceYaTech) | Behind-the-scenes and community highlights |
-| 💼 LinkedIn | [SpaceYaTech](https://linkedin.com/company/SpaceYaTech) | Professional updates and milestones |
-| 🎵 TikTok | [@SpaceYaTech](https://tiktok.com/@SpaceYaTech) | Short-form demos and community content |
+| Channel               | Link                                                                          | Purpose                                                        |
+| --------------------- | ----------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| 💬 Discord            | [discord.gg/UKjtBDDFHH](https://discord.gg/UKjtBDDFHH)                        | Real-time chat — ask questions, share ideas, meet contributors |
+| 🐛 GitHub Issues      | [colabs.v2/issues](https://github.com/SpaceyaTech/colabs.v2/issues)           | Bug reports and feature requests                               |
+| 💡 GitHub Discussions | [colabs.v2/discussions](https://github.com/SpaceyaTech/colabs.v2/discussions) | Long-form questions, proposals, and community conversation     |
+| 𝕏 X (Twitter)         | [@SpaceYaTech](https://x.com/SpaceYaTech)                                     | Announcements, updates, and release notes                      |
+| 📸 Instagram          | [@SpaceYaTech](https://instagram.com/SpaceYaTech)                             | Behind-the-scenes and community highlights                     |
+| 💼 LinkedIn           | [SpaceYaTech](https://linkedin.com/company/SpaceYaTech)                       | Professional updates and milestones                            |
+| 🎵 TikTok             | [@SpaceYaTech](https://tiktok.com/@SpaceYaTech)                               | Short-form demos and community content                         |
 
 > 🔒 If you find a **security vulnerability**, please do **not** open a public issue. Follow the responsible disclosure process documented in [SECURITY.md](./SECURITY.md).
 
@@ -643,6 +646,25 @@ Made with ❤️ by the Colabs community · Powered by [SpaceYaTech](https://x.c
 
 [Discord](https://discord.gg/UKjtBDDFHH) · [X](https://x.com/SpaceYaTech) · [Instagram](https://instagram.com/SpaceYaTech) · [LinkedIn](https://linkedin.com/company/SpaceYaTech) · [TikTok](https://tiktok.com/@SpaceYaTech)
 
-[⬆ Back to top](#colabs)
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+
+[![All Contributors](https://img.shields.io/badge/all_contributors-0-orange.svg?style=flat-square)](#contributors-)
+
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
 
 </div>
+
+[⬆ Back to top](#colabs)

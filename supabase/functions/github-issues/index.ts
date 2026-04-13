@@ -1,4 +1,5 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+// @ts-nocheck
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -27,7 +28,7 @@ interface Repository {
   html_url: string;
 }
 
-Deno.serve(async (req) => {
+Deno.serve(async (req: Request) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -41,48 +42,51 @@ Deno.serve(async (req) => {
     // Get the authorization header
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
-      return new Response(
-        JSON.stringify({ error: 'Missing authorization header' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      return new Response(JSON.stringify({ error: 'Missing authorization header' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     // Verify the user's JWT
     const token = authHeader.replace('Bearer ', '');
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser(token);
 
     if (authError || !user) {
       console.error('Auth error:', authError);
-      return new Response(
-        JSON.stringify({ error: 'Invalid or expired token' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      return new Response(JSON.stringify({ error: 'Invalid or expired token' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     console.log(`Fetching issues for user: ${user.id}`);
 
-    // Get the user's active GitHub integration
+    // Get the user's active GitHub integration and secrets
     const { data: integration, error: integrationError } = await supabase
       .from('github_integrations')
-      .select('*')
+      .select('*, github_integration_secrets(access_token)')
       .eq('user_id', user.id)
       .eq('is_active', true)
       .maybeSingle();
 
     if (integrationError) {
       console.error('Integration error:', integrationError);
-      return new Response(
-        JSON.stringify({ error: 'Failed to fetch GitHub integration' }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      return new Response(JSON.stringify({ error: 'Failed to fetch GitHub integration' }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     if (!integration) {
       return new Response(
-        JSON.stringify({ 
-          success: true, 
-          issues: [], 
-          message: 'No GitHub integration found. Please connect your GitHub account.' 
+        JSON.stringify({
+          success: true,
+          issues: [],
+          message: 'No GitHub integration found. Please connect your GitHub account.',
         }),
         { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
@@ -97,18 +101,19 @@ Deno.serve(async (req) => {
 
     if (repoError) {
       console.error('Repository error:', repoError);
-      return new Response(
-        JSON.stringify({ error: 'Failed to fetch repositories' }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      return new Response(JSON.stringify({ error: 'Failed to fetch repositories' }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     if (!repositories || repositories.length === 0) {
       return new Response(
-        JSON.stringify({ 
-          success: true, 
-          issues: [], 
-          message: 'No repositories with collaboration enabled. Enable collaboration on your repositories to see issues.' 
+        JSON.stringify({
+          success: true,
+          issues: [],
+          message:
+            'No repositories with collaboration enabled. Enable collaboration on your repositories to see issues.',
         }),
         { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
@@ -118,20 +123,28 @@ Deno.serve(async (req) => {
 
     // Fetch issues from each repository
     const allIssues: any[] = [];
-    const accessToken = integration.access_token;
+    const secrets = integration.github_integration_secrets as any;
+    const accessToken = Array.isArray(secrets) ? secrets[0]?.access_token : secrets?.access_token;
+
+    if (!accessToken) {
+      return new Response(JSON.stringify({ error: 'GitHub access token not found' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
 
     for (const repo of repositories) {
       try {
         console.log(`Fetching issues for ${repo.full_name}`);
-        
+
         const response = await fetch(
           `https://api.github.com/repos/${repo.full_name}/issues?state=open&per_page=100`,
           {
             headers: {
-              'Authorization': `token ${accessToken}`,
-              'Accept': 'application/vnd.github.v3+json',
-              'User-Agent': 'Lovable-App'
-            }
+              Authorization: `token ${accessToken}`,
+              Accept: 'application/vnd.github.v3+json',
+              'User-Agent': 'Lovable-App',
+            },
           }
         );
 
@@ -141,41 +154,60 @@ Deno.serve(async (req) => {
         }
 
         const issues: GitHubIssue[] = await response.json();
-        
+
         // Filter out pull requests (they show up in issues API)
-        const realIssues = issues.filter(issue => !issue.html_url.includes('/pull/'));
-        
+        const realIssues = issues.filter((issue) => !issue.html_url.includes('/pull/'));
+
         console.log(`Found ${realIssues.length} issues in ${repo.full_name}`);
 
         // Transform issues to our format
         for (const issue of realIssues) {
-          const labels = issue.labels.map(l => l.name);
-          const isGoodFirstIssue = labels.some(l => 
-            l.toLowerCase().includes('good first issue') || 
-            l.toLowerCase().includes('good-first-issue') ||
-            l.toLowerCase().includes('beginner') ||
-            l.toLowerCase().includes('easy')
+          const labels = issue.labels.map((l) => l.name);
+          const isGoodFirstIssue = labels.some(
+            (l) =>
+              l.toLowerCase().includes('good first issue') ||
+              l.toLowerCase().includes('good-first-issue') ||
+              l.toLowerCase().includes('beginner') ||
+              l.toLowerCase().includes('easy')
           );
-          
+
           // Determine category from labels
-          let category: 'bug' | 'feature' | 'documentation' | 'enhancement' | 'help-wanted' = 'feature';
-          if (labels.some(l => l.toLowerCase().includes('bug'))) {
+          let category: 'bug' | 'feature' | 'documentation' | 'enhancement' | 'help-wanted' =
+            'feature';
+          if (labels.some((l) => l.toLowerCase().includes('bug'))) {
             category = 'bug';
-          } else if (labels.some(l => l.toLowerCase().includes('documentation') || l.toLowerCase().includes('docs'))) {
+          } else if (
+            labels.some(
+              (l) => l.toLowerCase().includes('documentation') || l.toLowerCase().includes('docs')
+            )
+          ) {
             category = 'documentation';
-          } else if (labels.some(l => l.toLowerCase().includes('enhancement'))) {
+          } else if (labels.some((l) => l.toLowerCase().includes('enhancement'))) {
             category = 'enhancement';
-          } else if (labels.some(l => l.toLowerCase().includes('help wanted') || l.toLowerCase().includes('help-wanted'))) {
+          } else if (
+            labels.some(
+              (l) =>
+                l.toLowerCase().includes('help wanted') || l.toLowerCase().includes('help-wanted')
+            )
+          ) {
             category = 'help-wanted';
           }
 
           // Determine priority from labels
           let priority: 'low' | 'medium' | 'high' | 'urgent' = 'medium';
-          if (labels.some(l => l.toLowerCase().includes('urgent') || l.toLowerCase().includes('critical'))) {
+          if (
+            labels.some(
+              (l) => l.toLowerCase().includes('urgent') || l.toLowerCase().includes('critical')
+            )
+          ) {
             priority = 'urgent';
-          } else if (labels.some(l => l.toLowerCase().includes('high') || l.toLowerCase().includes('important'))) {
+          } else if (
+            labels.some(
+              (l) => l.toLowerCase().includes('high') || l.toLowerCase().includes('important')
+            )
+          ) {
             priority = 'high';
-          } else if (labels.some(l => l.toLowerCase().includes('low'))) {
+          } else if (labels.some((l) => l.toLowerCase().includes('low'))) {
             priority = 'low';
           }
 
@@ -187,7 +219,7 @@ Deno.serve(async (req) => {
             description: issue.body || 'No description provided.',
             status: 'todo' as const,
             priority,
-            assignee: issue.assignee 
+            assignee: issue.assignee
               ? { name: issue.assignee.login, avatar: issue.assignee.avatar_url }
               : { name: 'Unassigned', avatar: '' },
             repo: {
@@ -215,19 +247,23 @@ Deno.serve(async (req) => {
     console.log(`Total issues fetched: ${allIssues.length}`);
 
     return new Response(
-      JSON.stringify({ 
-        success: true, 
+      JSON.stringify({
+        success: true,
         issues: allIssues,
-        repositories: repositories.map((r: Repository) => ({ id: r.id, name: r.name, full_name: r.full_name }))
+        repositories: repositories.map((r: Repository) => ({
+          id: r.id,
+          name: r.name,
+          full_name: r.full_name,
+        })),
       }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
-
   } catch (error) {
     console.error('Unexpected error:', error);
-    return new Response(
-      JSON.stringify({ error: 'An unexpected error occurred' }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+    const message = error instanceof Error ? error.message : 'An unexpected error occurred';
+    return new Response(JSON.stringify({ error: message }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
   }
 });

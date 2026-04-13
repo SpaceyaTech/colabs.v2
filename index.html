@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
@@ -31,7 +31,10 @@
     <meta property="og:image" content="https://colabs.dev/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Colabs — Open-source collaboration meets freelance opportunity" />
+    <meta
+      property="og:image:alt"
+      content="Colabs — Open-source collaboration meets freelance opportunity"
+    />
 
     <!-- ─── Twitter / X Card ─────────────────────────────────────────────────── -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -66,85 +69,85 @@
 
     <!-- ─── JSON-LD Structured Data ──────────────────────────────────────────── -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@graph": [
-        {
-          "@type": "WebSite",
-          "@id": "https://colabs.dev/#website",
-          "url": "https://colabs.dev/",
-          "name": "Colabs",
-          "description": "Open-source collaboration meets freelance opportunity. Discover projects, claim GitHub issues, post gigs, and build your contributor profile.",
-          "publisher": {
-            "@id": "https://colabs.dev/#organization"
-          },
-          "potentialAction": {
-            "@type": "SearchAction",
-            "target": {
-              "@type": "EntryPoint",
-              "urlTemplate": "https://colabs.dev/projects?q={search_term_string}"
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://colabs.dev/#website",
+            "url": "https://colabs.dev/",
+            "name": "Colabs",
+            "description": "Open-source collaboration meets freelance opportunity. Discover projects, claim GitHub issues, post gigs, and build your contributor profile.",
+            "publisher": {
+              "@id": "https://colabs.dev/#organization"
             },
-            "query-input": "required name=search_term_string"
-          }
-        },
-        {
-          "@type": "Organization",
-          "@id": "https://colabs.dev/#organization",
-          "name": "Colabs",
-          "alternateName": "SpaceyaTech Colabs",
-          "url": "https://colabs.dev/",
-          "logo": {
-            "@type": "ImageObject",
-            "url": "https://colabs.dev/logo.png",
-            "width": 512,
-            "height": 512
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": "https://colabs.dev/projects?q={search_term_string}"
+              },
+              "query-input": "required name=search_term_string"
+            }
           },
-          "description": "Colabs is an open-source platform connecting developers with open-source projects, freelance gigs, and collaborative teams — backed by GitHub integration.",
-          "foundingDate": "2026",
-          "sameAs": [
-            "https://github.com/SpaceyaTech/colabs.v2",
-            "https://x.com/SpaceYaTech",
-            "https://instagram.com/SpaceYaTech",
-            "https://linkedin.com/company/SpaceYaTech",
-            "https://tiktok.com/@SpaceYaTech",
-            "https://discord.gg/UKjtBDDFHH"
-          ],
-          "contactPoint": {
-            "@type": "ContactPoint",
-            "contactType": "community support",
-            "url": "https://discord.gg/UKjtBDDFHH"
-          }
-        },
-        {
-          "@type": "SoftwareApplication",
-          "@id": "https://colabs.dev/#app",
-          "name": "Colabs",
-          "applicationCategory": "DeveloperApplication",
-          "operatingSystem": "Web",
-          "url": "https://colabs.dev/",
-          "description": "A web platform that connects developers with open-source projects, freelance gigs, and collaborative teams — enabling issue claiming, proposal submissions, and GitHub-backed contributor profiles.",
-          "offers": {
-            "@type": "Offer",
-            "price": "0",
-            "priceCurrency": "USD",
-            "description": "Free Starter plan. Pro and Pro+ plans available."
+          {
+            "@type": "Organization",
+            "@id": "https://colabs.dev/#organization",
+            "name": "Colabs",
+            "alternateName": "SpaceyaTech Colabs",
+            "url": "https://colabs.dev/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://colabs.dev/logo.png",
+              "width": 512,
+              "height": 512
+            },
+            "description": "Colabs is an open-source platform connecting developers with open-source projects, freelance gigs, and collaborative teams — backed by GitHub integration.",
+            "foundingDate": "2026",
+            "sameAs": [
+              "https://github.com/SpaceyaTech/colabs.v2",
+              "https://x.com/SpaceYaTech",
+              "https://instagram.com/SpaceYaTech",
+              "https://linkedin.com/company/SpaceYaTech",
+              "https://tiktok.com/@SpaceYaTech",
+              "https://discord.gg/UKjtBDDFHH"
+            ],
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "contactType": "community support",
+              "url": "https://discord.gg/UKjtBDDFHH"
+            }
           },
-          "featureList": [
-            "GitHub integration — sync repositories and claim open issues",
-            "Gig marketplace — post and discover paid freelance gigs",
-            "Project discovery — explore open-source and collaborative projects",
-            "Proposal submissions with milestone-based payment structure",
-            "Teams and organisations with role-based access control",
-            "Contributor analytics — heatmaps, activity charts, and profile stats",
-            "Leaderboard — top contributors ranked by activity",
-            "Subscription tiers — Starter, Pro, and Pro+"
-          ],
-          "publisher": {
-            "@id": "https://colabs.dev/#organization"
+          {
+            "@type": "SoftwareApplication",
+            "@id": "https://colabs.dev/#app",
+            "name": "Colabs",
+            "applicationCategory": "DeveloperApplication",
+            "operatingSystem": "Web",
+            "url": "https://colabs.dev/",
+            "description": "A web platform that connects developers with open-source projects, freelance gigs, and collaborative teams — enabling issue claiming, proposal submissions, and GitHub-backed contributor profiles.",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD",
+              "description": "Free Starter plan. Pro and Pro+ plans available."
+            },
+            "featureList": [
+              "GitHub integration — sync repositories and claim open issues",
+              "Gig marketplace — post and discover paid freelance gigs",
+              "Project discovery — explore open-source and collaborative projects",
+              "Proposal submissions with milestone-based payment structure",
+              "Teams and organisations with role-based access control",
+              "Contributor analytics — heatmaps, activity charts, and profile stats",
+              "Leaderboard — top contributors ranked by activity",
+              "Subscription tiers — Starter, Pro, and Pro+"
+            ],
+            "publisher": {
+              "@id": "https://colabs.dev/#organization"
+            }
           }
-        }
-      ]
-    }
+        ]
+      }
     </script>
   </head>
   <body>

@@ -1,20 +1,20 @@
-import { useState, useEffect } from "react";
-import { useParams, NavLink } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
-import { AuthGuard } from "@/components/AuthGuard";
-import { 
-  Settings, 
-  Users, 
-  Workflow, 
-  Activity, 
-  Plus, 
-  Slack, 
-  Github, 
+import { useState, useEffect, useCallback } from 'react';
+import { useParams, NavLink } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
+import { AuthGuard } from '@/components/AuthGuard';
+import {
+  Settings,
+  Users,
+  Workflow,
+  Activity,
+  Plus,
+  Slack,
+  Github,
   Zap,
   Figma,
   ArrowLeft,
@@ -22,9 +22,8 @@ import {
   Globe,
   CheckCircle,
   AlertCircle,
-  Clock
-} from "lucide-react";
-import { toast } from "@/hooks/use-toast";
+} from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 
 interface Organization {
   id: string;
@@ -68,13 +67,7 @@ const OrganizationDashboard = () => {
   const [workflows, setWorkflows] = useState<Workflow[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (slug && user) {
-      fetchOrganizationData();
-    }
-  }, [slug, user]);
-
-  const fetchOrganizationData = async () => {
+  const fetchOrganizationData = useCallback(async () => {
     try {
       // Fetch organization
       const { data: orgData, error: orgError } = await supabase
@@ -123,35 +116,50 @@ const OrganizationDashboard = () => {
 
       if (workflowsError) throw workflowsError;
       setWorkflows(workflowsData || []);
-
     } catch (error: any) {
       toast({
-        title: "Error",
-        description: error.message || "Failed to load organization data",
-        variant: "destructive",
+        title: 'Error',
+        description: error.message || 'Failed to load organization data',
+        variant: 'destructive',
       });
     } finally {
       setLoading(false);
     }
-  };
+  }, [slug, user]);
+
+  useEffect(() => {
+    if (slug && user) {
+      fetchOrganizationData();
+    }
+  }, [slug, user, fetchOrganizationData]);
 
   const getIntegrationIcon = (type: string) => {
     switch (type) {
-      case 'slack': return Slack;
-      case 'github': return Github;
-      case 'clickup': return Zap;
-      case 'figma': return Figma;
-      default: return Zap;
+      case 'slack':
+        return Slack;
+      case 'github':
+        return Github;
+      case 'clickup':
+        return Zap;
+      case 'figma':
+        return Figma;
+      default:
+        return Zap;
     }
   };
 
   const getIntegrationColor = (type: string) => {
     switch (type) {
-      case 'slack': return 'bg-green-500';
-      case 'github': return 'bg-gray-900';
-      case 'clickup': return 'bg-blue-500';
-      case 'figma': return 'bg-purple-500';
-      default: return 'bg-gray-500';
+      case 'slack':
+        return 'bg-green-500';
+      case 'github':
+        return 'bg-gray-900';
+      case 'clickup':
+        return 'bg-blue-500';
+      case 'figma':
+        return 'bg-purple-500';
+      default:
+        return 'bg-gray-500';
     }
   };
 
@@ -174,7 +182,9 @@ const OrganizationDashboard = () => {
         <div className="min-h-screen flex items-center justify-center">
           <div className="text-center">
             <h1 className="text-lg font-bold mb-2">Organization not found</h1>
-            <p className="text-muted-foreground mb-4">The organization you're looking for doesn't exist.</p>
+            <p className="text-muted-foreground mb-4">
+              The organization you're looking for doesn't exist.
+            </p>
             <Button asChild>
               <NavLink to="/organizations">Browse Organizations</NavLink>
             </Button>
@@ -196,7 +206,7 @@ const OrganizationDashboard = () => {
                 Back to Organizations
               </NavLink>
             </Button>
-            
+
             <div className="flex items-center justify-between">
               <div>
                 <div className="flex items-center gap-3 mb-2">
@@ -208,9 +218,9 @@ const OrganizationDashboard = () => {
                 {organization.website_url && (
                   <div className="flex items-center gap-2 mt-2">
                     <Globe className="h-4 w-4 text-muted-foreground" />
-                    <a 
-                      href={organization.website_url} 
-                      target="_blank" 
+                    <a
+                      href={organization.website_url}
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="text-sm text-primary hover:underline"
                     >
@@ -219,7 +229,7 @@ const OrganizationDashboard = () => {
                   </div>
                 )}
               </div>
-              
+
               {(userRole === 'owner' || userRole === 'admin') && (
                 <Button variant="outline">
                   <Settings className="h-4 w-4 mr-2" />
@@ -242,7 +252,7 @@ const OrganizationDashboard = () => {
                 </div>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
@@ -254,7 +264,7 @@ const OrganizationDashboard = () => {
                 </div>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
@@ -266,14 +276,14 @@ const OrganizationDashboard = () => {
                 </div>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-muted-foreground">Active Workflows</p>
                     <p className="text-2xl font-bold">
-                      {workflows.filter(w => w.is_active).length}
+                      {workflows.filter((w) => w.is_active).length}
                     </p>
                   </div>
                   <Activity className="h-8 w-8 text-primary/60" />
@@ -306,7 +316,7 @@ const OrganizationDashboard = () => {
                         Get notifications and manage workflows
                       </p>
                     </Button>
-                    
+
                     <Button variant="outline" className="h-auto p-6 flex-col space-y-2">
                       <Github className="h-8 w-8 text-gray-700" />
                       <span>Connect GitHub</span>
@@ -314,7 +324,7 @@ const OrganizationDashboard = () => {
                         Sync repositories and track issues
                       </p>
                     </Button>
-                    
+
                     <Button variant="outline" className="h-auto p-6 flex-col space-y-2">
                       <Zap className="h-8 w-8 text-blue-500" />
                       <span>Connect ClickUp</span>
@@ -322,7 +332,7 @@ const OrganizationDashboard = () => {
                         Manage tasks and project tracking
                       </p>
                     </Button>
-                    
+
                     <Button variant="outline" className="h-auto p-6 flex-col space-y-2">
                       <Figma className="h-8 w-8 text-purple-500" />
                       <span>Connect Figma</span>
@@ -350,7 +360,7 @@ const OrganizationDashboard = () => {
                         </p>
                       </div>
                     </div>
-                    
+
                     {integrations.length === 0 && workflows.length === 0 && (
                       <div className="text-center py-8">
                         <Activity className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
@@ -374,22 +384,28 @@ const OrganizationDashboard = () => {
                   </Button>
                 )}
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {integrations.map((integration) => {
                   const Icon = getIntegrationIcon(integration.integration_type);
                   const colorClass = getIntegrationColor(integration.integration_type);
-                  
+
                   return (
                     <Card key={integration.id}>
                       <CardContent className="p-6">
                         <div className="flex items-center gap-3 mb-3">
-                          <div className={`w-10 h-10 rounded-lg ${colorClass} flex items-center justify-center`}>
+                          <div
+                            className={`w-10 h-10 rounded-lg ${colorClass} flex items-center justify-center`}
+                          >
                             <Icon className="h-5 w-5 text-white" />
                           </div>
                           <div className="flex-1">
-                            <h3 className="font-semibold capitalize">{integration.integration_type}</h3>
-                            <p className="text-sm text-muted-foreground">{integration.integration_name}</p>
+                            <h3 className="font-semibold capitalize">
+                              {integration.integration_type}
+                            </h3>
+                            <p className="text-sm text-muted-foreground">
+                              {integration.integration_name}
+                            </p>
                           </div>
                           {integration.is_active ? (
                             <CheckCircle className="h-5 w-5 text-green-500" />
@@ -404,12 +420,13 @@ const OrganizationDashboard = () => {
                     </Card>
                   );
                 })}
-                
+
                 {integrations.length === 0 && (
                   <div className="col-span-full text-center py-12">
                     <Zap className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                     <p className="text-muted-foreground">
-                      No integrations connected yet. Start connecting your tools to automate workflows!
+                      No integrations connected yet. Start connecting your tools to automate
+                      workflows!
                     </p>
                   </div>
                 )}
@@ -426,7 +443,7 @@ const OrganizationDashboard = () => {
                   </Button>
                 )}
               </div>
-              
+
               <div className="space-y-4">
                 {workflows.map((workflow) => (
                   <Card key={workflow.id}>
@@ -447,10 +464,12 @@ const OrganizationDashboard = () => {
                           <div className="flex items-center gap-2 text-xs text-muted-foreground">
                             <span>Trigger: {workflow.trigger_type.replace('_', ' ')}</span>
                             <span>•</span>
-                            <span>Created {new Date(workflow.created_at).toLocaleDateString()}</span>
+                            <span>
+                              Created {new Date(workflow.created_at).toLocaleDateString()}
+                            </span>
                           </div>
                         </div>
-                        
+
                         <div className="flex items-center gap-2">
                           <Button variant="ghost" size="sm">
                             <Settings className="h-4 w-4" />
@@ -460,7 +479,7 @@ const OrganizationDashboard = () => {
                     </CardContent>
                   </Card>
                 ))}
-                
+
                 {workflows.length === 0 && (
                   <div className="text-center py-12">
                     <Workflow className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
@@ -482,7 +501,7 @@ const OrganizationDashboard = () => {
                   </Button>
                 )}
               </div>
-              
+
               <div className="space-y-4">
                 {members.map((member) => (
                   <Card key={member.id}>
@@ -499,7 +518,7 @@ const OrganizationDashboard = () => {
                             </p>
                           </div>
                         </div>
-                        
+
                         <div className="flex items-center gap-2">
                           <Badge variant={member.role === 'owner' ? 'default' : 'secondary'}>
                             {member.role}

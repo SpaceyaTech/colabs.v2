@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
-import { AppLayout } from "@/components/AppLayout";
-import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
-import { AuthGuard } from "@/components/AuthGuard";
-import { useAuth } from "@/hooks/useAuth";
-import { Link } from "react-router-dom";
-import { Bookmark, ExternalLink, Trash2 } from "lucide-react";
+import { useEffect, useMemo, useState, useCallback } from 'react';
+import { AppLayout } from '@/components/AppLayout';
+import { Button } from '@/components/ui/button';
+import { supabase } from '@/integrations/supabase/client';
+import { AuthGuard } from '@/components/AuthGuard';
+import { useAuth } from '@/hooks/useAuth';
+import { Link } from 'react-router-dom';
+import { Bookmark, ExternalLink, Trash2 } from 'lucide-react';
 
 interface SavedJobRow {
   id: string;
@@ -19,10 +19,10 @@ const SavedJobs = () => {
   const [items, setItems] = useState<SavedJobRow[]>([]);
 
   useEffect(() => {
-    document.title = "Saved Jobs | Colabs";
+    document.title = 'Saved Jobs | Colabs';
   }, []);
 
-  const load = async () => {
+  const load = useCallback(async () => {
     if (!user) return;
     const { data, error } = await supabase
       .from('saved_jobs' as any)
@@ -30,12 +30,17 @@ const SavedJobs = () => {
       .order('created_at', { ascending: false });
     if (!error) setItems(data as any);
     setLoading(false);
-  };
+  }, [user]);
 
-  useEffect(() => { load(); }, [user]);
+  useEffect(() => {
+    load();
+  }, [user, load]);
 
   const remove = async (id: string) => {
-    await supabase.from('saved_jobs' as any).delete().eq('id', id);
+    await supabase
+      .from('saved_jobs' as any)
+      .delete()
+      .eq('id', id);
     setItems((arr) => arr.filter((x) => x.id !== id));
   };
 
@@ -61,16 +66,28 @@ const SavedJobs = () => {
           ) : (
             <div className="border border-border rounded-lg divide-y divide-border">
               {items.map((s) => (
-                <div key={s.id} className="flex items-center justify-between px-4 py-3 hover:bg-muted/50 transition-colors">
+                <div
+                  key={s.id}
+                  className="flex items-center justify-between px-4 py-3 hover:bg-muted/50 transition-colors"
+                >
                   <div className="min-w-0">
                     <p className="text-sm font-medium">Project {s.project_id.slice(0, 8)}</p>
-                    <p className="text-xs text-muted-foreground">Saved {new Date(s.created_at).toLocaleDateString()}</p>
+                    <p className="text-xs text-muted-foreground">
+                      Saved {new Date(s.created_at).toLocaleDateString()}
+                    </p>
                   </div>
                   <div className="flex items-center gap-1">
                     <Button asChild variant="ghost" size="icon" className="h-7 w-7">
-                      <Link to={`/project/${s.project_id}`}><ExternalLink className="h-3.5 w-3.5" /></Link>
+                      <Link to={`/project/${s.project_id}`}>
+                        <ExternalLink className="h-3.5 w-3.5" />
+                      </Link>
                     </Button>
-                    <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => remove(s.id)}>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-7 w-7 text-destructive"
+                      onClick={() => remove(s.id)}
+                    >
                       <Trash2 className="h-3.5 w-3.5" />
                     </Button>
                   </div>

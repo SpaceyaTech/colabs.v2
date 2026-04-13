@@ -50,7 +50,7 @@ export function GigCard({ gig, className }: GigCardProps) {
 
   const handleSaveJob = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    
+
     if (!user) {
       navigate('/sign-in');
       return;
@@ -63,24 +63,24 @@ export function GigCard({ gig, className }: GigCardProps) {
         localStorage.removeItem(`saved_job_${gig.id}`);
         setIsSaved(false);
         toast({
-          title: "Job removed",
-          description: "Job removed from your saved list",
+          title: 'Job removed',
+          description: 'Job removed from your saved list',
         });
       } else {
         // Add to saved jobs - using localStorage for now since saved_jobs table may not be in types
         localStorage.setItem(`saved_job_${gig.id}`, 'true');
-        
+
         setIsSaved(true);
         toast({
-          title: "Job saved",
-          description: "Job added to your saved list",
+          title: 'Job saved',
+          description: 'Job added to your saved list',
         });
       }
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to update saved status",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to update saved status',
+        variant: 'destructive',
       });
     } finally {
       setIsSaving(false);
@@ -100,15 +100,19 @@ export function GigCard({ gig, className }: GigCardProps) {
 
   const getDifficultyColor = () => {
     switch (gig.difficulty) {
-      case 'Entry level': return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400';
-      case 'Intermediate': return 'bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-400';
-      case 'Expert': return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400';
-      default: return 'bg-muted text-muted-foreground';
+      case 'Entry level':
+        return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400';
+      case 'Intermediate':
+        return 'bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-400';
+      case 'Expert':
+        return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400';
+      default:
+        return 'bg-muted text-muted-foreground';
     }
   };
 
   return (
-    <Card 
+    <Card
       className={`w-full hover:shadow-md transition-all cursor-pointer border border-border bg-card rounded-lg relative ${className}`}
       onClick={handleCardClick}
     >
@@ -117,7 +121,7 @@ export function GigCard({ gig, className }: GigCardProps) {
           Featured
         </div>
       )}
-      
+
       <CardContent className="p-6">
         {/* Header */}
         <div className="flex items-start justify-between mb-4">
@@ -133,16 +137,16 @@ export function GigCard({ gig, className }: GigCardProps) {
               </Badge>
               <span className="text-xs text-muted-foreground">{gig.posted}</span>
             </div>
-            
+
             <h3 className="font-semibold text-foreground text-lg leading-tight mb-2 hover:text-primary transition-colors">
               {gig.title}
             </h3>
-            
+
             <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed mb-4">
               {gig.description}
             </p>
           </div>
-          
+
           <Button
             variant="ghost"
             size="sm"
@@ -150,8 +154,8 @@ export function GigCard({ gig, className }: GigCardProps) {
             onClick={handleSaveJob}
             disabled={isSaving}
           >
-            <Bookmark 
-              className={`h-4 w-4 ${isSaved ? 'fill-current text-primary' : 'text-muted-foreground'}`} 
+            <Bookmark
+              className={`h-4 w-4 ${isSaved ? 'fill-current text-primary' : 'text-muted-foreground'}`}
             />
           </Button>
         </div>
@@ -162,12 +166,12 @@ export function GigCard({ gig, className }: GigCardProps) {
             <DollarSign className="h-4 w-4" />
             <span>{formatBudget()}</span>
           </div>
-          
+
           <div className="flex items-center gap-1 text-muted-foreground">
             <Clock className="h-4 w-4" />
             <span className="text-sm">{gig.duration}</span>
           </div>
-          
+
           <div className="flex items-center gap-1 text-muted-foreground">
             <MapPin className="h-4 w-4" />
             <span className="text-sm">{gig.location}</span>
@@ -197,7 +201,7 @@ export function GigCard({ gig, className }: GigCardProps) {
                 {gig.client.name.substring(0, 2).toUpperCase()}
               </AvatarFallback>
             </Avatar>
-            
+
             <div className="flex flex-col">
               <span className="text-sm font-medium text-foreground">{gig.client.name}</span>
               <div className="flex items-center gap-1">
@@ -213,11 +217,9 @@ export function GigCard({ gig, className }: GigCardProps) {
               </div>
             </div>
           </div>
-          
+
           <div className="text-right">
-            <div className="text-sm text-muted-foreground">
-              {gig.proposals} proposals
-            </div>
+            <div className="text-sm text-muted-foreground">{gig.proposals} proposals</div>
           </div>
         </div>
       </CardContent>

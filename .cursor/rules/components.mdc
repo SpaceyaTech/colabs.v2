@@ -1,0 +1,87 @@
+---
+description: Component and page rules — src/components, src/pages
+globs: ["src/components/**/*.tsx", "src/pages/**/*.tsx"]
+alwaysApply: false
+---
+
+<!-- Auto-generated. Source: .agents/AGENTS.md | Update: npm run sync-agents -->
+
+## Code rules
+
+### TypeScript
+
+- Strict mode on — no `any` without a comment explaining why
+- `interface` for object shapes, `type` for unions and aliases
+- All exported hooks and functions must have explicit return types
+- Named exports preferred over default exports for components and hooks
+
+### React
+
+- Functional components only — no class components
+- All server state via TanStack React Query — no `useEffect + useState` for fetching
+- All forms via React Hook Form + Zod — no uncontrolled inputs
+- Components stay under 200 lines — extract sub-components when they grow
+- Custom hooks live in `src/hooks/`, prefixed with `use`
+
+### Styling
+
+- Always use semantic Tailwind tokens — never raw colour values
+
+```tsx
+// ✅ Correct
+<div className="bg-background text-foreground border border-border rounded-md">
+
+// ❌ Wrong
+<div className="bg-white text-gray-900 border border-gray-200">
+<div style={{ backgroundColor: '#fff' }}>
+```
+
+- Dark mode is automatic when tokens are used correctly
+- No hardcoded hex/RGB/HSL values in JSX
+- All shadcn/ui component customisation via CSS variable overrides in `src/index.css`
+
+### File organisation
+
+| Content                            | Location                                   |
+| ---------------------------------- | ------------------------------------------ |
+| shadcn/ui primitives               | `src/components/ui/` — never edit directly |
+| Components for one feature         | `src/components/<feature>/`                |
+| Components used across ≥2 features | `src/components/shared/`                   |
+| Route-level pages                  | `src/pages/`                               |
+| TanStack Query hooks               | `src/hooks/`                               |
+| Pure utilities / Zod schemas       | `src/lib/`                                 |
+| Shared TypeScript types            | `src/types/`                               |
+
+---
+
+---
+
+## Security rules
+
+These rules are non-negotiable. CI enforces the code quality ones automatically; the others require review.
+
+### Secrets — never in client code
+
+| Secret                      | Where it lives                   | How to set                 |
+| --------------------------- | -------------------------------- | -------------------------- |
+| `GITHUB_CLIENT_SECRET`      | Supabase Edge Function secrets   | `npx supabase secrets set` |
+| `STRIPE_SECRET_KEY`         | Supabase Edge Function secrets   | `npx supabase secrets set` |
+| `STRIPE_WEBHOOK_SECRET`     | Supabase Edge Function secrets   | `npx supabase secrets set` |
+| `SUPABASE_SERVICE_ROLE_KEY` | Auto-available in Edge Functions | Never set manually         |
+
+Any variable prefixed `VITE_` is bundled into the client. Secrets must never use this prefix.
+
+### `access_token` security
+
+The `access_token` column must never be reachable by the client. Protection for sensitive tokens must be enforced at the database schema level by moving them to a separate table (e.g., `github_integration_secrets`) with RLS enabled but NO policies. This ensures that only the service role key (inside edge functions) can access them.
+
+```typescript
+// ✅ Client query — selects from the public metadata table
+supabase.from('github_integrations').select('id, user_id, github_username, avatar_url, is_active');
+```
+
+### File uploads
+
+Validate MIME type, file extension, and size before any storage write. Never trust the content-type header alone — check the file magic bytes server-side.
+
+---

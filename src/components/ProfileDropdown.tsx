@@ -1,5 +1,5 @@
-import { User, Settings, FileText, Bookmark, LogOut } from "lucide-react";
-import { Link } from "react-router-dom";
+import { User, Settings, FileText, Bookmark, LogOut } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,10 +7,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { useAuth } from "@/hooks/useAuth";
+} from '@/components/ui/dropdown-menu';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { useAuth } from '@/hooks/useAuth';
 
 export function ProfileDropdown() {
   const { user, signOut } = useAuth();
@@ -19,7 +19,7 @@ export function ProfileDropdown() {
     await signOut();
   };
 
-  const userInitials = user?.email?.substring(0, 2).toUpperCase() || "U";
+  const userInitials = user?.email?.substring(0, 2).toUpperCase() || 'U';
 
   return (
     <DropdownMenu>
@@ -37,11 +37,9 @@ export function ProfileDropdown() {
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">
-              {user?.user_metadata?.full_name || "User"}
+              {user?.user_metadata?.full_name || 'User'}
             </p>
-            <p className="text-xs leading-none text-muted-foreground">
-              {user?.email}
-            </p>
+            <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />

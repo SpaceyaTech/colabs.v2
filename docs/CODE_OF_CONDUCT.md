@@ -51,12 +51,13 @@ If you witness or experience behaviour that violates this Code of Conduct, pleas
 
 ### How to report
 
-| Channel | When to use |
-|---|---|
-| 📧 **Email**: [conduct@colabs.dev](mailto:conduct@colabs.dev) | Formal reports; private and confidential |
-| 💬 **Discord DM** to a moderator | Urgent or real-time situations within the Discord server |
+| Channel                                                       | When to use                                              |
+| ------------------------------------------------------------- | -------------------------------------------------------- |
+| 📧 **Email**: [conduct@colabs.dev](mailto:conduct@colabs.dev) | Formal reports; private and confidential                 |
+| 💬 **Discord DM** to a moderator                              | Urgent or real-time situations within the Discord server |
 
 When reporting, please include:
+
 - Your contact information (if you are comfortable sharing it)
 - A description of the incident, including date, time, and location (channel, issue, etc.)
 - Names or usernames of those involved

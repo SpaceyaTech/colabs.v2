@@ -1,5 +1,13 @@
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LayoutDashboard, CircleDot, FolderGit2, Briefcase, Users, BarChart3, Settings } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  LayoutDashboard,
+  CircleDot,
+  FolderGit2,
+  Briefcase,
+  Users,
+  BarChart3,
+  Settings,
+} from 'lucide-react';
 
 interface DashboardTabsProps {
   activeTab: string;
@@ -8,13 +16,13 @@ interface DashboardTabsProps {
 
 export function DashboardTabs({ activeTab, onTabChange }: DashboardTabsProps) {
   const tabs = [
-    { id: "overview", label: "Overview", icon: LayoutDashboard },
-    { id: "issues", label: "Issues", icon: CircleDot },
-    { id: "projects", label: "OSS Projects", icon: FolderGit2 },
-    { id: "gigs", label: "Gigs", icon: Briefcase },
-    { id: "teams", label: "Teams", icon: Users },
-    { id: "analytics", label: "Analytics", icon: BarChart3 },
-    { id: "settings", label: "Settings", icon: Settings },
+    { id: 'overview', label: 'Overview', icon: LayoutDashboard },
+    { id: 'issues', label: 'Issues', icon: CircleDot },
+    { id: 'projects', label: 'OSS Projects', icon: FolderGit2 },
+    { id: 'gigs', label: 'Gigs', icon: Briefcase },
+    { id: 'teams', label: 'Teams', icon: Users },
+    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
+    { id: 'settings', label: 'Settings', icon: Settings },
   ];
 
   return (

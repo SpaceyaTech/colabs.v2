@@ -8,7 +8,7 @@ interface AuthGuardProps {
   fallbackPath?: string;
 }
 
-export const AuthGuard = ({ children, fallbackPath = "/sign-up" }: AuthGuardProps) => {
+export const AuthGuard = ({ children, fallbackPath = '/sign-up' }: AuthGuardProps) => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
 

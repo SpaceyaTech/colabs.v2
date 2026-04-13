@@ -1,27 +1,33 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Separator } from "@/components/ui/separator";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { 
-  User, 
-  Shield, 
-  Bell, 
-  Github, 
-  Globe, 
-  EyeOff, 
-  Key, 
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Separator } from '@/components/ui/separator';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import {
+  User,
+  Shield,
+  Bell,
+  Github,
+  Globe,
+  EyeOff,
+  Key,
   Trash2,
   Save,
-  Settings as SettingsIcon 
-} from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
-import { GitHubIntegration } from "@/components/GitHubIntegration";
+  Settings as SettingsIcon,
+} from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { GitHubIntegration } from '@/components/GitHubIntegration';
 
 export function SettingsTab() {
   const { user } = useAuth();
@@ -69,7 +75,9 @@ export function SettingsTab() {
                   </AvatarFallback>
                 </Avatar>
                 <div className="space-y-2">
-                  <Button variant="outline" size="sm">Change avatar</Button>
+                  <Button variant="outline" size="sm">
+                    Change avatar
+                  </Button>
                   <p className="text-sm text-muted-foreground">JPG, GIF or PNG. 1MB max.</p>
                 </div>
               </div>
@@ -77,11 +85,19 @@ export function SettingsTab() {
               <div className="grid gap-4">
                 <div className="grid gap-2">
                   <Label htmlFor="name">Name</Label>
-                  <Input id="name" placeholder="Your full name" defaultValue={user?.user_metadata?.full_name || ""} />
+                  <Input
+                    id="name"
+                    placeholder="Your full name"
+                    defaultValue={user?.user_metadata?.full_name || ''}
+                  />
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="username">Username</Label>
-                  <Input id="username" placeholder="Your username" defaultValue={user?.email?.split('@')[0] || ""} />
+                  <Input
+                    id="username"
+                    placeholder="Your username"
+                    defaultValue={user?.email?.split('@')[0] || ''}
+                  />
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="bio">Bio</Label>
@@ -114,13 +130,17 @@ export function SettingsTab() {
             <CardContent className="space-y-4">
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" defaultValue={user?.email || ""} disabled />
-                <p className="text-sm text-muted-foreground">Contact support to change your email address.</p>
+                <Input id="email" type="email" defaultValue={user?.email || ''} disabled />
+                <p className="text-sm text-muted-foreground">
+                  Contact support to change your email address.
+                </p>
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="language">Language</Label>
                 <Select defaultValue="en">
-                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="en">English</SelectItem>
                     <SelectItem value="es">Spanish</SelectItem>
@@ -132,7 +152,9 @@ export function SettingsTab() {
               <div className="grid gap-2">
                 <Label htmlFor="timezone">Timezone</Label>
                 <Select defaultValue="utc">
-                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="utc">UTC</SelectItem>
                     <SelectItem value="est">Eastern Time</SelectItem>
@@ -152,7 +174,9 @@ export function SettingsTab() {
               <div className="flex items-center justify-between p-4 border border-destructive/20 rounded-lg">
                 <div>
                   <h4 className="font-medium">Delete Account</h4>
-                  <p className="text-sm text-muted-foreground">Permanently delete your account and all associated data.</p>
+                  <p className="text-sm text-muted-foreground">
+                    Permanently delete your account and all associated data.
+                  </p>
                 </div>
                 <Button variant="destructive" size="sm">
                   <Trash2 className="h-4 w-4 mr-2" />
@@ -176,13 +200,21 @@ export function SettingsTab() {
                   <p className="text-sm text-muted-foreground">Control who can see your profile</p>
                 </div>
                 <Select defaultValue="public">
-                  <SelectTrigger className="w-32"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="w-32">
+                    <SelectValue />
+                  </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="public">
-                      <div className="flex items-center gap-2"><Globe className="h-4 w-4" />Public</div>
+                      <div className="flex items-center gap-2">
+                        <Globe className="h-4 w-4" />
+                        Public
+                      </div>
                     </SelectItem>
                     <SelectItem value="private">
-                      <div className="flex items-center gap-2"><EyeOff className="h-4 w-4" />Private</div>
+                      <div className="flex items-center gap-2">
+                        <EyeOff className="h-4 w-4" />
+                        Private
+                      </div>
                     </SelectItem>
                   </SelectContent>
                 </Select>
@@ -191,21 +223,27 @@ export function SettingsTab() {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Show email publicly</Label>
-                  <p className="text-sm text-muted-foreground">Display your email address on your profile</p>
+                  <p className="text-sm text-muted-foreground">
+                    Display your email address on your profile
+                  </p>
                 </div>
                 <Switch />
               </div>
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Activity status</Label>
-                  <p className="text-sm text-muted-foreground">Show when you're active on the platform</p>
+                  <p className="text-sm text-muted-foreground">
+                    Show when you're active on the platform
+                  </p>
                 </div>
                 <Switch defaultChecked />
               </div>
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Project contributions</Label>
-                  <p className="text-sm text-muted-foreground">Show your contributions on your profile</p>
+                  <p className="text-sm text-muted-foreground">
+                    Show your contributions on your profile
+                  </p>
                 </div>
                 <Switch defaultChecked />
               </div>
@@ -282,7 +320,9 @@ export function SettingsTab() {
                     <p className="text-sm text-muted-foreground">Connect your GitLab account</p>
                   </div>
                 </div>
-                <Button variant="outline" size="sm" disabled>Coming Soon</Button>
+                <Button variant="outline" size="sm" disabled>
+                  Coming Soon
+                </Button>
               </div>
 
               <div className="flex items-center justify-between p-4 border rounded-lg">
@@ -295,7 +335,9 @@ export function SettingsTab() {
                     <p className="text-sm text-muted-foreground">Connect your Bitbucket account</p>
                   </div>
                 </div>
-                <Button variant="outline" size="sm" disabled>Coming Soon</Button>
+                <Button variant="outline" size="sm" disabled>
+                  Coming Soon
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -308,7 +350,9 @@ export function SettingsTab() {
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="font-medium">Personal Access Token</h4>
-                  <p className="text-sm text-muted-foreground">Generate a token to access our API</p>
+                  <p className="text-sm text-muted-foreground">
+                    Generate a token to access our API
+                  </p>
                 </div>
                 <Button variant="outline" size="sm">
                   <Key className="h-4 w-4 mr-2" />

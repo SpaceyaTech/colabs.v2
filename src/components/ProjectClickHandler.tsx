@@ -8,13 +8,17 @@ interface ProjectClickHandlerProps {
   className?: string;
 }
 
-export const ProjectClickHandler = ({ children, projectId, className }: ProjectClickHandlerProps) => {
+export const ProjectClickHandler = ({
+  children,
+  projectId,
+  className,
+}: ProjectClickHandlerProps) => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
   const handleClick = () => {
     if (!projectId) return; // Don't navigate if no project ID
-    
+
     if (!user) {
       navigate('/sign-up');
     } else {

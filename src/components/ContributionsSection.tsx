@@ -1,5 +1,4 @@
-
-import { Card } from "@/components/ui/card";
+import { Card } from '@/components/ui/card';
 
 const ContributionsSection = () => {
   return (
@@ -7,8 +6,7 @@ const ContributionsSection = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4">
-            Get more than just{" "}
-            <span className="gradient-text">pushing commits</span>
+            Get more than just <span className="gradient-text">pushing commits</span>
           </h2>
           <p className="text-muted-foreground text-lg">
             Track your development journey with detailed analytics
@@ -20,9 +18,10 @@ const ContributionsSection = () => {
             <div>
               <h3 className="text-2xl font-bold mb-4">Real-time Analytics</h3>
               <p className="text-muted-foreground mb-6">
-                Monitor your contribution patterns, see your growth over time, and identify areas for improvement with our comprehensive analytics dashboard.
+                Monitor your contribution patterns, see your growth over time, and identify areas
+                for improvement with our comprehensive analytics dashboard.
               </p>
-              
+
               <div className="space-y-4">
                 <div className="flex items-center space-x-3">
                   <div className="w-2 h-2 bg-primary rounded-full"></div>

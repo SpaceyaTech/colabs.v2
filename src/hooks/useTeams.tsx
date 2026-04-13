@@ -1,6 +1,6 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "./useAuth";
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from './useAuth';
 
 export interface Team {
   id: string;
@@ -42,14 +42,14 @@ export function useTeams() {
   const queryClient = useQueryClient();
 
   const teamsQuery = useQuery({
-    queryKey: ["teams", user?.id],
+    queryKey: ['teams', user?.id],
     queryFn: async () => {
       if (!user) return [];
 
       const { data: teams, error } = await supabase
-        .from("teams")
-        .select("*")
-        .order("created_at", { ascending: false });
+        .from('teams')
+        .select('*')
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
 
@@ -57,8 +57,8 @@ export function useTeams() {
       const teamsWithRelations: Team[] = await Promise.all(
         (teams || []).map(async (team: any) => {
           const [membersRes, projectsRes] = await Promise.all([
-            supabase.from("team_members").select("*").eq("team_id", team.id),
-            supabase.from("team_projects").select("*").eq("team_id", team.id),
+            supabase.from('team_members').select('*').eq('team_id', team.id),
+            supabase.from('team_projects').select('*').eq('team_id', team.id),
           ]);
 
           return {
@@ -76,37 +76,37 @@ export function useTeams() {
 
   const createTeam = useMutation({
     mutationFn: async (input: CreateTeamInput) => {
-      if (!user) throw new Error("Not authenticated");
+      if (!user) throw new Error('Not authenticated');
 
       const { data: team, error: teamError } = await supabase
-        .from("teams")
+        .from('teams')
         .insert({ name: input.name, description: input.description || null, created_by: user.id })
         .select()
         .single();
 
       if (teamError) throw teamError;
 
-      await supabase.from("team_members").insert({
+      await supabase.from('team_members').insert({
         team_id: team.id,
         user_id: user.id,
         email: user.email!,
-        role: "owner",
-        status: "active",
+        role: 'owner',
+        status: 'active',
       });
 
       if (input.emails.length > 0) {
-        await supabase.from("team_members").insert(
+        await supabase.from('team_members').insert(
           input.emails.map((email) => ({
             team_id: team.id,
             email,
-            role: "member",
-            status: "pending",
+            role: 'member',
+            status: 'pending',
           }))
         );
       }
 
       if (input.projectIds.length > 0) {
-        await supabase.from("team_projects").insert(
+        await supabase.from('team_projects').insert(
           input.projectIds.map((project_id) => ({
             team_id: team.id,
             project_id,
@@ -117,29 +117,35 @@ export function useTeams() {
       return team;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["teams"] });
+      queryClient.invalidateQueries({ queryKey: ['teams'] });
     },
   });
 
   const deleteTeam = useMutation({
     mutationFn: async (teamId: string) => {
-      const { error } = await supabase.from("teams").delete().eq("id", teamId);
+      const { error } = await supabase.from('teams').delete().eq('id', teamId);
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["teams"] });
+      queryClient.invalidateQueries({ queryKey: ['teams'] });
     },
   });
 
   const removeMember = useMutation({
     mutationFn: async ({ memberId }: { memberId: string }) => {
-      const { error } = await supabase.from("team_members").delete().eq("id", memberId);
+      const { error } = await supabase.from('team_members').delete().eq('id', memberId);
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["teams"] });
+      queryClient.invalidateQueries({ queryKey: ['teams'] });
     },
   });
 
-  return { teams: teamsQuery.data || [], isLoading: teamsQuery.isLoading, createTeam, deleteTeam, removeMember };
+  return {
+    teams: teamsQuery.data || [],
+    isLoading: teamsQuery.isLoading,
+    createTeam,
+    deleteTeam,
+    removeMember,
+  };
 }

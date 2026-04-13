@@ -4,13 +4,15 @@ All notable changes to the Colabs platform are documented in this file.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+> **Note:** Use [Conventional Commits](https://www.conventionalcommits.org/) in your PR title to help track changes.
+
 ---
 
 ## [Unreleased]
 
 ### Planned
 - Real-time notifications via Supabase Realtime
-- Stripe payment integration for gigs and projects
+- Stripe payment integration for subscriptions and gig marketplace
 - AI-powered contributor matching
 - In-app messaging between collaborators
 

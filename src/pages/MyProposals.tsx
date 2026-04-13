@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
-import { AppLayout } from "@/components/AppLayout";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
-import { AuthGuard } from "@/components/AuthGuard";
-import { useAuth } from "@/hooks/useAuth";
-import { Link } from "react-router-dom";
-import { FileText, ExternalLink } from "lucide-react";
+import { useEffect, useState } from 'react';
+import { AppLayout } from '@/components/AppLayout';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { supabase } from '@/integrations/supabase/client';
+import { AuthGuard } from '@/components/AuthGuard';
+import { useAuth } from '@/hooks/useAuth';
+import { Link } from 'react-router-dom';
+import { FileText, ExternalLink } from 'lucide-react';
 
 interface ProposalRow {
   id: string;
@@ -24,7 +24,7 @@ const MyProposals = () => {
   const [items, setItems] = useState<ProposalRow[]>([]);
 
   useEffect(() => {
-    document.title = "My Proposals | Colabs";
+    document.title = 'My Proposals | Colabs';
   }, []);
 
   useEffect(() => {
@@ -42,9 +42,12 @@ const MyProposals = () => {
 
   const getStatusVariant = (status: string) => {
     switch (status) {
-      case "accepted": return "default";
-      case "rejected": return "destructive";
-      default: return "secondary";
+      case 'accepted':
+        return 'default';
+      case 'rejected':
+        return 'destructive';
+      default:
+        return 'secondary';
     }
   };
 
@@ -65,16 +68,28 @@ const MyProposals = () => {
             <div className="text-center py-12">
               <FileText className="h-10 w-10 text-muted-foreground mx-auto mb-3" />
               <h3 className="text-sm font-medium">No proposals yet</h3>
-              <p className="text-xs text-muted-foreground">Proposals you submit will appear here.</p>
+              <p className="text-xs text-muted-foreground">
+                Proposals you submit will appear here.
+              </p>
             </div>
           ) : (
             <div className="border border-border rounded-lg divide-y divide-border">
               {items.map((p) => (
-                <div key={p.id} className="flex items-center justify-between px-4 py-3 hover:bg-muted/50 transition-colors">
+                <div
+                  key={p.id}
+                  className="flex items-center justify-between px-4 py-3 hover:bg-muted/50 transition-colors"
+                >
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium">Project {p.project_id.slice(0, 8)}</span>
-                      <Badge variant={getStatusVariant(p.status)} className="text-[10px] capitalize">{p.status}</Badge>
+                      <span className="text-sm font-medium">
+                        Project {p.project_id.slice(0, 8)}
+                      </span>
+                      <Badge
+                        variant={getStatusVariant(p.status)}
+                        className="text-[10px] capitalize"
+                      >
+                        {p.status}
+                      </Badge>
                     </div>
                     <div className="flex items-center gap-3 text-xs text-muted-foreground mt-0.5">
                       <span>{new Date(p.created_at).toLocaleDateString()}</span>
@@ -84,7 +99,9 @@ const MyProposals = () => {
                     </div>
                   </div>
                   <Button asChild variant="ghost" size="icon" className="h-7 w-7">
-                    <Link to={`/project/${p.project_id}`}><ExternalLink className="h-3.5 w-3.5" /></Link>
+                    <Link to={`/project/${p.project_id}`}>
+                      <ExternalLink className="h-3.5 w-3.5" />
+                    </Link>
                   </Button>
                 </div>
               ))}

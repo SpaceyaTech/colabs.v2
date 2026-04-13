@@ -1,44 +1,43 @@
-
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Star, Download, Eye, Code2, Smartphone, Globe } from "lucide-react";
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Star, Download, Eye, Code2, Smartphone, Globe } from 'lucide-react';
 
 const MarketplaceSection = () => {
   const featuredProjects = [
     {
-      title: "E-commerce Dashboard",
-      category: "Web App",
-      price: "$149",
+      title: 'E-commerce Dashboard',
+      category: 'Web App',
+      price: '$149',
       rating: 4.8,
       downloads: 234,
       views: 1200,
-      tech: ["React", "TypeScript", "Tailwind"],
+      tech: ['React', 'TypeScript', 'Tailwind'],
       icon: Globe,
-      image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=200&fit=crop"
+      image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=200&fit=crop',
     },
     {
-      title: "Mobile Banking UI Kit",
-      category: "Mobile App",
-      price: "$89",
+      title: 'Mobile Banking UI Kit',
+      category: 'Mobile App',
+      price: '$89',
       rating: 4.9,
       downloads: 189,
       views: 890,
-      tech: ["Flutter", "Dart", "Material"],
+      tech: ['Flutter', 'Dart', 'Material'],
       icon: Smartphone,
-      image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=200&fit=crop"
+      image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=200&fit=crop',
     },
     {
-      title: "API Documentation Tool",
-      category: "Developer Tool",
-      price: "$199",
+      title: 'API Documentation Tool',
+      category: 'Developer Tool',
+      price: '$199',
       rating: 4.7,
       downloads: 156,
       views: 2100,
-      tech: ["Node.js", "Express", "MongoDB"],
+      tech: ['Node.js', 'Express', 'MongoDB'],
       icon: Code2,
-      image: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=400&h=200&fit=crop"
-    }
+      image: 'https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=400&h=200&fit=crop',
+    },
   ];
 
   return (
@@ -51,18 +50,22 @@ const MarketplaceSection = () => {
             <Badge variant="outline">Coming Soon</Badge>
           </div>
           <h2 className="text-4xl font-bold mb-6">
-            Discover amazing projects from{" "}
+            Discover amazing projects from{' '}
             <span className="gradient-text">talented developers</span>
           </h2>
           <p className="text-muted-foreground text-lg">
-            Browse, purchase, and sell high-quality projects. From complete applications to reusable components - find what you need or monetize your skills.
+            Browse, purchase, and sell high-quality projects. From complete applications to reusable
+            components - find what you need or monetize your skills.
           </p>
         </div>
 
         {/* Project Cards */}
         <div className="grid md:grid-cols-3 gap-8 mb-12">
           {featuredProjects.map((project, index) => (
-            <Card key={index} className="overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+            <Card
+              key={index}
+              className="overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+            >
               {/* Project Image/Preview */}
               <div className="aspect-video bg-gradient-to-br from-primary/20 to-accent/20 relative overflow-hidden">
                 <div className="absolute inset-0 flex items-center justify-center">

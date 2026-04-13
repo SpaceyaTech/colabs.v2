@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { CreateProjectDialog } from "@/components/CreateProjectDialog";
+import { CreateProjectDialog } from '@/components/CreateProjectDialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -8,8 +8,20 @@ import { ProjectCard } from '@/components/ProjectCard';
 import { ProjectGrid } from '@/components/ProjectGrid';
 import { ProjectClickHandler } from '@/components/ProjectClickHandler';
 import { Search, Filter, Plus, SlidersHorizontal, Loader2 } from 'lucide-react';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
@@ -55,7 +67,17 @@ const Projects = () => {
   const difficulties = ['Beginner', 'Intermediate', 'Advanced'];
   const industries = ['Fintech', 'E-commerce', 'Blockchain', 'AI', 'DevTools'];
   const stacks = ['Frontend', 'Backend', 'Fullstack'];
-  const filters = ['All', 'React', 'Python', 'TypeScript', 'Go', 'Next.js', 'Ruby on Rails', 'Java', 'Vue.js'];
+  const filters = [
+    'All',
+    'React',
+    'Python',
+    'TypeScript',
+    'Go',
+    'Next.js',
+    'Ruby on Rails',
+    'Java',
+    'Vue.js',
+  ];
 
   useEffect(() => {
     document.title = 'Explore Projects | Colabs';
@@ -92,18 +114,34 @@ const Projects = () => {
   });
 
   const filteredProjects = useMemo(() => {
-    return projects.filter(project => {
-      const matchesSearch = project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           project.description.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesFilter = selectedFilter === 'All' || 
-                           project.technologies.some(tech => tech.toLowerCase().includes(selectedFilter.toLowerCase()));
-      const matchesDifficulty = filterDifficulty.length === 0 || 
-                               filterDifficulty.includes(project.experience_level === 'beginner' ? 'Beginner' : 
-                                                       project.experience_level === 'intermediate' ? 'Intermediate' : 'Advanced');
-      const matchesPaid = filterPaid === 'any' || (project.is_paid === (filterPaid === 'paid'));
-      const matchesIndustry = filterIndustry.length === 0 || (project.industry && filterIndustry.includes(project.industry));
-      return matchesSearch && matchesFilter && matchesDifficulty && matchesPaid && matchesIndustry;
-    }).map(transformProjectToCard);
+    return projects
+      .filter((project) => {
+        const matchesSearch =
+          project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          project.description.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesFilter =
+          selectedFilter === 'All' ||
+          project.technologies.some((tech) =>
+            tech.toLowerCase().includes(selectedFilter.toLowerCase())
+          );
+        const matchesDifficulty =
+          filterDifficulty.length === 0 ||
+          filterDifficulty.includes(
+            project.experience_level === 'beginner'
+              ? 'Beginner'
+              : project.experience_level === 'intermediate'
+                ? 'Intermediate'
+                : 'Advanced'
+          );
+        const matchesPaid = filterPaid === 'any' || project.is_paid === (filterPaid === 'paid');
+        const matchesIndustry =
+          filterIndustry.length === 0 ||
+          (project.industry && filterIndustry.includes(project.industry));
+        return (
+          matchesSearch && matchesFilter && matchesDifficulty && matchesPaid && matchesIndustry
+        );
+      })
+      .map(transformProjectToCard);
   }, [projects, searchQuery, selectedFilter, filterDifficulty, filterPaid, filterIndustry]);
 
   return (
@@ -139,11 +177,18 @@ const Projects = () => {
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuItem onClick={() => setSortBy('Recent')}>Most Recent</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setSortBy('Popular')}>Most Popular</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setSortBy('Popular')}>
+                  Most Popular
+                </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setSortBy('Stars')}>Most Stars</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <Button variant="outline" size="sm" className="gap-2 text-xs" onClick={() => setIsFilterOpen(true)}>
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2 text-xs"
+              onClick={() => setIsFilterOpen(true)}
+            >
               <Filter className="h-3.5 w-3.5" />
               Filter
             </Button>
@@ -154,7 +199,7 @@ const Projects = () => {
             {filters.map((filter) => (
               <Badge
                 key={filter}
-                variant={selectedFilter === filter ? "default" : "secondary"}
+                variant={selectedFilter === filter ? 'default' : 'secondary'}
                 className="cursor-pointer text-xs px-2.5 py-0.5"
                 onClick={() => setSelectedFilter(filter)}
               >
@@ -162,7 +207,15 @@ const Projects = () => {
               </Badge>
             ))}
             {selectedFilter !== 'All' && (
-              <Button variant="ghost" size="sm" className="text-xs h-6 px-2" onClick={() => { setSelectedFilter('All'); setSearchQuery(''); }}>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-xs h-6 px-2"
+                onClick={() => {
+                  setSelectedFilter('All');
+                  setSearchQuery('');
+                }}
+              >
                 Clear
               </Button>
             )}
@@ -179,7 +232,9 @@ const Projects = () => {
             </div>
           ) : projects.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-sm text-muted-foreground mb-3">No projects yet. Be the first to create one!</p>
+              <p className="text-sm text-muted-foreground mb-3">
+                No projects yet. Be the first to create one!
+              </p>
               <Button size="sm" onClick={() => setCreateProjectOpen(true)} className="gap-2">
                 <Plus className="h-4 w-4" />
                 Create project
@@ -191,14 +246,16 @@ const Projects = () => {
                 {searchQuery ? `${filteredProjects.length} results` : `${projects.length} projects`}
               </p>
               <ProjectGrid>
-                {(searchQuery ? filteredProjects : projects.map(transformProjectToCard)).map((project, index) => {
-                  const dbProject = projects.find(p => p.name === project.name);
-                  return (
-                    <ProjectClickHandler key={dbProject?.id || index} projectId={dbProject?.id}>
-                      <ProjectCard {...project} />
-                    </ProjectClickHandler>
-                  );
-                })}
+                {(searchQuery ? filteredProjects : projects.map(transformProjectToCard)).map(
+                  (project, index) => {
+                    const dbProject = projects.find((p) => p.name === project.name);
+                    return (
+                      <ProjectClickHandler key={dbProject?.id || index} projectId={dbProject?.id}>
+                        <ProjectCard {...project} />
+                      </ProjectClickHandler>
+                    );
+                  }
+                )}
               </ProjectGrid>
             </div>
           )}
@@ -209,7 +266,9 @@ const Projects = () => {
           <SheetContent side="right" className="w-[300px]">
             <SheetHeader>
               <SheetTitle className="text-sm">Filter projects</SheetTitle>
-              <SheetDescription className="text-xs">Refine by difficulty, compensation, and industry.</SheetDescription>
+              <SheetDescription className="text-xs">
+                Refine by difficulty, compensation, and industry.
+              </SheetDescription>
             </SheetHeader>
             <div className="py-4 space-y-5">
               <div>
@@ -217,9 +276,18 @@ const Projects = () => {
                 <div className="space-y-2">
                   {difficulties.map((d) => (
                     <div key={d} className="flex items-center space-x-2">
-                      <Checkbox id={`diff-${d}`} checked={filterDifficulty.includes(d)}
-                        onCheckedChange={(checked) => checked ? setFilterDifficulty([...filterDifficulty, d]) : setFilterDifficulty(filterDifficulty.filter(x => x !== d))} />
-                      <Label htmlFor={`diff-${d}`} className="text-xs">{d}</Label>
+                      <Checkbox
+                        id={`diff-${d}`}
+                        checked={filterDifficulty.includes(d)}
+                        onCheckedChange={(checked) =>
+                          checked
+                            ? setFilterDifficulty([...filterDifficulty, d])
+                            : setFilterDifficulty(filterDifficulty.filter((x) => x !== d))
+                        }
+                      />
+                      <Label htmlFor={`diff-${d}`} className="text-xs">
+                        {d}
+                      </Label>
                     </div>
                   ))}
                 </div>
@@ -227,11 +295,17 @@ const Projects = () => {
               <Separator />
               <div>
                 <h4 className="text-xs font-medium text-foreground mb-2">Compensation</h4>
-                <RadioGroup value={filterPaid} onValueChange={(val) => setFilterPaid(val as 'any' | 'paid' | 'unpaid')} className="space-y-2">
-                  {['any', 'paid', 'unpaid'].map(v => (
+                <RadioGroup
+                  value={filterPaid}
+                  onValueChange={(val) => setFilterPaid(val as 'any' | 'paid' | 'unpaid')}
+                  className="space-y-2"
+                >
+                  {['any', 'paid', 'unpaid'].map((v) => (
                     <div key={v} className="flex items-center space-x-2">
                       <RadioGroupItem value={v} id={`paid-${v}`} />
-                      <Label htmlFor={`paid-${v}`} className="text-xs capitalize">{v}</Label>
+                      <Label htmlFor={`paid-${v}`} className="text-xs capitalize">
+                        {v}
+                      </Label>
                     </div>
                   ))}
                 </RadioGroup>
@@ -242,17 +316,39 @@ const Projects = () => {
                 <div className="space-y-2">
                   {industries.map((ind) => (
                     <div key={ind} className="flex items-center space-x-2">
-                      <Checkbox id={`ind-${ind}`} checked={filterIndustry.includes(ind)}
-                        onCheckedChange={(checked) => checked ? setFilterIndustry([...filterIndustry, ind]) : setFilterIndustry(filterIndustry.filter(x => x !== ind))} />
-                      <Label htmlFor={`ind-${ind}`} className="text-xs">{ind}</Label>
+                      <Checkbox
+                        id={`ind-${ind}`}
+                        checked={filterIndustry.includes(ind)}
+                        onCheckedChange={(checked) =>
+                          checked
+                            ? setFilterIndustry([...filterIndustry, ind])
+                            : setFilterIndustry(filterIndustry.filter((x) => x !== ind))
+                        }
+                      />
+                      <Label htmlFor={`ind-${ind}`} className="text-xs">
+                        {ind}
+                      </Label>
                     </div>
                   ))}
                 </div>
               </div>
             </div>
             <SheetFooter className="gap-2">
-              <Button variant="ghost" size="sm" onClick={() => { setFilterDifficulty([]); setFilterPaid('any'); setFilterIndustry([]); setFilterStack([]); }}>Clear all</Button>
-              <Button size="sm" onClick={() => setIsFilterOpen(false)}>Apply</Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setFilterDifficulty([]);
+                  setFilterPaid('any');
+                  setFilterIndustry([]);
+                  setFilterStack([]);
+                }}
+              >
+                Clear all
+              </Button>
+              <Button size="sm" onClick={() => setIsFilterOpen(false)}>
+                Apply
+              </Button>
             </SheetFooter>
           </SheetContent>
         </Sheet>
