@@ -10,8 +10,8 @@ import { Bell, Bookmark } from 'lucide-react';
 import { workspaceItems, exploreItems } from '@/config/nav';
 
 const navItems = [
-  ...workspaceItems.map(i => ({ label: i.title, href: i.url, icon: i.icon })),
-  ...exploreItems.map(i => ({ label: i.title, href: i.url, icon: i.icon })),
+  ...workspaceItems.map((i) => ({ label: i.title, href: i.url, icon: i.icon })),
+  ...exploreItems.map((i) => ({ label: i.title, href: i.url, icon: i.icon })),
 ];
 
 interface TopNavLayoutProps {
@@ -97,7 +97,7 @@ export function TopNavLayout({ children, title, subtitle }: TopNavLayoutProps) {
       <nav className="border-b bg-background sticky top-14 z-40">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-center gap-1 overflow-x-auto hide-scrollbar">
-            {navItems.map(item => {
+            {navItems.map((item) => {
               const Icon = item.icon;
               const active = isActive(item.href);
               return (

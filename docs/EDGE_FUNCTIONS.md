@@ -320,7 +320,7 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-Deno.serve(async req => {
+Deno.serve(async (req) => {
   // Always handle OPTIONS first
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -348,7 +348,7 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-Deno.serve(async req => {
+Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }

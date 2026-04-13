@@ -71,7 +71,7 @@ const ContributionsSection = () => {
                   { lang: 'JavaScript', percent: 30, color: 'bg-accent' },
                   { lang: 'Python', percent: 15, color: 'bg-primary/60' },
                   { lang: 'Go', percent: 10, color: 'bg-accent/60' },
-                ].map(item => (
+                ].map((item) => (
                   <div key={item.lang}>
                     <div className="flex justify-between text-sm mb-1">
                       <span>{item.lang}</span>

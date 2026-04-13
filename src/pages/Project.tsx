@@ -134,7 +134,8 @@ const ProjectPage = () => {
     { value: 'archived', label: 'Archived', icon: Archive, color: 'text-muted-foreground' },
   ];
 
-  const currentStatus = STATUS_OPTIONS.find(s => s.value === project?.status) || STATUS_OPTIONS[0];
+  const currentStatus =
+    STATUS_OPTIONS.find((s) => s.value === project?.status) || STATUS_OPTIONS[0];
 
   const handleStatusChange = async (newStatus: string) => {
     if (!project) return;
@@ -258,7 +259,7 @@ const ProjectPage = () => {
                     </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start" className="min-w-[140px]">
-                    {STATUS_OPTIONS.map(opt => (
+                    {STATUS_OPTIONS.map((opt) => (
                       <DropdownMenuItem
                         key={opt.value}
                         onClick={() => handleStatusChange(opt.value)}
@@ -338,7 +339,7 @@ const ProjectPage = () => {
         {/* Tech stack */}
         {project.technologies.length > 0 && (
           <div className="flex flex-wrap gap-1.5">
-            {project.technologies.map(tech => (
+            {project.technologies.map((tech) => (
               <Badge key={tech} variant="secondary" className="text-[10px] font-normal">
                 {tech}
               </Badge>
@@ -430,7 +431,7 @@ const ProjectPage = () => {
               ...(project.compensation_type
                 ? [{ label: 'Payment', value: project.compensation_type }]
                 : []),
-            ].map(item => (
+            ].map((item) => (
               <div key={item.label} className="rounded-lg border border-border/50 p-3 space-y-1">
                 <div className="text-[10px] text-muted-foreground uppercase tracking-wider">
                   {item.label}
@@ -450,7 +451,7 @@ const ProjectPage = () => {
                 Contributors ({githubData.contributors.length})
               </h2>
               <div className="flex flex-wrap gap-2">
-                {githubData.contributors.map(c => (
+                {githubData.contributors.map((c) => (
                   <a
                     key={c.login}
                     href={c.html_url}
@@ -497,7 +498,7 @@ const ProjectPage = () => {
                 )}
               </div>
               <div className="space-y-1">
-                {githubData.issues.map(issue => (
+                {githubData.issues.map((issue) => (
                   <a
                     key={issue.id}
                     href={issue.html_url}
@@ -530,7 +531,7 @@ const ProjectPage = () => {
                       </div>
                     </div>
                     <div className="flex gap-1 shrink-0">
-                      {issue.labels.slice(0, 3).map(l => (
+                      {issue.labels.slice(0, 3).map((l) => (
                         <span
                           key={l.name}
                           className="text-[9px] px-1.5 py-0.5 rounded-full border"

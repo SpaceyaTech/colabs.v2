@@ -376,7 +376,7 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-Deno.serve(async req => {
+Deno.serve(async (req) => {
   // 1. CORS preflight
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -565,13 +565,13 @@ await supabase.from('github_repositories').update({ github_etag: newEtag }).eq('
 ```typescript
 // ✅ All repos fetched in parallel
 const results = await Promise.allSettled(
-  repos.map(repo => fetchIssuesForRepo(repo.full_name, token))
+  repos.map((repo) => fetchIssuesForRepo(repo.full_name, token))
 );
 
 // Filter out failed repos — log but don't fail the whole request
 const issues = results
-  .filter(r => r.status === 'fulfilled')
-  .flatMap(r => (r as PromiseFulfilledResult<Issue[]>).value);
+  .filter((r) => r.status === 'fulfilled')
+  .flatMap((r) => (r as PromiseFulfilledResult<Issue[]>).value);
 ```
 
 ### Two OAuth apps — never confuse them
@@ -760,8 +760,8 @@ Test edge functions by calling them via the local Supabase stack in integration 
 ```typescript
 // Extract business logic from the Deno handler for unit testability
 export function categorizeByLabel(labels: string[]): IssueCategory {
-  if (labels.some(l => l.includes('bug'))) return 'bug';
-  if (labels.some(l => l.includes('docs'))) return 'documentation';
+  if (labels.some((l) => l.includes('bug'))) return 'bug';
+  if (labels.some((l) => l.includes('docs'))) return 'documentation';
   return 'feature';
 }
 

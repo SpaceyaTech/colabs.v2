@@ -98,8 +98,8 @@ export function useContributionStats(userId: string | undefined) {
       return {
         totalPRs: 0, // Phase 2 — GitHub API
         totalCommits: 0, // Phase 2 — GitHub API
-        hoursContributed: issues.filter(i => i.status === 'done').length * 4, // heuristic
-        projectsContributed: new Set(issues.map(i => i.repo_full_name)).size,
+        hoursContributed: issues.filter((i) => i.status === 'done').length * 4, // heuristic
+        projectsContributed: new Set(issues.map((i) => i.repo_full_name)).size,
       };
     },
     enabled: !!userId,
@@ -128,7 +128,7 @@ export function useTechStack(userId: string | undefined) {
         .select('repo_full_name')
         .eq('user_id', userId!);
 
-      const repoNames = [...new Set(issues?.map(i => i.repo_full_name) ?? [])];
+      const repoNames = [...new Set(issues?.map((i) => i.repo_full_name) ?? [])];
 
       // Get projects matching those repos
       const { data: projects } = await supabase
@@ -136,12 +136,12 @@ export function useTechStack(userId: string | undefined) {
         .select('technologies')
         .in(
           'github_url',
-          repoNames.map(r => `https://github.com/${r}`)
+          repoNames.map((r) => `https://github.com/${r}`)
         );
 
       // Count technology occurrences
       const counts: Record<string, number> = {};
-      projects?.forEach(p => {
+      projects?.forEach((p) => {
         p.technologies?.forEach((tech: string) => {
           counts[tech] = (counts[tech] ?? 0) + 1;
         });
@@ -201,7 +201,7 @@ export function useContributionHeatmap(userId: string | undefined) {
 
       // Count events per calendar day
       const dayCounts: Record<string, number> = {};
-      data?.forEach(issue => {
+      data?.forEach((issue) => {
         const claimDay = issue.created_at.split('T')[0];
         dayCounts[claimDay] = (dayCounts[claimDay] ?? 0) + 1;
       });
@@ -239,7 +239,7 @@ export function useContributedProjects(userId: string | undefined) {
 
       // Group by repository
       const repoMap: Record<string, { name: string; prsCount: number; commitsCount: number }> = {};
-      data?.forEach(issue => {
+      data?.forEach((issue) => {
         const [owner, name] = issue.repo_full_name.split('/');
         if (!repoMap[issue.repo_full_name]) {
           repoMap[issue.repo_full_name] = { name, prsCount: 0, commitsCount: 0 };
@@ -281,7 +281,7 @@ Phase 2 requires a new edge function: `github-user-stats`. It calls the GitHub E
 //   - totalCommits: number of push events in last 90 days
 //   - recentActivity: last 20 events (PR, push, comment)
 
-Deno.serve(async req => {
+Deno.serve(async (req) => {
   // Standard auth + CORS boilerplate (see .agents/backend.md)
   // ...
 

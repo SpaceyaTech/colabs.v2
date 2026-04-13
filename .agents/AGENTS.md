@@ -296,7 +296,7 @@ const mutation = useMutation({
     queryClient.invalidateQueries({ queryKey: ['my-data'] });
     toast.success('Created');
   },
-  onError: err => toast.error(err.message),
+  onError: (err) => toast.error(err.message),
 });
 ```
 
@@ -363,7 +363,7 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-Deno.serve(async req => {
+Deno.serve(async (req) => {
   // 1. Always handle OPTIONS first
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });

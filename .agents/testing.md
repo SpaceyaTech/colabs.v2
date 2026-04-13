@@ -761,7 +761,7 @@ it('useClaimedIssues only returns issues owned by the current user', async () =>
 
   // This test documents the expected behaviour — it passes because RLS (mocked here)
   // only returns the current user's rows
-  expect(result.current.claimedIssues.every(i => i.user_id === 'user-current')).toBe(true);
+  expect(result.current.claimedIssues.every((i) => i.user_id === 'user-current')).toBe(true);
 });
 ```
 

@@ -274,14 +274,14 @@ const InteractiveDemoSection = () => {
                     <YAxis
                       tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }}
                       axisLine={{ stroke: 'hsl(var(--border))' }}
-                      tickFormatter={value => `${value}h`}
+                      tickFormatter={(value) => `${value}h`}
                     />
                     <Bar dataKey="hours" radius={[4, 4, 0, 0]}>
                       {weeklyData.map((entry, index) => (
                         <Cell
                           key={`cell-${index}`}
                           fill={
-                            entry.hours === Math.max(...weeklyData.map(d => d.hours))
+                            entry.hours === Math.max(...weeklyData.map((d) => d.hours))
                               ? 'hsl(var(--primary))'
                               : 'hsl(var(--primary) / 0.4)'
                           }

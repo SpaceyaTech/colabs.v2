@@ -154,7 +154,7 @@ export function AppSidebar() {
                   )}
                 </SidebarMenuItem>
               ) : (
-                teams.map(team => {
+                teams.map((team) => {
                   const teamUrl = `/dashboard/teams/${team.id}`;
                   const isActive = location.pathname === teamUrl;
                   return (

@@ -115,14 +115,14 @@ export default function SellerDashboard() {
 
   const gigStats = {
     totalGigs: myGigs.length,
-    activeGigs: myGigs.filter(g => g.status === 'active').length,
+    activeGigs: myGigs.filter((g) => g.status === 'active').length,
     totalApplications: myGigs.reduce((sum, g) => sum + (g.proposals_count ?? 0), 0),
     totalViews: 0,
   };
 
   const softwareStats = {
     totalProducts: mockSoftware.length,
-    published: mockSoftware.filter(s => s.status === 'published').length,
+    published: mockSoftware.filter((s) => s.status === 'published').length,
     totalSales: mockSoftware.reduce((sum, s) => sum + s.sales, 0),
     totalRevenue: mockSoftware.reduce(
       (sum, s) => sum + parseFloat(s.revenue.replace(/[$,]/g, '')),
@@ -229,7 +229,7 @@ export default function SellerDashboard() {
                 No gigs posted yet. Click "Post New Gig" to get started.
               </div>
             ) : (
-              myGigs.map(gig => (
+              myGigs.map((gig) => (
                 <div
                   key={gig.id}
                   className="flex items-center gap-4 px-4 py-3 hover:bg-muted/50 transition-colors"
@@ -306,7 +306,7 @@ export default function SellerDashboard() {
           </div>
         ) : (
           <div className="border border-border rounded-lg divide-y divide-border">
-            {mockSoftware.map(sw => (
+            {mockSoftware.map((sw) => (
               <div
                 key={sw.id}
                 className="flex items-center gap-4 px-4 py-3 hover:bg-muted/50 transition-colors"
@@ -373,7 +373,7 @@ export default function SellerDashboard() {
 
       <CreateGigDialog
         open={createOpen}
-        onOpenChange={o => {
+        onOpenChange={(o) => {
           setCreateOpen(o);
           if (!o) setEditingGig(null);
         }}

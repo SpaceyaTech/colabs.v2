@@ -156,15 +156,15 @@ Deno.serve(async (req: Request) => {
         const issues: GitHubIssue[] = await response.json();
 
         // Filter out pull requests (they show up in issues API)
-        const realIssues = issues.filter(issue => !issue.html_url.includes('/pull/'));
+        const realIssues = issues.filter((issue) => !issue.html_url.includes('/pull/'));
 
         console.log(`Found ${realIssues.length} issues in ${repo.full_name}`);
 
         // Transform issues to our format
         for (const issue of realIssues) {
-          const labels = issue.labels.map(l => l.name);
+          const labels = issue.labels.map((l) => l.name);
           const isGoodFirstIssue = labels.some(
-            l =>
+            (l) =>
               l.toLowerCase().includes('good first issue') ||
               l.toLowerCase().includes('good-first-issue') ||
               l.toLowerCase().includes('beginner') ||
@@ -174,19 +174,19 @@ Deno.serve(async (req: Request) => {
           // Determine category from labels
           let category: 'bug' | 'feature' | 'documentation' | 'enhancement' | 'help-wanted' =
             'feature';
-          if (labels.some(l => l.toLowerCase().includes('bug'))) {
+          if (labels.some((l) => l.toLowerCase().includes('bug'))) {
             category = 'bug';
           } else if (
             labels.some(
-              l => l.toLowerCase().includes('documentation') || l.toLowerCase().includes('docs')
+              (l) => l.toLowerCase().includes('documentation') || l.toLowerCase().includes('docs')
             )
           ) {
             category = 'documentation';
-          } else if (labels.some(l => l.toLowerCase().includes('enhancement'))) {
+          } else if (labels.some((l) => l.toLowerCase().includes('enhancement'))) {
             category = 'enhancement';
           } else if (
             labels.some(
-              l =>
+              (l) =>
                 l.toLowerCase().includes('help wanted') || l.toLowerCase().includes('help-wanted')
             )
           ) {
@@ -197,17 +197,17 @@ Deno.serve(async (req: Request) => {
           let priority: 'low' | 'medium' | 'high' | 'urgent' = 'medium';
           if (
             labels.some(
-              l => l.toLowerCase().includes('urgent') || l.toLowerCase().includes('critical')
+              (l) => l.toLowerCase().includes('urgent') || l.toLowerCase().includes('critical')
             )
           ) {
             priority = 'urgent';
           } else if (
             labels.some(
-              l => l.toLowerCase().includes('high') || l.toLowerCase().includes('important')
+              (l) => l.toLowerCase().includes('high') || l.toLowerCase().includes('important')
             )
           ) {
             priority = 'high';
-          } else if (labels.some(l => l.toLowerCase().includes('low'))) {
+          } else if (labels.some((l) => l.toLowerCase().includes('low'))) {
             priority = 'low';
           }
 

@@ -44,7 +44,7 @@ const source = readFileSync(SOURCE_PATH, 'utf8');
 function getSections(md, titles) {
   if (!titles) return removeToc(md);
   return titles
-    .map(title => extractSection(md, title))
+    .map((title) => extractSection(md, title))
     .filter(Boolean)
     .join('\n\n---\n\n');
 }

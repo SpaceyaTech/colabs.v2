@@ -361,7 +361,7 @@ The `useTeams()` hook fetches teams, then members, then projects in parallel —
 ```tsx
 // ❌ N+1 — one query per gig
 const gigDetails = await Promise.all(
-  gigIds.map(id => supabase.from('gigs').select('*').eq('id', id).single())
+  gigIds.map((id) => supabase.from('gigs').select('*').eq('id', id).single())
 );
 
 // ✅ Single query with IN filter
@@ -418,7 +418,7 @@ Strategies:
 
 ```typescript
 // ✅ Parallel — all repos fetched simultaneously
-const results = await Promise.allSettled(repos.map(repo => fetchIssuesForRepo(repo, token)));
+const results = await Promise.allSettled(repos.map((repo) => fetchIssuesForRepo(repo, token)));
 
 // ❌ Sequential — each repo waits for the previous
 for (const repo of repos) {

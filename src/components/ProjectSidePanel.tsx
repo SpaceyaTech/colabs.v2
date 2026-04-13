@@ -174,7 +174,7 @@ const ProjectSidePanel = ({ project, isOpen, onClose, onPurchase }: ProjectSideP
               <div className="space-y-2">
                 <h3 className="font-semibold text-lg">Tech Stack</h3>
                 <div className="flex flex-wrap gap-2">
-                  {project.techStack.map(tech => (
+                  {project.techStack.map((tech) => (
                     <Badge key={tech} variant="secondary" className="text-xs">
                       {tech}
                     </Badge>

@@ -322,7 +322,7 @@ function IssueListView({
             <span className="text-[11px] text-muted-foreground/50">{issues.length}</span>
           </div>
           <div className="space-y-px">
-            {issues.map(issue => (
+            {issues.map((issue) => (
               <Sheet key={issue.id}>
                 <SheetTrigger asChild>
                   <div className="flex items-center gap-2">
@@ -407,7 +407,7 @@ function IssueKanbanColumn({
                             {issue.repo.owner}/{issue.repo.name}
                           </p>
                           <div className="flex items-center gap-1 flex-wrap">
-                            {issue.labels.slice(0, 2).map(l => (
+                            {issue.labels.slice(0, 2).map((l) => (
                               <span
                                 key={l}
                                 className="text-[10px] px-1.5 py-0.5 rounded bg-accent text-muted-foreground"
@@ -499,7 +499,7 @@ export function IssuesTab() {
     }
   }, []);
   const toggleSaveRec = useCallback((id: string) => {
-    setSavedRecIds(prev => {
+    setSavedRecIds((prev) => {
       const next = new Set(prev);
       if (next.has(id)) {
         next.delete(id);
@@ -520,7 +520,7 @@ export function IssuesTab() {
     [claimedIssues, toUnifiedIssue]
   );
   const ALL_LABELS_DYNAMIC = useMemo(
-    () => Array.from(new Set(myIssues.flatMap(i => i.labels))).sort((a, b) => a.localeCompare(b)),
+    () => Array.from(new Set(myIssues.flatMap((i) => i.labels))).sort((a, b) => a.localeCompare(b)),
     [myIssues]
   );
 
@@ -548,15 +548,16 @@ export function IssuesTab() {
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
       issues = issues.filter(
-        i =>
+        (i) =>
           i.title.toLowerCase().includes(q) ||
           i.id.toLowerCase().includes(q) ||
-          i.labels.some(l => l.toLowerCase().includes(q))
+          i.labels.some((l) => l.toLowerCase().includes(q))
       );
     }
-    if (filterStatuses.size > 0) issues = issues.filter(i => filterStatuses.has(i.status));
-    if (filterPriorities.size > 0) issues = issues.filter(i => filterPriorities.has(i.priority));
-    if (filterLabels.size > 0) issues = issues.filter(i => i.labels.some(l => filterLabels.has(l)));
+    if (filterStatuses.size > 0) issues = issues.filter((i) => filterStatuses.has(i.status));
+    if (filterPriorities.size > 0) issues = issues.filter((i) => filterPriorities.has(i.priority));
+    if (filterLabels.size > 0)
+      issues = issues.filter((i) => i.labels.some((l) => filterLabels.has(l)));
 
     issues.sort((a, b) => {
       let cmp = 0;
@@ -582,15 +583,15 @@ export function IssuesTab() {
   const groups = useMemo(() => {
     const statusOrder: UnifiedIssue['status'][] = ['in-progress', 'todo', 'in-review', 'done'];
     return statusOrder
-      .map(status => ({ status, issues: filteredAndSorted.filter(i => i.status === status) }))
-      .filter(g => g.issues.length > 0);
+      .map((status) => ({ status, issues: filteredAndSorted.filter((i) => i.status === status) }))
+      .filter((g) => g.issues.length > 0);
   }, [filteredAndSorted]);
 
   const kanbanColumns = useMemo(() => {
     const statusOrder: UnifiedIssue['status'][] = ['todo', 'in-progress', 'in-review', 'done'];
-    return statusOrder.map(status => ({
+    return statusOrder.map((status) => ({
       status,
-      issues: filteredAndSorted.filter(i => i.status === status),
+      issues: filteredAndSorted.filter((i) => i.status === status),
     }));
   }, [filteredAndSorted]);
 
@@ -640,7 +641,7 @@ export function IssuesTab() {
           <Input
             placeholder="Search issues..."
             value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
+            onChange={(e) => setSearchQuery(e.target.value)}
             className="h-8 pl-8 text-[13px] bg-transparent border-border/40"
           />
         </div>
@@ -681,7 +682,7 @@ export function IssuesTab() {
                 <button
                   key={field}
                   onClick={() => {
-                    if (sortField === field) setSortDir(d => (d === 'asc' ? 'desc' : 'asc'));
+                    if (sortField === field) setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
                     else {
                       setSortField(field);
                       setSortDir('asc');
@@ -718,7 +719,7 @@ export function IssuesTab() {
           <div className="space-y-1.5">
             <p className="text-[11px] text-muted-foreground uppercase tracking-wider">Status</p>
             <div className="flex flex-wrap gap-1.5">
-              {ALL_STATUSES.map(s => (
+              {ALL_STATUSES.map((s) => (
                 <FilterChip
                   key={s}
                   label={statusLabel[s]}
@@ -731,7 +732,7 @@ export function IssuesTab() {
           <div className="space-y-1.5">
             <p className="text-[11px] text-muted-foreground uppercase tracking-wider">Priority</p>
             <div className="flex flex-wrap gap-1.5">
-              {ALL_PRIORITIES.map(p => (
+              {ALL_PRIORITIES.map((p) => (
                 <FilterChip
                   key={p}
                   label={p.charAt(0).toUpperCase() + p.slice(1)}
@@ -745,7 +746,7 @@ export function IssuesTab() {
             <div className="space-y-1.5">
               <p className="text-[11px] text-muted-foreground uppercase tracking-wider">Labels</p>
               <div className="flex flex-wrap gap-1.5">
-                {ALL_LABELS_DYNAMIC.map(l => (
+                {ALL_LABELS_DYNAMIC.map((l) => (
                   <FilterChip
                     key={l}
                     label={l}
@@ -835,7 +836,7 @@ export function IssuesTab() {
           Based on your tech stack and contribution history
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
-          {recommendedIssues.map(issue => {
+          {recommendedIssues.map((issue) => {
             const isClaimed = claimedIssueIds.has(issue.id);
             const isSaved = savedRecIds.has(issue.id);
             return (
@@ -855,7 +856,7 @@ export function IssuesTab() {
                         <DifficultyBadge priority={issue.priority} />
                       </div>
                       <div className="flex items-center gap-1 flex-wrap">
-                        {issue.labels.slice(0, 3).map(l => (
+                        {issue.labels.slice(0, 3).map((l) => (
                           <span
                             key={l}
                             className="text-[10px] px-1.5 py-0.5 rounded bg-accent text-muted-foreground"
@@ -868,8 +869,8 @@ export function IssuesTab() {
                         <span className="text-[10px] text-primary/70 italic">{issue.reason}</span>
                         <div
                           className="flex items-center gap-1"
-                          onClick={e => e.stopPropagation()}
-                          onKeyDown={e => {
+                          onClick={(e) => e.stopPropagation()}
+                          onKeyDown={(e) => {
                             if (e.key === 'Enter' || e.key === ' ') {
                               e.stopPropagation();
                             }
@@ -958,7 +959,7 @@ export function IssuesTab() {
           Projects matching your tech stack and interests
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
-          {recommendedProjects.map(project => (
+          {recommendedProjects.map((project) => (
             <Card
               key={project.name}
               className="border-border/40 hover:border-primary/30 transition-all cursor-pointer group"
@@ -977,7 +978,7 @@ export function IssuesTab() {
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-1">
-                  {project.technologies.slice(0, 3).map(t => (
+                  {project.technologies.slice(0, 3).map((t) => (
                     <span
                       key={t}
                       className="text-[10px] px-1.5 py-0.5 rounded bg-accent text-muted-foreground"

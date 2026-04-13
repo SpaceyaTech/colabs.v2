@@ -342,7 +342,7 @@ const createGig = useMutation({
     queryClient.invalidateQueries({ queryKey: ['my-gigs', user?.id] });
     toast.success('Gig created');
   },
-  onError: error => {
+  onError: (error) => {
     toast.error(error.message);
   },
 });
@@ -368,7 +368,7 @@ const updateStatus = useMutation({
 
     // Optimistically update the cache
     queryClient.setQueryData(['claimed-issues'], (old: ClaimedIssue[]) =>
-      old.map(issue => (issue.id === id ? { ...issue, status } : issue))
+      old.map((issue) => (issue.id === id ? { ...issue, status } : issue))
     );
 
     return { previous };

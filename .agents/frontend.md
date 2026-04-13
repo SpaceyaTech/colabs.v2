@@ -175,7 +175,7 @@ export function GigListPage() {
 
 // ✅ Presentational component renders what it receives
 export function GigList({ gigs }: { gigs: Gig[] }) {
-  return gigs.map(gig => <GigCard key={gig.id} gig={gig} />);
+  return gigs.map((gig) => <GigCard key={gig.id} gig={gig} />);
 }
 
 // ❌ Presentational component fetching its own data
@@ -299,7 +299,7 @@ const updateStatus = useMutation({
     await queryClient.cancelQueries({ queryKey: ['claimed-issues'] });
     const previous = queryClient.getQueryData(['claimed-issues']);
     queryClient.setQueryData(['claimed-issues'], (old: ClaimedIssue[]) =>
-      old.map(i => (i.id === id ? { ...i, status } : i))
+      old.map((i) => (i.id === id ? { ...i, status } : i))
     );
     return { previous };
   },
@@ -369,7 +369,7 @@ const {
 ### Submit handler
 
 ```tsx
-const onSubmit = handleSubmit(async values => {
+const onSubmit = handleSubmit(async (values) => {
   try {
     await createGig.mutateAsync(values);
     toast.success('Gig created');
