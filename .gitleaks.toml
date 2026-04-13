@@ -1,0 +1,29 @@
+
+  [allowlist]
+  description = "Test fixture allowlist — obfuscated secret patterns only, not real secrets"
+commits = [
+    "a38f33c976f6b245bd8e70ff79c21bdf2b4b97bf"
+]
+  paths = [
+    '''src/tests/.*\.test\.ts'''
+  ]
+
+  stopwords = [
+    "fixture_key_for_tests",
+    "fixture_token_for_tests_only",
+    "UNITTESTACCESSID",
+    "SAFEWHITELISTEDSHA"
+  ]
+
+  # Allowlist for test fixtures using obfuscated secret patterns
+  # These commits contain test code that intentionally uses secret-like patterns
+  # (e.g., "sk_live_", "AKIA", "ghp_") in string literals for testing purposes.
+  # The patterns are obfuscated using numeric char codes to avoid triggering
+  # gitleaks in CI/CD while still exercising validateEnv's security checks.
+  #
+  # The allowlist is necessary because gitleaks detects these patterns in test
+  # files and would otherwise fail the build, even though the values are not
+  # real secrets and are confined to test code.
+  #
+  # The specific commit hash refers to the introduction of these test fixtures.
+  # If the test code changes significantly, this allowlist may need to be updated.

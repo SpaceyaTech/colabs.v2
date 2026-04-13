@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Carousel,
   CarouselContent,
@@ -10,23 +10,15 @@ import {
   CarouselNext,
   CarouselPrevious,
   type CarouselApi,
-} from "@/components/ui/carousel";
-import { CompanyLogo } from "@/components/CompanyLogo";
-import { 
-  Clock, 
-  DollarSign, 
-  MapPin, 
-  Star, 
-  Zap,
-  ArrowRight,
-  Sparkles
-} from "lucide-react";
+} from '@/components/ui/carousel';
+import { CompanyLogo } from '@/components/CompanyLogo';
+import { Clock, DollarSign, MapPin, Star, Zap, ArrowRight, Sparkles } from 'lucide-react';
 
 interface FeaturedGig {
   id: string;
   title: string;
   description: string;
-  budget: { min: number; max: number; type: "fixed" | "hourly" };
+  budget: { min: number; max: number; type: 'fixed' | 'hourly' };
   duration: string;
   skills: string[];
   location: string;
@@ -39,7 +31,7 @@ interface FeaturedGig {
   };
   posted: string;
   proposals: number;
-  difficulty: "Entry level" | "Intermediate" | "Expert";
+  difficulty: 'Entry level' | 'Intermediate' | 'Expert';
   category: string;
   isUrgent?: boolean;
   featured?: boolean;
@@ -61,7 +53,7 @@ export const FeaturedGigsCarousel = ({ gigs, onGigClick }: FeaturedGigsCarouselP
     if (!api) return;
 
     setCurrent(api.selectedScrollSnap());
-    api.on("select", () => {
+    api.on('select', () => {
       setCurrent(api.selectedScrollSnap());
     });
   }, [api]);
@@ -81,8 +73,8 @@ export const FeaturedGigsCarousel = ({ gigs, onGigClick }: FeaturedGigsCarouselP
     return () => clearInterval(interval);
   }, [api]);
 
-  const formatBudget = (budget: FeaturedGig["budget"]) => {
-    if (budget.type === "hourly") {
+  const formatBudget = (budget: FeaturedGig['budget']) => {
+    if (budget.type === 'hourly') {
       return `$${budget.min}-${budget.max}/hr`;
     }
     return `$${budget.min.toLocaleString()}-${budget.max.toLocaleString()}`;
@@ -90,10 +82,14 @@ export const FeaturedGigsCarousel = ({ gigs, onGigClick }: FeaturedGigsCarouselP
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case "Entry level": return "bg-green-500/10 text-green-500 border-green-500/20";
-      case "Intermediate": return "bg-orange-500/10 text-orange-500 border-orange-500/20";
-      case "Expert": return "bg-red-500/10 text-red-500 border-red-500/20";
-      default: return "bg-muted text-muted-foreground";
+      case 'Entry level':
+        return 'bg-green-500/10 text-green-500 border-green-500/20';
+      case 'Intermediate':
+        return 'bg-orange-500/10 text-orange-500 border-orange-500/20';
+      case 'Expert':
+        return 'bg-red-500/10 text-red-500 border-red-500/20';
+      default:
+        return 'bg-muted text-muted-foreground';
     }
   };
 
@@ -118,9 +114,9 @@ export const FeaturedGigsCarousel = ({ gigs, onGigClick }: FeaturedGigsCarouselP
               key={index}
               onClick={() => api?.scrollTo(index)}
               className={`h-2 rounded-full transition-all duration-300 ${
-                current === index 
-                  ? "w-6 bg-primary" 
-                  : "w-2 bg-muted-foreground/30 hover:bg-muted-foreground/50"
+                current === index
+                  ? 'w-6 bg-primary'
+                  : 'w-2 bg-muted-foreground/30 hover:bg-muted-foreground/50'
               }`}
             />
           ))}
@@ -131,15 +127,15 @@ export const FeaturedGigsCarousel = ({ gigs, onGigClick }: FeaturedGigsCarouselP
       <Carousel
         setApi={setApi}
         opts={{
-          align: "start",
+          align: 'start',
           loop: true,
         }}
         className="w-full"
       >
         <CarouselContent className="-ml-4">
-          {featuredGigs.map((gig) => (
+          {featuredGigs.map(gig => (
             <CarouselItem key={gig.id} className="pl-4 md:basis-1/2 lg:basis-1/2">
-              <Card 
+              <Card
                 className="group relative overflow-hidden border-[0.5px] border-border/40 bg-gradient-to-br from-card via-card to-primary/5 hover:shadow-xl hover:shadow-primary/5 transition-all duration-500 cursor-pointer"
                 onClick={() => {
                   if (onGigClick) {
@@ -165,9 +161,9 @@ export const FeaturedGigsCarousel = ({ gigs, onGigClick }: FeaturedGigsCarouselP
                   <div className="flex gap-4">
                     {/* Company Logo */}
                     <div className="flex-shrink-0">
-                      <CompanyLogo 
-                        logoUrl={gig.company.logo} 
-                        companyName={gig.company.name} 
+                      <CompanyLogo
+                        logoUrl={gig.company.logo}
+                        companyName={gig.company.name}
                         size="lg"
                       />
                     </div>
@@ -200,12 +196,8 @@ export const FeaturedGigsCarousel = ({ gigs, onGigClick }: FeaturedGigsCarouselP
 
                       {/* Skills */}
                       <div className="flex flex-wrap gap-1.5">
-                        {gig.skills.slice(0, 4).map((skill) => (
-                          <Badge 
-                            key={skill} 
-                            variant="outline" 
-                            className="text-xs bg-muted/50"
-                          >
+                        {gig.skills.slice(0, 4).map(skill => (
+                          <Badge key={skill} variant="outline" className="text-xs bg-muted/50">
                             {skill}
                           </Badge>
                         ))}
@@ -232,7 +224,7 @@ export const FeaturedGigsCarousel = ({ gigs, onGigClick }: FeaturedGigsCarouselP
                             {gig.location}
                           </div>
                         </div>
-                        
+
                         <div className="flex items-center gap-2">
                           {gig.isUrgent && (
                             <Badge className="bg-red-500/10 text-red-500 border-red-500/20">
@@ -251,10 +243,10 @@ export const FeaturedGigsCarousel = ({ gigs, onGigClick }: FeaturedGigsCarouselP
                         <span className="text-xs text-muted-foreground">
                           {gig.proposals} proposals • Posted {gig.posted}
                         </span>
-                        <Button 
-                          size="sm" 
+                        <Button
+                          size="sm"
                           className="group/btn"
-                          onClick={(e) => {
+                          onClick={e => {
                             e.stopPropagation();
                             if (onGigClick) {
                               onGigClick(gig.id);
@@ -274,7 +266,7 @@ export const FeaturedGigsCarousel = ({ gigs, onGigClick }: FeaturedGigsCarouselP
             </CarouselItem>
           ))}
         </CarouselContent>
-        
+
         {/* Navigation Arrows */}
         <CarouselPrevious className="hidden md:flex -left-4 h-10 w-10 bg-background/80 backdrop-blur-sm border-border/50 hover:bg-background" />
         <CarouselNext className="hidden md:flex -right-4 h-10 w-10 bg-background/80 backdrop-blur-sm border-border/50 hover:bg-background" />
@@ -287,9 +279,7 @@ export const FeaturedGigsCarousel = ({ gigs, onGigClick }: FeaturedGigsCarouselP
             key={index}
             onClick={() => api?.scrollTo(index)}
             className={`h-2 rounded-full transition-all duration-300 ${
-              current === index 
-                ? "w-6 bg-primary" 
-                : "w-2 bg-muted-foreground/30"
+              current === index ? 'w-6 bg-primary' : 'w-2 bg-muted-foreground/30'
             }`}
           />
         ))}

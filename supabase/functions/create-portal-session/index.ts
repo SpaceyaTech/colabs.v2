@@ -30,42 +30,38 @@
  * See docs/STRIPE_INTEGRATION.md for the complete implementation plan.
  */
 
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-Deno.serve(async (req) => {
-  if (req.method === "OPTIONS") {
+Deno.serve(async req => {
+  if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   // ── Authentication ──────────────────────────────────────────────
-  const authHeader = req.headers.get("Authorization");
-  if (!authHeader?.startsWith("Bearer ")) {
-    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+  const authHeader = req.headers.get('Authorization');
+  if (!authHeader?.startsWith('Bearer ')) {
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
       status: 401,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
 
-  const supabase = createClient(
-    Deno.env.get("SUPABASE_URL")!,
-    Deno.env.get("SUPABASE_ANON_KEY")!,
-    { global: { headers: { Authorization: authHeader } } }
-  );
+  const supabase = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_ANON_KEY')!, {
+    global: { headers: { Authorization: authHeader } },
+  });
 
-  const token = authHeader.replace("Bearer ", "");
-  const { data: claimsData, error: claimsError } =
-    await supabase.auth.getClaims(token);
+  const token = authHeader.replace('Bearer ', '');
+  const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(token);
 
   if (claimsError || !claimsData?.claims) {
-    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
       status: 401,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
 
@@ -133,13 +129,13 @@ Deno.serve(async (req) => {
   // ── Temporary placeholder response (remove when Stripe is active) ──
   return new Response(
     JSON.stringify({
-      error: "stripe_not_configured",
+      error: 'stripe_not_configured',
       message:
-        "Stripe integration is not yet configured. Add your STRIPE_SECRET_KEY secret and enable the integration to use this feature.",
+        'Stripe integration is not yet configured. Add your STRIPE_SECRET_KEY secret and enable the integration to use this feature.',
     }),
     {
       status: 503,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     }
   );
 });

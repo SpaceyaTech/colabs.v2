@@ -1,25 +1,28 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MessageCircle, Send, History, Minimize2 } from "lucide-react";
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { MessageCircle, Send, History, Minimize2 } from 'lucide-react';
 
 const AIChat = () => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState('');
   const [showHistory, setShowHistory] = useState(false);
   const [messages, setMessages] = useState<{ role: 'user' | 'ai'; content: string }[]>([]);
 
   const handleSendMessage = () => {
     if (!message.trim()) return;
-    
+
     setMessages(prev => [...prev, { role: 'user', content: message }]);
     // Simulate AI response
     setTimeout(() => {
-      setMessages(prev => [...prev, { role: 'ai', content: "I'm here to help you with your open source contributions!" }]);
+      setMessages(prev => [
+        ...prev,
+        { role: 'ai', content: "I'm here to help you with your open source contributions!" },
+      ]);
     }, 1000);
-    
-    setMessage("");
+
+    setMessage('');
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -68,7 +71,7 @@ const AIChat = () => {
             </div>
           </div>
         </CardHeader>
-        
+
         <CardContent className="space-y-3">
           {/* Messages */}
           <div className="max-h-48 overflow-y-auto space-y-2">
@@ -91,12 +94,12 @@ const AIChat = () => {
               ))
             )}
           </div>
-          
+
           {/* Input */}
           <div className="flex gap-2">
             <Input
               value={message}
-              onChange={(e) => setMessage(e.target.value)}
+              onChange={e => setMessage(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Type your message..."
               className="text-small"
@@ -110,13 +113,11 @@ const AIChat = () => {
               <Send className="w-4 h-4" />
             </Button>
           </div>
-          
+
           {/* History Toggle */}
           {showHistory && (
             <div className="border-t border-border pt-2">
-              <p className="text-small text-muted-foreground">
-                Chat history will appear here
-              </p>
+              <p className="text-small text-muted-foreground">Chat history will appear here</p>
             </div>
           )}
         </CardContent>

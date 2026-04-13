@@ -1,26 +1,11 @@
-
-import { useState } from "react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { 
-  Sheet, 
-  SheetContent, 
-  SheetHeader, 
-  SheetTitle 
-} from "@/components/ui/sheet";
-import { 
-  X, 
-  Play, 
-  Eye, 
-  Download, 
-  Star, 
-  Shield, 
-  Calendar,
-  User
-} from "lucide-react";
+import { useState } from 'react';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { X, Play, Eye, Download, Star, Shield, Calendar, User } from 'lucide-react';
 
 interface Project {
   id: number;
@@ -72,9 +57,7 @@ const ProjectSidePanel = ({ project, isOpen, onClose, onPurchase }: ProjectSideP
           <SheetHeader className="p-6 pb-4 border-b">
             <div className="flex items-start justify-between">
               <div className="flex-1">
-                <SheetTitle className="text-2xl font-bold mb-2">
-                  {project.name}
-                </SheetTitle>
+                <SheetTitle className="text-2xl font-bold mb-2">{project.name}</SheetTitle>
                 {project.seller && (
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <User className="h-4 w-4" />
@@ -86,12 +69,7 @@ const ProjectSidePanel = ({ project, isOpen, onClose, onPurchase }: ProjectSideP
                   </div>
                 )}
               </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={onClose}
-                className="h-8 w-8"
-              >
+              <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8">
                 <X className="h-4 w-4" />
               </Button>
             </div>
@@ -107,7 +85,7 @@ const ProjectSidePanel = ({ project, isOpen, onClose, onPurchase }: ProjectSideP
                   {project.videoUrl ? (
                     <div className="relative w-full h-full">
                       {!isVideoPlaying ? (
-                        <div 
+                        <div
                           className="relative w-full h-full bg-cover bg-center cursor-pointer group"
                           style={{ backgroundImage: `url(${project.image})` }}
                           onClick={() => setIsVideoPlaying(true)}
@@ -174,9 +152,7 @@ const ProjectSidePanel = ({ project, isOpen, onClose, onPurchase }: ProjectSideP
               {/* Description */}
               <div className="space-y-2">
                 <h3 className="font-semibold text-lg">Description</h3>
-                <p className="text-muted-foreground leading-relaxed">
-                  {project.description}
-                </p>
+                <p className="text-muted-foreground leading-relaxed">{project.description}</p>
               </div>
 
               {/* Features */}
@@ -198,7 +174,7 @@ const ProjectSidePanel = ({ project, isOpen, onClose, onPurchase }: ProjectSideP
               <div className="space-y-2">
                 <h3 className="font-semibold text-lg">Tech Stack</h3>
                 <div className="flex flex-wrap gap-2">
-                  {project.techStack.map((tech) => (
+                  {project.techStack.map(tech => (
                     <Badge key={tech} variant="secondary" className="text-xs">
                       {tech}
                     </Badge>
@@ -224,7 +200,7 @@ const ProjectSidePanel = ({ project, isOpen, onClose, onPurchase }: ProjectSideP
                   </div>
                   <div>
                     <p className="text-sm font-medium text-muted-foreground">Software Type</p>
-                    <p className="text-sm">{project.softwareType.join(", ")}</p>
+                    <p className="text-sm">{project.softwareType.join(', ')}</p>
                   </div>
                 </div>
               </div>
@@ -241,9 +217,7 @@ const ProjectSidePanel = ({ project, isOpen, onClose, onPurchase }: ProjectSideP
               {/* Price */}
               <div className="space-y-2">
                 <h3 className="font-semibold text-lg">Price</h3>
-                <div className="text-3xl font-bold text-primary">
-                  ${project.price}
-                </div>
+                <div className="text-3xl font-bold text-primary">${project.price}</div>
               </div>
 
               {/* Add some bottom padding for the sticky button */}

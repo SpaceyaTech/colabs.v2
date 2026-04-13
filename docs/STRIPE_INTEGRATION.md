@@ -24,6 +24,7 @@ This document defines the full Stripe integration plan for Colabs subscription b
 ## Overview
 
 Colabs uses Stripe for:
+
 1. **Subscription billing** — Pro ($20/mo) and Pro+ ($30/mo) plan upgrades
 2. **Marketplace purchases** — One-time project purchases with optional M-PESA via Stripe
 3. **Webhook-driven lifecycle** — Automated plan activation, renewal, cancellation, and expiry demotion
@@ -50,14 +51,14 @@ Colabs uses Stripe for:
 
 Before implementing, the following must be configured:
 
-| Requirement | Status | Notes |
-|---|---|---|
-| Stripe account created | ❌ TODO | Create at https://dashboard.stripe.com |
-| Stripe secret key added as Supabase secret | ❌ TODO | Add `STRIPE_SECRET_KEY` via Lovable secrets tool |
-| Stripe publishable key added to `.env` | ❌ TODO | Add `VITE_STRIPE_PUBLISHABLE_KEY` to codebase |
-| Stripe webhook endpoint secret | ❌ TODO | Add `STRIPE_WEBHOOK_SECRET` via Lovable secrets tool |
-| Stripe products/prices created | ❌ TODO | Create via edge function or Stripe dashboard |
-| Supabase connected | ✅ Done | Project `rzldibgzlvhrnwjhngmy` |
+| Requirement                                | Status  | Notes                                                |
+| ------------------------------------------ | ------- | ---------------------------------------------------- |
+| Stripe account created                     | ❌ TODO | Create at https://dashboard.stripe.com               |
+| Stripe secret key added as Supabase secret | ❌ TODO | Add `STRIPE_SECRET_KEY` via Lovable secrets tool     |
+| Stripe publishable key added to `.env`     | ❌ TODO | Add `VITE_STRIPE_PUBLISHABLE_KEY` to codebase        |
+| Stripe webhook endpoint secret             | ❌ TODO | Add `STRIPE_WEBHOOK_SECRET` via Lovable secrets tool |
+| Stripe products/prices created             | ❌ TODO | Create via edge function or Stripe dashboard         |
+| Supabase connected                         | ✅ Done | Project `rzldibgzlvhrnwjhngmy`                       |
 
 ### Required Supabase Secrets
 
@@ -127,17 +128,18 @@ VITE_STRIPE_PUBLISHABLE_KEY — pk_live_... or pk_test_... (safe for frontend)
 
 Create these in Stripe (via dashboard or setup edge function):
 
-| Product | Product ID (metadata) | Price | Interval | Stripe Price ID |
-|---|---|---|---|---|
-| Colabs Pro | `colabs_pro` | $20.00 USD | Monthly | ❌ TODO: `price_xxx` |
-| Colabs Pro+ | `colabs_pro_plus` | $30.00 USD | Monthly | ❌ TODO: `price_xxx` |
+| Product     | Product ID (metadata) | Price      | Interval | Stripe Price ID      |
+| ----------- | --------------------- | ---------- | -------- | -------------------- |
+| Colabs Pro  | `colabs_pro`          | $20.00 USD | Monthly  | ❌ TODO: `price_xxx` |
+| Colabs Pro+ | `colabs_pro_plus`     | $30.00 USD | Monthly  | ❌ TODO: `price_xxx` |
 
 ### Metadata Convention
 
 Each Stripe Product should include metadata:
+
 ```json
 {
-  "colabs_plan": "pro"       // or "pro_plus"
+  "colabs_plan": "pro" // or "pro_plus"
 }
 ```
 
@@ -308,12 +310,12 @@ For one-time project purchases in the Marketplace:
 
 ## Edge Functions Required
 
-| Function | Purpose | JWT | Status |
-|---|---|---|---|
-| `create-checkout-session` | Creates Stripe Checkout for subscriptions | ✅ Yes | ❌ TODO |
-| `stripe-webhook` | Receives Stripe events, updates DB | ❌ No | ❌ TODO |
-| `create-portal-session` | Opens Stripe Customer Portal for billing management | ✅ Yes | ❌ TODO |
-| `create-marketplace-checkout` | Creates Stripe Checkout for one-time purchases | ✅ Yes | ❌ TODO |
+| Function                      | Purpose                                             | JWT    | Status  |
+| ----------------------------- | --------------------------------------------------- | ------ | ------- |
+| `create-checkout-session`     | Creates Stripe Checkout for subscriptions           | ✅ Yes | ❌ TODO |
+| `stripe-webhook`              | Receives Stripe events, updates DB                  | ❌ No  | ❌ TODO |
+| `create-portal-session`       | Opens Stripe Customer Portal for billing management | ✅ Yes | ❌ TODO |
+| `create-marketplace-checkout` | Creates Stripe Checkout for one-time purchases      | ✅ Yes | ❌ TODO |
 
 ### Edge Function Template
 
@@ -321,21 +323,20 @@ All Stripe edge functions should follow this pattern:
 
 ```typescript
 // supabase/functions/<name>/index.ts
-import Stripe from "https://esm.sh/stripe@14.x?target=deno";
+import Stripe from 'https://esm.sh/stripe@14.x?target=deno';
 
-const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY")!, {
-  apiVersion: "2024-06-20",
+const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY')!, {
+  apiVersion: '2024-06-20',
   httpClient: Stripe.createFetchHttpClient(),
 });
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-Deno.serve(async (req) => {
-  if (req.method === "OPTIONS") {
+Deno.serve(async req => {
+  if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
@@ -344,7 +345,7 @@ Deno.serve(async (req) => {
   } catch (error) {
     return new Response(JSON.stringify({ error: error.message }), {
       status: 400,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
 });
@@ -401,14 +402,14 @@ CREATE POLICY "Users can view own purchases"
 
 ### Files to Update
 
-| File | What to Add | Priority |
-|---|---|---|
-| `src/pages/Pricing.tsx` | Replace toast with `create-checkout-session` call | High |
-| `src/pages/Checkout.tsx` | Replace mock payment with Stripe Checkout redirect | Medium |
-| `src/pages/PurchaseSuccess.tsx` | Verify session_id with Stripe on load | Medium |
-| `src/hooks/useSubscription.tsx` | Add refetch on return from Stripe checkout | High |
-| `src/components/UpgradePrompt.tsx` | Wire "Upgrade" button to checkout flow | High |
-| `src/pages/Settings.tsx` | Add "Manage Billing" button → Customer Portal | Low |
+| File                               | What to Add                                        | Priority |
+| ---------------------------------- | -------------------------------------------------- | -------- |
+| `src/pages/Pricing.tsx`            | Replace toast with `create-checkout-session` call  | High     |
+| `src/pages/Checkout.tsx`           | Replace mock payment with Stripe Checkout redirect | Medium   |
+| `src/pages/PurchaseSuccess.tsx`    | Verify session_id with Stripe on load              | Medium   |
+| `src/hooks/useSubscription.tsx`    | Add refetch on return from Stripe checkout         | High     |
+| `src/components/UpgradePrompt.tsx` | Wire "Upgrade" button to checkout flow             | High     |
+| `src/pages/Settings.tsx`           | Add "Manage Billing" button → Customer Portal      | Low      |
 
 ### NPM Package
 
@@ -422,28 +423,28 @@ CREATE POLICY "Users can view own purchases"
 
 ## Security Considerations
 
-| Concern | Mitigation |
-|---|---|
-| Stripe secret key exposure | Store as Supabase secret, only used in edge functions |
-| Webhook spoofing | Verify signature using `STRIPE_WEBHOOK_SECRET` |
+| Concern                           | Mitigation                                                                          |
+| --------------------------------- | ----------------------------------------------------------------------------------- |
+| Stripe secret key exposure        | Store as Supabase secret, only used in edge functions                               |
+| Webhook spoofing                  | Verify signature using `STRIPE_WEBHOOK_SECRET`                                      |
 | Plan self-upgrade without payment | Client-side UPDATE policy exists only for cancellation; upgrades go through webhook |
-| Price manipulation | Price IDs are server-side constants, not client-provided |
-| Double-charging | Use Stripe's idempotency keys in checkout session creation |
-| PCI compliance | Use Stripe Checkout (hosted) — no card data touches our servers |
+| Price manipulation                | Price IDs are server-side constants, not client-provided                            |
+| Double-charging                   | Use Stripe's idempotency keys in checkout session creation                          |
+| PCI compliance                    | Use Stripe Checkout (hosted) — no card data touches our servers                     |
 
 ---
 
 ## Testing Checklist
 
-| Test | Method | Status |
-|---|---|---|
-| Stripe test mode checkout | Use `sk_test_` key + test cards | ❌ TODO |
-| Webhook receives events | Use Stripe CLI: `stripe listen --forward-to` | ❌ TODO |
+| Test                         | Method                                        | Status  |
+| ---------------------------- | --------------------------------------------- | ------- |
+| Stripe test mode checkout    | Use `sk_test_` key + test cards               | ❌ TODO |
+| Webhook receives events      | Use Stripe CLI: `stripe listen --forward-to`  | ❌ TODO |
 | Plan upgrade reflected in UI | Check `useSubscription()` after webhook fires | ❌ TODO |
-| Plan expiry + auto-demotion | Set short `expires_at`, verify demotion | ❌ TODO |
-| Cancel via Customer Portal | Verify `customer.subscription.deleted` event | ❌ TODO |
-| Marketplace purchase flow | Test one-time payment + purchase record | ❌ TODO |
-| Failed payment handling | Use test card `4000000000000002` | ❌ TODO |
+| Plan expiry + auto-demotion  | Set short `expires_at`, verify demotion       | ❌ TODO |
+| Cancel via Customer Portal   | Verify `customer.subscription.deleted` event  | ❌ TODO |
+| Marketplace purchase flow    | Test one-time payment + purchase record       | ❌ TODO |
+| Failed payment handling      | Use test card `4000000000000002`              | ❌ TODO |
 
 ### Stripe Test Cards
 

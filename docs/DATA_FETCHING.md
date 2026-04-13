@@ -12,12 +12,12 @@ Authentication context provider wrapping the entire app.
 const { user, session, loading, signIn, signUp, signOut, signInWithOAuth } = useAuth();
 ```
 
-| Method | Description |
-|---|---|
-| `signUp(email, password)` | Create account with email redirect |
-| `signIn(email, password)` | Password-based login |
-| `signInWithOAuth('github' \| 'google')` | OAuth provider login |
-| `signOut()` | Sign out |
+| Method                                  | Description                        |
+| --------------------------------------- | ---------------------------------- |
+| `signUp(email, password)`               | Create account with email redirect |
+| `signIn(email, password)`               | Password-based login               |
+| `signInWithOAuth('github' \| 'google')` | OAuth provider login               |
+| `signOut()`                             | Sign out                           |
 
 ### `useGigs()` — `src/hooks/useGigs.tsx`
 
@@ -69,7 +69,8 @@ CRUD operations for the `claimed_issues` table.
 Organization management hook.
 
 ```tsx
-const { organizations, createOrganization, joinOrganization, leaveOrganization } = useOrganizations();
+const { organizations, createOrganization, joinOrganization, leaveOrganization } =
+  useOrganizations();
 ```
 
 - Fetches orgs via `organization_members` join on `organizations`
@@ -109,9 +110,9 @@ Converts ISO date strings to human-readable relative times ("Just now", "3 hours
 ```tsx
 export function useMyData() {
   return useQuery({
-    queryKey: ["my-data"],
+    queryKey: ['my-data'],
     queryFn: async () => {
-      const { data, error } = await supabase.from("table").select("*");
+      const { data, error } = await supabase.from('table').select('*');
       if (error) throw error;
       return data ?? [];
     },
@@ -123,12 +124,12 @@ export function useMyData() {
 
 ```tsx
 const mutation = useMutation({
-  mutationFn: async (input) => {
-    const { error } = await supabase.from("table").insert(input);
+  mutationFn: async input => {
+    const { error } = await supabase.from('table').insert(input);
     if (error) throw error;
   },
   onSuccess: () => {
-    queryClient.invalidateQueries({ queryKey: ["my-data"] });
+    queryClient.invalidateQueries({ queryKey: ['my-data'] });
   },
 });
 ```

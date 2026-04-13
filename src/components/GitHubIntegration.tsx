@@ -5,7 +5,17 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
-import { Loader2, Github, Star, GitFork, RefreshCw, Unlink, ExternalLink, CheckCircle, Users } from 'lucide-react';
+import {
+  Loader2,
+  Github,
+  Star,
+  GitFork,
+  RefreshCw,
+  Unlink,
+  ExternalLink,
+  CheckCircle,
+  Users,
+} from 'lucide-react';
 import { useGitHub } from '@/hooks/useGitHub';
 import { useAuth } from '@/hooks/useAuth';
 import {
@@ -18,7 +28,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+} from '@/components/ui/alert-dialog';
 
 export const GitHubIntegration = () => {
   const { user } = useAuth();
@@ -112,7 +122,8 @@ export const GitHubIntegration = () => {
                 GitHub Integration
               </CardTitle>
               <CardDescription>
-                Connected as <span className="font-medium text-foreground">{integration.github_username}</span>
+                Connected as{' '}
+                <span className="font-medium text-foreground">{integration.github_username}</span>
               </CardDescription>
             </div>
             <Badge className="bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border-0">
@@ -125,8 +136,8 @@ export const GitHubIntegration = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               {integration.avatar_url && (
-                <img 
-                  src={integration.avatar_url} 
+                <img
+                  src={integration.avatar_url}
                   alt={integration.github_username}
                   className="h-12 w-12 rounded-full border-2 border-border"
                 />
@@ -158,13 +169,13 @@ export const GitHubIntegration = () => {
                   <AlertDialogHeader>
                     <AlertDialogTitle>Disconnect GitHub?</AlertDialogTitle>
                     <AlertDialogDescription>
-                      This will disconnect your GitHub account and disable all repository collaborations. 
-                      You can reconnect at any time.
+                      This will disconnect your GitHub account and disable all repository
+                      collaborations. You can reconnect at any time.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction 
+                    <AlertDialogAction
                       onClick={disconnectGitHub}
                       className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                     >
@@ -189,7 +200,9 @@ export const GitHubIntegration = () => {
         <CardContent>
           {repositories.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-muted-foreground">No repositories found. Try syncing your repos.</p>
+              <p className="text-muted-foreground">
+                No repositories found. Try syncing your repos.
+              </p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -213,12 +226,15 @@ export const GitHubIntegration = () => {
 
               {/* Repository List */}
               <div className="space-y-3">
-                {repositories.map((repo) => (
-                  <div key={repo.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                {repositories.map(repo => (
+                  <div
+                    key={repo.id}
+                    className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+                  >
                     <div className="flex items-center gap-3 flex-1">
                       <Checkbox
                         checked={selectedRepos.has(repo.id)}
-                        onCheckedChange={(checked) => {
+                        onCheckedChange={checked => {
                           const newSelected = new Set(selectedRepos);
                           if (checked) {
                             newSelected.add(repo.id);
@@ -231,7 +247,10 @@ export const GitHubIntegration = () => {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 flex-wrap">
                           <h4 className="font-medium truncate">{repo.name}</h4>
-                          <Badge variant={repo.visibility === 'private' ? 'secondary' : 'outline'} className="text-xs">
+                          <Badge
+                            variant={repo.visibility === 'private' ? 'secondary' : 'outline'}
+                            className="text-xs"
+                          >
                             {repo.visibility}
                           </Badge>
                           {repo.allow_collaboration && (
@@ -241,7 +260,9 @@ export const GitHubIntegration = () => {
                           )}
                         </div>
                         {repo.description && (
-                          <p className="text-sm text-muted-foreground mt-1 line-clamp-1">{repo.description}</p>
+                          <p className="text-sm text-muted-foreground mt-1 line-clamp-1">
+                            {repo.description}
+                          </p>
                         )}
                         <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
                           {repo.language && (
@@ -258,12 +279,14 @@ export const GitHubIntegration = () => {
                             <GitFork className="h-3 w-3" />
                             {repo.forks_count}
                           </div>
-                          {repo.collaboration_requests_count !== undefined && repo.collaboration_requests_count > 0 && (
-                            <div className="flex items-center gap-1 text-primary font-medium">
-                              <Users className="h-3 w-3" />
-                              {repo.collaboration_requests_count} {repo.collaboration_requests_count === 1 ? 'request' : 'requests'}
-                            </div>
-                          )}
+                          {repo.collaboration_requests_count !== undefined &&
+                            repo.collaboration_requests_count > 0 && (
+                              <div className="flex items-center gap-1 text-primary font-medium">
+                                <Users className="h-3 w-3" />
+                                {repo.collaboration_requests_count}{' '}
+                                {repo.collaboration_requests_count === 1 ? 'request' : 'requests'}
+                              </div>
+                            )}
                         </div>
                       </div>
                     </div>
@@ -274,7 +297,7 @@ export const GitHubIntegration = () => {
                         </span>
                         <Switch
                           checked={repo.allow_collaboration}
-                          onCheckedChange={(enabled) => handleRepoToggle(repo.id, enabled)}
+                          onCheckedChange={enabled => handleRepoToggle(repo.id, enabled)}
                           disabled={loading}
                         />
                       </div>

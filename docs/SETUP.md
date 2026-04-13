@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- [Node.js](https://nodejs.org/) v18+ (or [Bun](https://bun.sh/))
+- [Node.js](https://nodejs.org/) v20.19+ (or [Bun](https://bun.sh/))
 - [Supabase CLI](https://supabase.com/docs/guides/cli) (for edge function development)
 - A Supabase project (auto-provisioned via Lovable Cloud)
 
@@ -49,6 +49,7 @@ npm run preview
 The database schema is managed via Supabase migrations in `supabase/migrations/`. When using Lovable Cloud, migrations are applied automatically.
 
 For manual setup:
+
 ```bash
 supabase db push
 ```
@@ -74,6 +75,7 @@ supabase secrets set GITHUB_CLIENT_SECRET=your_client_secret
 ```
 
 The following are automatically available:
+
 - `SUPABASE_URL`
 - `SUPABASE_SERVICE_ROLE_KEY`
 - `SUPABASE_ANON_KEY`
@@ -81,6 +83,7 @@ The following are automatically available:
 ### Storage Buckets
 
 Two buckets are configured:
+
 - `resumes` (private) — proposal resume uploads
 - `project-logos` (public) — project logo images
 
@@ -123,13 +126,13 @@ To enable GitHub integration:
 
 ## Scripts
 
-| Script | Command | Description |
-|---|---|---|
-| Dev | `npm run dev` | Start Vite dev server |
-| Build | `npm run build` | Production build |
-| Build (dev) | `npm run build:dev` | Development build |
-| Preview | `npm run preview` | Preview production build |
-| Lint | `npm run lint` | Run ESLint |
+| Script      | Command             | Description              |
+| ----------- | ------------------- | ------------------------ |
+| Dev         | `npm run dev`       | Start Vite dev server    |
+| Build       | `npm run build`     | Production build         |
+| Build (dev) | `npm run build:dev` | Development build        |
+| Preview     | `npm run preview`   | Preview production build |
+| Lint        | `npm run lint`      | Run ESLint               |
 
 ## Contributing
 

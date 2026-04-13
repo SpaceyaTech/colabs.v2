@@ -1,14 +1,15 @@
-import { cn } from "@/lib/utils";
+import { useState, useEffect } from 'react';
+import { cn } from '@/lib/utils';
 
 interface CompanyLogoProps {
   logoUrl?: string | null;
   companyName: string;
-  size?: "sm" | "md" | "lg";
+  size?: 'sm' | 'md' | 'lg';
   className?: string;
 }
 
 // Colabs placeholder logo - a subtle, professional neutral design
-const ColabsPlaceholder = ({ size }: { size: "sm" | "md" | "lg" }) => {
+const ColabsPlaceholder = ({ size }: { size: 'sm' | 'md' | 'lg' }) => {
   const dimensions = {
     sm: { width: 32, height: 32, stroke: 1.5 },
     md: { width: 40, height: 40, stroke: 1.5 },
@@ -51,16 +52,23 @@ const ColabsPlaceholder = ({ size }: { size: "sm" | "md" | "lg" }) => {
   );
 };
 
-export function CompanyLogo({ logoUrl, companyName, size = "md", className }: CompanyLogoProps) {
+export function CompanyLogo({ logoUrl, companyName, size = 'md', className }: CompanyLogoProps) {
+  const [hasError, setHasError] = useState(false);
+
   const sizeClasses = {
-    sm: "w-8 h-8",
-    md: "w-10 h-10",
-    lg: "w-12 h-12",
+    sm: 'w-8 h-8',
+    md: 'w-10 h-10',
+    lg: 'w-12 h-12',
   };
 
-  if (!logoUrl) {
+  // Reset error state when logoUrl changes
+  useEffect(() => {
+    setHasError(false);
+  }, [logoUrl]);
+
+  if (!logoUrl || hasError) {
     return (
-      <div className={cn("flex items-center justify-center", className)}>
+      <div className={cn('flex items-center justify-center', className)}>
         <ColabsPlaceholder size={size} />
       </div>
     );
@@ -69,7 +77,7 @@ export function CompanyLogo({ logoUrl, companyName, size = "md", className }: Co
   return (
     <div
       className={cn(
-        "rounded-lg overflow-hidden bg-muted border border-border/40 flex items-center justify-center",
+        'rounded-lg overflow-hidden bg-muted border border-border/40 flex items-center justify-center',
         sizeClasses[size],
         className
       )}
@@ -78,11 +86,7 @@ export function CompanyLogo({ logoUrl, companyName, size = "md", className }: Co
         src={logoUrl}
         alt={`${companyName} logo`}
         className="w-full h-full object-contain p-1"
-        onError={(e) => {
-          // Replace with placeholder on error
-          e.currentTarget.style.display = "none";
-          e.currentTarget.parentElement?.classList.add("fallback-active");
-        }}
+        onError={() => setHasError(true)}
       />
     </div>
   );
@@ -93,25 +97,52 @@ export const NeutralLogos = {
   tech: (
     <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect width="32" height="32" rx="6" fill="hsl(var(--muted))" />
-      <path d="M8 16H24M16 8V24" stroke="hsl(var(--muted-foreground))" strokeWidth="2" strokeLinecap="round" />
+      <path
+        d="M8 16H24M16 8V24"
+        stroke="hsl(var(--muted-foreground))"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
     </svg>
   ),
   startup: (
     <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect width="32" height="32" rx="6" fill="hsl(var(--muted))" />
-      <path d="M16 8L24 24H8L16 8Z" stroke="hsl(var(--muted-foreground))" strokeWidth="2" strokeLinejoin="round" fill="none" />
+      <path
+        d="M16 8L24 24H8L16 8Z"
+        stroke="hsl(var(--muted-foreground))"
+        strokeWidth="2"
+        strokeLinejoin="round"
+        fill="none"
+      />
     </svg>
   ),
   enterprise: (
     <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect width="32" height="32" rx="6" fill="hsl(var(--muted))" />
-      <rect x="10" y="10" width="12" height="12" rx="2" stroke="hsl(var(--muted-foreground))" strokeWidth="2" fill="none" />
+      <rect
+        x="10"
+        y="10"
+        width="12"
+        height="12"
+        rx="2"
+        stroke="hsl(var(--muted-foreground))"
+        strokeWidth="2"
+        fill="none"
+      />
     </svg>
   ),
   creative: (
     <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect width="32" height="32" rx="6" fill="hsl(var(--muted))" />
-      <circle cx="16" cy="16" r="6" stroke="hsl(var(--muted-foreground))" strokeWidth="2" fill="none" />
+      <circle
+        cx="16"
+        cy="16"
+        r="6"
+        stroke="hsl(var(--muted-foreground))"
+        strokeWidth="2"
+        fill="none"
+      />
     </svg>
   ),
 };

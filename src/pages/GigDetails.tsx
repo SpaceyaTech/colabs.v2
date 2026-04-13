@@ -1,25 +1,43 @@
-import { useParams, useNavigate } from "react-router-dom";
-import { useState, useCallback, useMemo } from "react";
-import { AppLayout } from "@/components/AppLayout";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useAuth } from "@/hooks/useAuth";
-import { useToast } from "@/hooks/use-toast";
-import { ExploreGigCard } from "@/components/ExploreGigCard";
-import { useGigById, useGigs, gigRowToExploreGig } from "@/hooks/useGigs";
+import { useParams, useNavigate } from 'react-router-dom';
+import { useState, useCallback, useMemo } from 'react';
+import { AppLayout } from '@/components/AppLayout';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useAuth } from '@/hooks/useAuth';
+import { useToast } from '@/hooks/use-toast';
+import { ExploreGigCard } from '@/components/ExploreGigCard';
+import { useGigById, useGigs, gigRowToExploreGig } from '@/hooks/useGigs';
 import {
-  ArrowLeft, Clock, DollarSign, MapPin, Star, Bookmark, BookmarkCheck,
-  Send, Flag, Calendar, MessageSquare, Building2, Users, Zap,
-  CheckCircle2, Shield, Globe, Briefcase, ExternalLink, Share2, Copy,
-  ChevronRight
-} from "lucide-react";
+  ArrowLeft,
+  Clock,
+  DollarSign,
+  MapPin,
+  Star,
+  Bookmark,
+  BookmarkCheck,
+  Send,
+  Flag,
+  Calendar,
+  MessageSquare,
+  Building2,
+  Users,
+  Zap,
+  CheckCircle2,
+  Shield,
+  Globe,
+  Briefcase,
+  ExternalLink,
+  Share2,
+  Copy,
+  ChevronRight,
+} from 'lucide-react';
 
 const difficultyColor: Record<string, string> = {
-  "Entry level": "bg-primary/15 text-primary border-primary/20",
-  "Intermediate": "bg-yellow-500/15 text-yellow-500 border-yellow-500/20",
-  "Expert": "bg-destructive/15 text-destructive border-destructive/20",
+  'Entry level': 'bg-primary/15 text-primary border-primary/20',
+  Intermediate: 'bg-yellow-500/15 text-yellow-500 border-yellow-500/20',
+  Expert: 'bg-destructive/15 text-destructive border-destructive/20',
 };
 
 const GigDetails = () => {
@@ -32,25 +50,35 @@ const GigDetails = () => {
 
   const [isSaved, setIsSaved] = useState(() => {
     try {
-      const saved = JSON.parse(localStorage.getItem("colabs-saved-gigs") || "[]");
+      const saved = JSON.parse(localStorage.getItem('colabs-saved-gigs') || '[]');
       return saved.includes(id);
-    } catch { return false; }
+    } catch {
+      return false;
+    }
   });
 
   const handleSave = useCallback(() => {
-    if (!user) { navigate("/sign-in"); return; }
+    if (!user) {
+      navigate('/sign-in');
+      return;
+    }
     try {
-      const saved: string[] = JSON.parse(localStorage.getItem("colabs-saved-gigs") || "[]");
+      const saved: string[] = JSON.parse(localStorage.getItem('colabs-saved-gigs') || '[]');
       const next = isSaved ? saved.filter(s => s !== id) : [...saved, id!];
-      localStorage.setItem("colabs-saved-gigs", JSON.stringify(next));
+      localStorage.setItem('colabs-saved-gigs', JSON.stringify(next));
       setIsSaved(!isSaved);
-      toast({ title: isSaved ? "Removed from saved" : "Saved", description: isSaved ? "Gig removed from your list" : "Gig saved for later" });
-    } catch {}
+      toast({
+        title: isSaved ? 'Removed from saved' : 'Saved',
+        description: isSaved ? 'Gig removed from your list' : 'Gig saved for later',
+      });
+    } catch (err) {
+      console.error('Failed to update saved gig:', err);
+    }
   }, [isSaved, id, user, navigate, toast]);
 
   const handleShare = useCallback(() => {
     navigator.clipboard.writeText(window.location.href);
-    toast({ title: "Link copied", description: "Gig URL copied to clipboard" });
+    toast({ title: 'Link copied', description: 'Gig URL copied to clipboard' });
   }, [toast]);
 
   const similarGigs = useMemo(() => {
@@ -88,8 +116,10 @@ const GigDetails = () => {
         <div className="max-w-3xl mx-auto px-4 py-16 text-center">
           <Briefcase className="h-10 w-10 mx-auto mb-4 text-muted-foreground/30" />
           <h1 className="text-lg font-semibold mb-2">Gig not found</h1>
-          <p className="text-sm text-muted-foreground mb-4">This gig may have been removed or doesn't exist.</p>
-          <Button variant="outline" size="sm" onClick={() => navigate("/marketplace")}>
+          <p className="text-sm text-muted-foreground mb-4">
+            This gig may have been removed or doesn't exist.
+          </p>
+          <Button variant="outline" size="sm" onClick={() => navigate('/marketplace')}>
             <ArrowLeft className="h-3.5 w-3.5 mr-1.5" /> Back to Marketplace
           </Button>
         </div>
@@ -97,16 +127,30 @@ const GigDetails = () => {
     );
   }
 
-  const postedAt = new Date(gig.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  const postedAt = new Date(gig.created_at).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
 
   return (
     <AppLayout>
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-6">
         {/* Breadcrumb */}
         <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-          <button onClick={() => navigate("/marketplace")} className="hover:text-foreground transition-colors">Marketplace</button>
+          <button
+            onClick={() => navigate('/marketplace')}
+            className="hover:text-foreground transition-colors"
+          >
+            Marketplace
+          </button>
           <ChevronRight className="h-3 w-3" />
-          <button onClick={() => navigate("/marketplace")} className="hover:text-foreground transition-colors">Gigs</button>
+          <button
+            onClick={() => navigate('/marketplace')}
+            className="hover:text-foreground transition-colors"
+          >
+            Gigs
+          </button>
           <ChevronRight className="h-3 w-3" />
           <span className="text-foreground truncate max-w-[200px]">{gig.title}</span>
         </div>
@@ -127,7 +171,9 @@ const GigDetails = () => {
                     <Zap className="h-2.5 w-2.5" /> Urgent
                   </span>
                 )}
-                <span className={`text-[10px] px-1.5 py-0.5 rounded border font-medium ${difficultyColor[gig.difficulty] || ""}`}>
+                <span
+                  className={`text-[10px] px-1.5 py-0.5 rounded border font-medium ${difficultyColor[gig.difficulty] || ''}`}
+                >
                   {gig.difficulty}
                 </span>
                 {gig.category && (
@@ -141,12 +187,25 @@ const GigDetails = () => {
 
               <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                 <span className="flex items-center gap-1.5 font-semibold text-foreground">
-                  <DollarSign className="h-4 w-4 text-primary" />{gig.budget}
+                  <DollarSign className="h-4 w-4 text-primary" />
+                  {gig.budget}
                 </span>
-                <span className="flex items-center gap-1.5"><Clock className="h-3.5 w-3.5" />{gig.duration}</span>
-                <span className="flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5" />{gig.location}</span>
-                <span className="flex items-center gap-1.5"><Calendar className="h-3.5 w-3.5" />Posted {postedAt}</span>
-                <span className="flex items-center gap-1.5"><Users className="h-3.5 w-3.5" />{gig.proposals_count} proposals</span>
+                <span className="flex items-center gap-1.5">
+                  <Clock className="h-3.5 w-3.5" />
+                  {gig.duration}
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <MapPin className="h-3.5 w-3.5" />
+                  {gig.location}
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <Calendar className="h-3.5 w-3.5" />
+                  Posted {postedAt}
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <Users className="h-3.5 w-3.5" />
+                  {gig.proposals_count} proposals
+                </span>
               </div>
             </div>
 
@@ -193,7 +252,9 @@ const GigDetails = () => {
               <h2 className="text-sm font-semibold text-foreground">Skills & Technologies</h2>
               <div className="flex flex-wrap gap-1.5">
                 {gig.technologies.map(tech => (
-                  <Badge key={tech} variant="secondary" className="text-xs">{tech}</Badge>
+                  <Badge key={tech} variant="secondary" className="text-xs">
+                    {tech}
+                  </Badge>
                 ))}
               </div>
             </section>
@@ -217,7 +278,9 @@ const GigDetails = () => {
                       {gig.company_rating && (
                         <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
                           <Star className="h-3 w-3 fill-current text-yellow-500" />
-                          <span>{gig.company_rating} ({gig.company_review_count} reviews)</span>
+                          <span>
+                            {gig.company_rating} ({gig.company_review_count} reviews)
+                          </span>
                         </div>
                       )}
                     </div>
@@ -226,13 +289,18 @@ const GigDetails = () => {
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   {[
-                    { label: "Member since", value: gig.client_member_since || "N/A" },
-                    { label: "Total spent", value: gig.client_total_spent || "N/A" },
-                    { label: "Hire rate", value: gig.client_hire_rate ? `${gig.client_hire_rate}%` : "N/A" },
-                    { label: "Open jobs", value: gig.client_open_jobs?.toString() || "N/A" },
+                    { label: 'Member since', value: gig.client_member_since || 'N/A' },
+                    { label: 'Total spent', value: gig.client_total_spent || 'N/A' },
+                    {
+                      label: 'Hire rate',
+                      value: gig.client_hire_rate ? `${gig.client_hire_rate}%` : 'N/A',
+                    },
+                    { label: 'Open jobs', value: gig.client_open_jobs?.toString() || 'N/A' },
                   ].map(({ label, value }) => (
                     <div key={label}>
-                      <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{label}</p>
+                      <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
+                        {label}
+                      </p>
                       <p className="text-sm font-medium text-foreground">{value}</p>
                     </div>
                   ))}
@@ -245,7 +313,12 @@ const GigDetails = () => {
               <section className="space-y-3">
                 <div className="flex items-center justify-between">
                   <h2 className="text-sm font-semibold text-foreground">Similar gigs</h2>
-                  <Button variant="ghost" size="sm" className="h-7 text-xs text-muted-foreground" onClick={() => navigate("/marketplace")}>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 text-xs text-muted-foreground"
+                    onClick={() => navigate('/marketplace')}
+                  >
                     View all →
                   </Button>
                 </div>
@@ -264,13 +337,18 @@ const GigDetails = () => {
               <div className="p-4 rounded-lg border border-border/40 bg-card/50 space-y-3">
                 <div className="text-center space-y-1">
                   <p className="text-xl font-bold text-foreground">{gig.budget}</p>
-                  <p className="text-[11px] text-muted-foreground">{gig.duration} · {gig.location}</p>
+                  <p className="text-[11px] text-muted-foreground">
+                    {gig.duration} · {gig.location}
+                  </p>
                 </div>
 
                 <Button
                   className="w-full gap-1.5 text-sm"
                   onClick={() => {
-                    if (!user) { navigate("/sign-in"); return; }
+                    if (!user) {
+                      navigate('/sign-in');
+                      return;
+                    }
                     navigate(`/submit-proposal/${gig.id}`);
                   }}
                 >
@@ -278,25 +356,41 @@ const GigDetails = () => {
                 </Button>
 
                 <div className="flex gap-2">
-                  <Button variant="outline" className="flex-1 gap-1.5 text-xs" size="sm" onClick={handleSave}>
-                    {isSaved ? <BookmarkCheck className="h-3.5 w-3.5 text-primary" /> : <Bookmark className="h-3.5 w-3.5" />}
-                    {isSaved ? "Saved" : "Save"}
+                  <Button
+                    variant="outline"
+                    className="flex-1 gap-1.5 text-xs"
+                    size="sm"
+                    onClick={handleSave}
+                  >
+                    {isSaved ? (
+                      <BookmarkCheck className="h-3.5 w-3.5 text-primary" />
+                    ) : (
+                      <Bookmark className="h-3.5 w-3.5" />
+                    )}
+                    {isSaved ? 'Saved' : 'Save'}
                   </Button>
-                  <Button variant="outline" className="flex-1 gap-1.5 text-xs" size="sm" onClick={handleShare}>
+                  <Button
+                    variant="outline"
+                    className="flex-1 gap-1.5 text-xs"
+                    size="sm"
+                    onClick={handleShare}
+                  >
                     <Share2 className="h-3.5 w-3.5" /> Share
                   </Button>
                 </div>
               </div>
 
               <div className="p-4 rounded-lg border border-border/40 bg-card/50 space-y-3">
-                <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-medium">Project Details</p>
+                <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-medium">
+                  Project Details
+                </p>
                 {[
-                  { icon: DollarSign, label: "Budget", value: gig.budget },
-                  { icon: Clock, label: "Duration", value: gig.duration },
-                  { icon: Briefcase, label: "Experience", value: gig.difficulty },
-                  { icon: MapPin, label: "Location", value: gig.location },
-                  { icon: Users, label: "Proposals", value: `${gig.proposals_count}` },
-                  { icon: Calendar, label: "Posted", value: postedAt },
+                  { icon: DollarSign, label: 'Budget', value: gig.budget },
+                  { icon: Clock, label: 'Duration', value: gig.duration },
+                  { icon: Briefcase, label: 'Experience', value: gig.difficulty },
+                  { icon: MapPin, label: 'Location', value: gig.location },
+                  { icon: Users, label: 'Proposals', value: `${gig.proposals_count}` },
+                  { icon: Calendar, label: 'Posted', value: postedAt },
                 ].map(({ icon: Icon, label, value }) => (
                   <div key={label} className="flex items-center justify-between text-sm">
                     <span className="flex items-center gap-1.5 text-muted-foreground">
@@ -307,7 +401,11 @@ const GigDetails = () => {
                 ))}
               </div>
 
-              <Button variant="ghost" size="sm" className="w-full gap-1.5 text-xs text-muted-foreground hover:text-destructive">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="w-full gap-1.5 text-xs text-muted-foreground hover:text-destructive"
+              >
                 <Flag className="h-3.5 w-3.5" /> Report this gig
               </Button>
             </div>

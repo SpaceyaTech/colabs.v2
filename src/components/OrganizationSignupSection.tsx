@@ -1,30 +1,30 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Workflow, Zap, Shield } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Users, Workflow, Zap, Shield } from 'lucide-react';
+import { NavLink } from 'react-router-dom';
 
 export const OrganizationSignupSection = () => {
   const organizationFeatures = [
     {
       icon: Users,
-      title: "Team Management",
-      description: "Manage roles, permissions, and team members across all your projects"
+      title: 'Team Management',
+      description: 'Manage roles, permissions, and team members across all your projects',
     },
     {
       icon: Workflow,
-      title: "Automated Workflows", 
-      description: "Connect Slack, GitHub, ClickUp, and Figma for seamless automation"
+      title: 'Automated Workflows',
+      description: 'Connect Slack, GitHub, ClickUp, and Figma for seamless automation',
     },
     {
       icon: Zap,
-      title: "Smart Integrations",
-      description: "Real-time sync between all your favorite development tools"
+      title: 'Smart Integrations',
+      description: 'Real-time sync between all your favorite development tools',
     },
     {
       icon: Shield,
-      title: "Enterprise Security",
-      description: "Role-based access control and secure API key management"
-    }
+      title: 'Enterprise Security',
+      description: 'Role-based access control and secure API key management',
+    },
   ];
 
   return (
@@ -35,14 +35,17 @@ export const OrganizationSignupSection = () => {
             Level Up with Organizations
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Transform your team's workflow with our powerful organization dashboard. 
-            Connect all your tools and automate everything.
+            Transform your team's workflow with our powerful organization dashboard. Connect all
+            your tools and automate everything.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {organizationFeatures.map((feature, index) => (
-            <Card key={index} className="border-0 bg-card/50 backdrop-blur-sm hover:bg-card/80 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+            <Card
+              key={index}
+              className="border-0 bg-card/50 backdrop-blur-sm hover:bg-card/80 transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+            >
               <CardHeader className="text-center pb-3">
                 <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-3">
                   <feature.icon className="h-6 w-6 text-primary" />
@@ -61,13 +64,18 @@ export const OrganizationSignupSection = () => {
             <CardHeader className="text-center pb-6">
               <CardTitle className="text-2xl">Ready to Connect Everything?</CardTitle>
               <p className="text-muted-foreground">
-                Join organizations using our platform and experience the magic of unified workflow management
+                Join organizations using our platform and experience the magic of unified workflow
+                management
               </p>
             </CardHeader>
             <CardContent className="text-center space-y-6">
               <div className="flex flex-wrap justify-center gap-4 mb-8">
                 <div className="flex items-center gap-2 bg-background/50 rounded-lg px-4 py-2">
-                  <img src="/lovable-uploads/0e6325b0-6af7-42eb-b9fc-e2c85ed347d2.png" alt="Slack" className="w-6 h-6" />
+                  <img
+                    src="/lovable-uploads/0e6325b0-6af7-42eb-b9fc-e2c85ed347d2.png"
+                    alt="Slack"
+                    className="w-6 h-6"
+                  />
                   <span className="text-sm font-medium">Slack</span>
                 </div>
                 <div className="flex items-center gap-2 bg-background/50 rounded-lg px-4 py-2">
@@ -89,17 +97,22 @@ export const OrganizationSignupSection = () => {
                   <span className="text-sm font-medium">Figma</span>
                 </div>
               </div>
-              
+
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="lg" className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white font-semibold px-8" asChild>
-                  <NavLink to="/create-organization">
-                    Create Organization
-                  </NavLink>
+                <Button
+                  size="lg"
+                  className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white font-semibold px-8"
+                  asChild
+                >
+                  <NavLink to="/create-organization">Create Organization</NavLink>
                 </Button>
-                <Button size="lg" variant="outline" className="border-primary/30 hover:bg-primary/5" asChild>
-                  <NavLink to="/organizations">
-                    Browse Organizations
-                  </NavLink>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-primary/30 hover:bg-primary/5"
+                  asChild
+                >
+                  <NavLink to="/organizations">Browse Organizations</NavLink>
                 </Button>
               </div>
             </CardContent>

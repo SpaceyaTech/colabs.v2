@@ -11,6 +11,7 @@ Handles the GitHub OAuth code exchange flow.
 **Method:** POST
 
 **Request Body:**
+
 ```json
 { "code": "string", "state": "string" }
 ```
@@ -18,12 +19,14 @@ Handles the GitHub OAuth code exchange flow.
 **Auth:** Requires Supabase JWT in `Authorization` header.
 
 **Flow:**
+
 1. Exchange `code` for access token via GitHub OAuth API
 2. Fetch GitHub user info (`/user` endpoint)
 3. Verify Supabase JWT to get internal user ID
 4. Upsert `github_integrations` record with access token
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -49,6 +52,7 @@ Syncs and manages GitHub repository data.
 Fetches all repos from GitHub API and upserts into `github_repositories`.
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -60,6 +64,7 @@ Fetches all repos from GitHub API and upserts into `github_repositories`.
 ### POST — Update Collaboration Settings
 
 **Request Body:**
+
 ```json
 {
   "repositoryIds": ["uuid1", "uuid2"],
@@ -68,6 +73,7 @@ Fetches all repos from GitHub API and upserts into `github_repositories`.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -90,6 +96,7 @@ Fetches open issues from collaboration-enabled repositories.
 **Auth:** Requires Supabase JWT.
 
 **Flow:**
+
 1. Verify user → Get `github_integrations` record
 2. Query `github_repositories` where `allow_collaboration = true`
 3. Fetch issues from each repo via GitHub API
@@ -97,6 +104,7 @@ Fetches open issues from collaboration-enabled repositories.
 5. Return sorted by newest first
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -128,11 +136,13 @@ Fetches public repository data for the project detail page. **No authentication 
 **Method:** POST
 
 **Request Body:**
+
 ```json
 { "repoUrl": "https://github.com/owner/repo" }
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -146,12 +156,8 @@ Fetches public repository data for the project detail page. **No authentication 
       "topics": ["react", "typescript"],
       "license": "MIT"
     },
-    "contributors": [
-      { "login": "user", "avatar_url": "...", "contributions": 100 }
-    ],
-    "issues": [
-      { "number": 42, "title": "...", "is_good_first_issue": true }
-    ],
+    "contributors": [{ "login": "user", "avatar_url": "...", "contributions": 100 }],
+    "issues": [{ "number": 42, "title": "...", "is_good_first_issue": true }],
     "readme_url": "https://github.com/owner/repo#readme"
   }
 }
@@ -164,6 +170,7 @@ Fetches public repository data for the project detail page. **No authentication 
 ## CORS
 
 All edge functions include CORS headers:
+
 ```ts
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
