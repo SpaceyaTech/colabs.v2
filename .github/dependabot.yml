@@ -13,7 +13,8 @@ updates:
     # Limit open PRs to avoid noise — security PRs always bypass this
     open-pull-requests-limit: 10
 
-    target-branch: 'dev'
+    # Target branch (change if your default branch differs)
+    target-branch: "dev"
 
     # Group non-breaking updates into a single PR to reduce noise
     groups:
