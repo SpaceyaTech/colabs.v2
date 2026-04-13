@@ -71,7 +71,6 @@ jobs:
     name: CI / lint
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: format
 
     steps:
       - uses: actions/checkout@v4
@@ -92,8 +91,6 @@ jobs:
     name: CI / type-check
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    # Only run if lint passes — no point checking types in a file with lint errors
-    needs: lint
 
     steps:
       - uses: actions/checkout@v4
@@ -113,8 +110,7 @@ jobs:
     name: CI / build
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    # Only run if type-check passes — a type-broken codebase will fail the build anyway
-    needs: type-check
+    needs: [format, lint, type-check]
 
     steps:
       - uses: actions/checkout@v4
