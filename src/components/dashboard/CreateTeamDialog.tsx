@@ -51,12 +51,12 @@ export function CreateTeamDialog({ open, onOpenChange }: CreateTeamDialogProps) 
   const addEmail = () => {
     const trimmed = emailInput.trim().toLowerCase();
     if (trimmed && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed) && !emails.includes(trimmed)) {
-      setEmails(prev => [...prev, trimmed]);
+      setEmails((prev) => [...prev, trimmed]);
       setEmailInput('');
     }
   };
 
-  const removeEmail = (email: string) => setEmails(prev => prev.filter(e => e !== email));
+  const removeEmail = (email: string) => setEmails((prev) => prev.filter((e) => e !== email));
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ',') {
@@ -66,7 +66,9 @@ export function CreateTeamDialog({ open, onOpenChange }: CreateTeamDialogProps) 
   };
 
   const toggleProject = (id: string) => {
-    setSelectedProjects(prev => (prev.includes(id) ? prev.filter(p => p !== id) : [...prev, id]));
+    setSelectedProjects((prev) =>
+      prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]
+    );
   };
 
   const resetAndClose = () => {
@@ -109,7 +111,7 @@ export function CreateTeamDialog({ open, onOpenChange }: CreateTeamDialogProps) 
         </DialogHeader>
 
         <div className="flex items-center gap-1 px-5 pt-3">
-          {[1, 2, 3].map(s => (
+          {[1, 2, 3].map((s) => (
             <div
               key={s}
               className={`h-1 flex-1 rounded-full transition-colors ${s <= step ? 'bg-primary' : 'bg-muted'}`}
@@ -128,7 +130,7 @@ export function CreateTeamDialog({ open, onOpenChange }: CreateTeamDialogProps) 
                   id="team-name"
                   placeholder="e.g. Product Engineering"
                   value={name}
-                  onChange={e => setName(e.target.value)}
+                  onChange={(e) => setName(e.target.value)}
                   maxLength={60}
                   autoFocus
                 />
@@ -141,7 +143,7 @@ export function CreateTeamDialog({ open, onOpenChange }: CreateTeamDialogProps) 
                   id="team-desc"
                   placeholder="What does this team work on?"
                   value={description}
-                  onChange={e => setDescription(e.target.value)}
+                  onChange={(e) => setDescription(e.target.value)}
                   maxLength={200}
                   rows={3}
                   className="resize-none text-sm"
@@ -167,7 +169,7 @@ export function CreateTeamDialog({ open, onOpenChange }: CreateTeamDialogProps) 
                     id="invite-email"
                     placeholder="name@company.com"
                     value={emailInput}
-                    onChange={e => setEmailInput(e.target.value)}
+                    onChange={(e) => setEmailInput(e.target.value)}
                     onKeyDown={handleKeyDown}
                     type="email"
                     autoFocus
@@ -186,7 +188,7 @@ export function CreateTeamDialog({ open, onOpenChange }: CreateTeamDialogProps) 
               </div>
               {emails.length > 0 ? (
                 <div className="flex flex-wrap gap-1.5">
-                  {emails.map(email => (
+                  {emails.map((email) => (
                     <Badge
                       key={email}
                       variant="secondary"
@@ -256,7 +258,7 @@ export function CreateTeamDialog({ open, onOpenChange }: CreateTeamDialogProps) 
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => (step === 1 ? resetAndClose() : setStep(s => (s - 1) as 1 | 2 | 3))}
+            onClick={() => (step === 1 ? resetAndClose() : setStep((s) => (s - 1) as 1 | 2 | 3))}
           >
             {step === 1 ? 'Cancel' : 'Back'}
           </Button>
@@ -266,7 +268,7 @@ export function CreateTeamDialog({ open, onOpenChange }: CreateTeamDialogProps) 
                 variant="ghost"
                 size="sm"
                 className="text-muted-foreground"
-                onClick={() => setStep(s => (s + 1) as 1 | 2 | 3)}
+                onClick={() => setStep((s) => (s + 1) as 1 | 2 | 3)}
                 disabled={step === 1 && !canProceedStep1}
               >
                 Skip
@@ -274,7 +276,7 @@ export function CreateTeamDialog({ open, onOpenChange }: CreateTeamDialogProps) 
             )}
             <Button
               size="sm"
-              onClick={() => (step < 3 ? setStep(s => (s + 1) as 1 | 2 | 3) : handleCreate())}
+              onClick={() => (step < 3 ? setStep((s) => (s + 1) as 1 | 2 | 3) : handleCreate())}
               disabled={(step === 1 && !canProceedStep1) || (step === 3 && createTeam.isPending)}
             >
               {step < 3 ? (

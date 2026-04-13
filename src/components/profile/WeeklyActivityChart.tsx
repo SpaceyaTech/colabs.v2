@@ -17,7 +17,7 @@ const chartConfig = {
 };
 
 export function WeeklyActivityChart({ weeklyData }: WeeklyActivityChartProps) {
-  const maxHours = Math.max(...weeklyData.map(d => d.hours));
+  const maxHours = Math.max(...weeklyData.map((d) => d.hours));
 
   return (
     <Card>
@@ -37,7 +37,7 @@ export function WeeklyActivityChart({ weeklyData }: WeeklyActivityChartProps) {
               <YAxis
                 tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
                 axisLine={{ stroke: 'hsl(var(--border))' }}
-                tickFormatter={value => `${value}h`}
+                tickFormatter={(value) => `${value}h`}
               />
               <ChartTooltip
                 content={<ChartTooltipContent />}

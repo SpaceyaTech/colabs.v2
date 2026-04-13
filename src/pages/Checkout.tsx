@@ -44,7 +44,7 @@ const Checkout = () => {
   }, [location.state, navigate]);
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   /**
@@ -91,7 +91,7 @@ const Checkout = () => {
       // if (data?.url) window.location.href = data.url;
 
       // Current: Simulated payment processing
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       navigate('/purchase-success', {
         state: {
@@ -190,7 +190,7 @@ const Checkout = () => {
                       <Input
                         id="fullName"
                         value={formData.fullName}
-                        onChange={e => handleInputChange('fullName', e.target.value)}
+                        onChange={(e) => handleInputChange('fullName', e.target.value)}
                         required
                       />
                     </div>
@@ -200,7 +200,7 @@ const Checkout = () => {
                         id="email"
                         type="email"
                         value={formData.email}
-                        onChange={e => handleInputChange('email', e.target.value)}
+                        onChange={(e) => handleInputChange('email', e.target.value)}
                         required
                       />
                     </div>
@@ -210,7 +210,7 @@ const Checkout = () => {
                     <Input
                       id="phone"
                       value={formData.phone}
-                      onChange={e => handleInputChange('phone', e.target.value)}
+                      onChange={(e) => handleInputChange('phone', e.target.value)}
                       required
                     />
                   </div>
@@ -250,7 +250,7 @@ const Checkout = () => {
                         id="cardNumber"
                         placeholder="1234 5678 9012 3456"
                         value={formData.cardNumber}
-                        onChange={e => handleInputChange('cardNumber', e.target.value)}
+                        onChange={(e) => handleInputChange('cardNumber', e.target.value)}
                         required
                       />
                     </div>
@@ -261,7 +261,7 @@ const Checkout = () => {
                           id="expiryDate"
                           placeholder="MM/YY"
                           value={formData.expiryDate}
-                          onChange={e => handleInputChange('expiryDate', e.target.value)}
+                          onChange={(e) => handleInputChange('expiryDate', e.target.value)}
                           required
                         />
                       </div>
@@ -271,7 +271,7 @@ const Checkout = () => {
                           id="cvv"
                           placeholder="123"
                           value={formData.cvv}
-                          onChange={e => handleInputChange('cvv', e.target.value)}
+                          onChange={(e) => handleInputChange('cvv', e.target.value)}
                           required
                         />
                       </div>

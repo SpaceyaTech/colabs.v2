@@ -34,14 +34,14 @@ const CreateOrganization = () => {
   };
 
   const handleNameChange = (name: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       name,
       slug: generateSlug(name),
     }));
     // Clear name error when user starts typing
     if (errors.name) {
-      setErrors(prev => ({ ...prev, name: '' }));
+      setErrors((prev) => ({ ...prev, name: '' }));
     }
   };
 
@@ -170,7 +170,7 @@ const CreateOrganization = () => {
                     <Input
                       id="name"
                       value={formData.name}
-                      onChange={e => handleNameChange(e.target.value)}
+                      onChange={(e) => handleNameChange(e.target.value)}
                       placeholder="Acme Inc."
                       className={errors.name ? 'border-destructive' : ''}
                     />
@@ -189,10 +189,10 @@ const CreateOrganization = () => {
                       <Input
                         id="slug"
                         value={formData.slug}
-                        onChange={e => {
-                          setFormData(prev => ({ ...prev, slug: e.target.value }));
+                        onChange={(e) => {
+                          setFormData((prev) => ({ ...prev, slug: e.target.value }));
                           if (errors.slug) {
-                            setErrors(prev => ({ ...prev, slug: '' }));
+                            setErrors((prev) => ({ ...prev, slug: '' }));
                           }
                         }}
                         placeholder="acme-inc"
@@ -215,8 +215,8 @@ const CreateOrganization = () => {
                     <Textarea
                       id="description"
                       value={formData.description}
-                      onChange={e =>
-                        setFormData(prev => ({ ...prev, description: e.target.value }))
+                      onChange={(e) =>
+                        setFormData((prev) => ({ ...prev, description: e.target.value }))
                       }
                       placeholder="Brief description of your organization..."
                       rows={3}
@@ -231,10 +231,10 @@ const CreateOrganization = () => {
                         id="website_url"
                         type="url"
                         value={formData.website_url}
-                        onChange={e => {
-                          setFormData(prev => ({ ...prev, website_url: e.target.value }));
+                        onChange={(e) => {
+                          setFormData((prev) => ({ ...prev, website_url: e.target.value }));
                           if (errors.website_url) {
-                            setErrors(prev => ({ ...prev, website_url: '' }));
+                            setErrors((prev) => ({ ...prev, website_url: '' }));
                           }
                         }}
                         placeholder="https://acme.com"

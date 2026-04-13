@@ -30,7 +30,7 @@ export function DashboardTabs({ activeTab, onTabChange }: DashboardTabsProps) {
       <div className="max-w-7xl mx-auto px-6">
         <Tabs value={activeTab} onValueChange={onTabChange}>
           <TabsList className="bg-transparent h-auto p-0 gap-0">
-            {tabs.map(tab => (
+            {tabs.map((tab) => (
               <TabsTrigger
                 key={tab.id}
                 value={tab.id}

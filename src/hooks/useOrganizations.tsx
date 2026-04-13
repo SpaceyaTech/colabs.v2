@@ -45,7 +45,7 @@ export const useOrganizations = () => {
       if (error) throw error;
 
       const orgsWithRole =
-        data?.map(item => ({
+        data?.map((item) => ({
           ...item.organizations,
           role: item.role,
         })) || [];

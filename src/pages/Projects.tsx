@@ -115,13 +115,13 @@ const Projects = () => {
 
   const filteredProjects = useMemo(() => {
     return projects
-      .filter(project => {
+      .filter((project) => {
         const matchesSearch =
           project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           project.description.toLowerCase().includes(searchQuery.toLowerCase());
         const matchesFilter =
           selectedFilter === 'All' ||
-          project.technologies.some(tech =>
+          project.technologies.some((tech) =>
             tech.toLowerCase().includes(selectedFilter.toLowerCase())
           );
         const matchesDifficulty =
@@ -164,7 +164,7 @@ const Projects = () => {
               <Input
                 placeholder="Search projects..."
                 value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-9 h-9 text-sm"
               />
             </div>
@@ -196,7 +196,7 @@ const Projects = () => {
 
           {/* Technology Filter Tags */}
           <div className="flex flex-wrap gap-1.5">
-            {filters.map(filter => (
+            {filters.map((filter) => (
               <Badge
                 key={filter}
                 variant={selectedFilter === filter ? 'default' : 'secondary'}
@@ -248,7 +248,7 @@ const Projects = () => {
               <ProjectGrid>
                 {(searchQuery ? filteredProjects : projects.map(transformProjectToCard)).map(
                   (project, index) => {
-                    const dbProject = projects.find(p => p.name === project.name);
+                    const dbProject = projects.find((p) => p.name === project.name);
                     return (
                       <ProjectClickHandler key={dbProject?.id || index} projectId={dbProject?.id}>
                         <ProjectCard {...project} />
@@ -274,15 +274,15 @@ const Projects = () => {
               <div>
                 <h4 className="text-xs font-medium text-foreground mb-2">Difficulty</h4>
                 <div className="space-y-2">
-                  {difficulties.map(d => (
+                  {difficulties.map((d) => (
                     <div key={d} className="flex items-center space-x-2">
                       <Checkbox
                         id={`diff-${d}`}
                         checked={filterDifficulty.includes(d)}
-                        onCheckedChange={checked =>
+                        onCheckedChange={(checked) =>
                           checked
                             ? setFilterDifficulty([...filterDifficulty, d])
-                            : setFilterDifficulty(filterDifficulty.filter(x => x !== d))
+                            : setFilterDifficulty(filterDifficulty.filter((x) => x !== d))
                         }
                       />
                       <Label htmlFor={`diff-${d}`} className="text-xs">
@@ -297,10 +297,10 @@ const Projects = () => {
                 <h4 className="text-xs font-medium text-foreground mb-2">Compensation</h4>
                 <RadioGroup
                   value={filterPaid}
-                  onValueChange={val => setFilterPaid(val as 'any' | 'paid' | 'unpaid')}
+                  onValueChange={(val) => setFilterPaid(val as 'any' | 'paid' | 'unpaid')}
                   className="space-y-2"
                 >
-                  {['any', 'paid', 'unpaid'].map(v => (
+                  {['any', 'paid', 'unpaid'].map((v) => (
                     <div key={v} className="flex items-center space-x-2">
                       <RadioGroupItem value={v} id={`paid-${v}`} />
                       <Label htmlFor={`paid-${v}`} className="text-xs capitalize">
@@ -314,15 +314,15 @@ const Projects = () => {
               <div>
                 <h4 className="text-xs font-medium text-foreground mb-2">Industry</h4>
                 <div className="space-y-2">
-                  {industries.map(ind => (
+                  {industries.map((ind) => (
                     <div key={ind} className="flex items-center space-x-2">
                       <Checkbox
                         id={`ind-${ind}`}
                         checked={filterIndustry.includes(ind)}
-                        onCheckedChange={checked =>
+                        onCheckedChange={(checked) =>
                           checked
                             ? setFilterIndustry([...filterIndustry, ind])
-                            : setFilterIndustry(filterIndustry.filter(x => x !== ind))
+                            : setFilterIndustry(filterIndustry.filter((x) => x !== ind))
                         }
                       />
                       <Label htmlFor={`ind-${ind}`} className="text-xs">

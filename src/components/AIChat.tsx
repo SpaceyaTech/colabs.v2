@@ -13,10 +13,10 @@ const AIChat = () => {
   const handleSendMessage = () => {
     if (!message.trim()) return;
 
-    setMessages(prev => [...prev, { role: 'user', content: message }]);
+    setMessages((prev) => [...prev, { role: 'user', content: message }]);
     // Simulate AI response
     setTimeout(() => {
-      setMessages(prev => [
+      setMessages((prev) => [
         ...prev,
         { role: 'ai', content: "I'm here to help you with your open source contributions!" },
       ]);
@@ -99,7 +99,7 @@ const AIChat = () => {
           <div className="flex gap-2">
             <Input
               value={message}
-              onChange={e => setMessage(e.target.value)}
+              onChange={(e) => setMessage(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Type your message..."
               className="text-small"
