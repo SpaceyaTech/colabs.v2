@@ -47,7 +47,7 @@ export function IssueCard({ id, title, labels, assignee, createdAt, onClick }: I
 
         {/* Bottom: labels */}
         <div className="mt-auto flex items-center gap-1.5 flex-wrap">
-          {labels.slice(0, 3).map(label => (
+          {labels.slice(0, 3).map((label) => (
             <Badge
               key={label}
               variant="outline"

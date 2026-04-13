@@ -182,7 +182,7 @@ export function CreateGigDialog({ open, onOpenChange, onCreated, editGig }: Crea
 
     if (!result.success) {
       const fieldErrors: FieldErrors = {};
-      result.error.issues.forEach(issue => {
+      result.error.issues.forEach((issue) => {
         const key = issue.path[0]?.toString();
         if (key && !fieldErrors[key]) fieldErrors[key] = issue.message;
       });
@@ -212,8 +212,8 @@ export function CreateGigDialog({ open, onOpenChange, onCreated, editGig }: Crea
       category: category || null,
       is_urgent: isUrgent,
       technologies,
-      requirements: requirements.filter(r => r.trim()),
-      deliverables: deliverables.filter(d => d.trim()),
+      requirements: requirements.filter((r) => r.trim()),
+      deliverables: deliverables.filter((d) => d.trim()),
     };
 
     let error;
@@ -273,9 +273,9 @@ export function CreateGigDialog({ open, onOpenChange, onCreated, editGig }: Crea
               <Input
                 placeholder="e.g. Senior React Developer for E-commerce Platform"
                 value={title}
-                onChange={e => {
+                onChange={(e) => {
                   setTitle(e.target.value);
-                  setErrors(prev => ({ ...prev, title: undefined }));
+                  setErrors((prev) => ({ ...prev, title: undefined }));
                 }}
                 className={errors.title ? 'border-destructive' : ''}
               />
@@ -291,9 +291,9 @@ export function CreateGigDialog({ open, onOpenChange, onCreated, editGig }: Crea
                 <Input
                   placeholder="Your company name"
                   value={company}
-                  onChange={e => {
+                  onChange={(e) => {
                     setCompany(e.target.value);
-                    setErrors(prev => ({ ...prev, company: undefined }));
+                    setErrors((prev) => ({ ...prev, company: undefined }));
                   }}
                   className={errors.company ? 'border-destructive' : ''}
                 />
@@ -307,7 +307,7 @@ export function CreateGigDialog({ open, onOpenChange, onCreated, editGig }: Crea
                 <Input
                   placeholder="Remote"
                   value={location}
-                  onChange={e => setLocation(e.target.value)}
+                  onChange={(e) => setLocation(e.target.value)}
                 />
               </div>
             </div>
@@ -317,9 +317,9 @@ export function CreateGigDialog({ open, onOpenChange, onCreated, editGig }: Crea
               <Textarea
                 placeholder="Brief summary of the gig (shown in cards)"
                 value={description}
-                onChange={e => {
+                onChange={(e) => {
                   setDescription(e.target.value);
-                  setErrors(prev => ({ ...prev, description: undefined }));
+                  setErrors((prev) => ({ ...prev, description: undefined }));
                 }}
                 className={`min-h-[60px] ${errors.description ? 'border-destructive' : ''}`}
               />
@@ -331,7 +331,7 @@ export function CreateGigDialog({ open, onOpenChange, onCreated, editGig }: Crea
               <Textarea
                 placeholder="Detailed description with project context, goals, etc."
                 value={fullDescription}
-                onChange={e => setFullDescription(e.target.value)}
+                onChange={(e) => setFullDescription(e.target.value)}
                 className="min-h-[100px]"
               />
             </div>
@@ -353,9 +353,9 @@ export function CreateGigDialog({ open, onOpenChange, onCreated, editGig }: Crea
                 <Input
                   placeholder="$3,000 - $5,000"
                   value={budget}
-                  onChange={e => {
+                  onChange={(e) => {
                     setBudget(e.target.value);
-                    setErrors(prev => ({ ...prev, budget: undefined }));
+                    setErrors((prev) => ({ ...prev, budget: undefined }));
                   }}
                   className={errors.budget ? 'border-destructive' : ''}
                 />
@@ -367,9 +367,9 @@ export function CreateGigDialog({ open, onOpenChange, onCreated, editGig }: Crea
                   type="number"
                   placeholder="5000"
                   value={budgetValue}
-                  onChange={e => {
+                  onChange={(e) => {
                     setBudgetValue(e.target.value === '' ? '' : Number(e.target.value));
-                    setErrors(prev => ({ ...prev, budgetValue: undefined }));
+                    setErrors((prev) => ({ ...prev, budgetValue: undefined }));
                   }}
                   className={errors.budgetValue ? 'border-destructive' : ''}
                 />
@@ -383,7 +383,7 @@ export function CreateGigDialog({ open, onOpenChange, onCreated, editGig }: Crea
                 <Input
                   placeholder="2-4 weeks"
                   value={duration}
-                  onChange={e => setDuration(e.target.value)}
+                  onChange={(e) => setDuration(e.target.value)}
                 />
               </div>
             </div>
@@ -402,10 +402,10 @@ export function CreateGigDialog({ open, onOpenChange, onCreated, editGig }: Crea
                 <select
                   className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   value={category}
-                  onChange={e => setCategory(e.target.value)}
+                  onChange={(e) => setCategory(e.target.value)}
                 >
                   <option value="">Select category</option>
-                  {CATEGORIES.map(c => (
+                  {CATEGORIES.map((c) => (
                     <option key={c} value={c}>
                       {c}
                     </option>
@@ -417,9 +417,9 @@ export function CreateGigDialog({ open, onOpenChange, onCreated, editGig }: Crea
                 <select
                   className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   value={difficulty}
-                  onChange={e => setDifficulty(e.target.value)}
+                  onChange={(e) => setDifficulty(e.target.value)}
                 >
-                  {DIFFICULTIES.map(d => (
+                  {DIFFICULTIES.map((d) => (
                     <option key={d} value={d}>
                       {d}
                     </option>
@@ -432,7 +432,7 @@ export function CreateGigDialog({ open, onOpenChange, onCreated, editGig }: Crea
               <input
                 type="checkbox"
                 checked={isUrgent}
-                onChange={e => setIsUrgent(e.target.checked)}
+                onChange={(e) => setIsUrgent(e.target.checked)}
                 className="rounded border-input"
               />
               <span className="text-muted-foreground">Mark as urgent</span>
@@ -450,8 +450,8 @@ export function CreateGigDialog({ open, onOpenChange, onCreated, editGig }: Crea
               <Input
                 placeholder="Add a technology..."
                 value={techInput}
-                onChange={e => setTechInput(e.target.value)}
-                onKeyDown={e => {
+                onChange={(e) => setTechInput(e.target.value)}
+                onKeyDown={(e) => {
                   if (e.key === 'Enter') {
                     e.preventDefault();
                     addTech();
@@ -465,12 +465,12 @@ export function CreateGigDialog({ open, onOpenChange, onCreated, editGig }: Crea
             </div>
             {technologies.length > 0 && (
               <div className="flex flex-wrap gap-1.5">
-                {technologies.map(t => (
+                {technologies.map((t) => (
                   <Badge key={t} variant="secondary" className="text-xs gap-1">
                     {t}
                     <X
                       className="h-3 w-3 cursor-pointer"
-                      onClick={() => setTechnologies(technologies.filter(x => x !== t))}
+                      onClick={() => setTechnologies(technologies.filter((x) => x !== t))}
                     />
                   </Badge>
                 ))}
@@ -490,7 +490,7 @@ export function CreateGigDialog({ open, onOpenChange, onCreated, editGig }: Crea
                 <Input
                   placeholder={`Requirement ${i + 1}`}
                   value={req}
-                  onChange={e => {
+                  onChange={(e) => {
                     const copy = [...requirements];
                     copy[i] = e.target.value;
                     setRequirements(copy);
@@ -534,7 +534,7 @@ export function CreateGigDialog({ open, onOpenChange, onCreated, editGig }: Crea
                 <Input
                   placeholder={`Deliverable ${i + 1}`}
                   value={del}
-                  onChange={e => {
+                  onChange={(e) => {
                     const copy = [...deliverables];
                     copy[i] = e.target.value;
                     setDeliverables(copy);

@@ -63,7 +63,7 @@ export function TeamsTab() {
           if (membersTeam) {
             setMembersTeam({
               ...membersTeam,
-              members: membersTeam.members.filter(m => m.id !== memberId),
+              members: membersTeam.members.filter((m) => m.id !== memberId),
             });
           }
         },
@@ -167,7 +167,7 @@ export function TeamsTab() {
                         variant="ghost"
                         size="icon"
                         className="h-7 w-7"
-                        onClick={e => e.stopPropagation()}
+                        onClick={(e) => e.stopPropagation()}
                       >
                         <MoreVertical className="h-4 w-4" />
                       </Button>
@@ -199,7 +199,7 @@ export function TeamsTab() {
       <CreateTeamDialog open={dialogOpen} onOpenChange={setDialogOpen} />
 
       {/* Delete confirmation */}
-      <AlertDialog open={!!deleteTarget} onOpenChange={open => !open && setDeleteTarget(null)}>
+      <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete this team?</AlertDialogTitle>
@@ -222,7 +222,7 @@ export function TeamsTab() {
       </AlertDialog>
 
       {/* Members sheet */}
-      <Sheet open={!!membersTeam} onOpenChange={open => !open && setMembersTeam(null)}>
+      <Sheet open={!!membersTeam} onOpenChange={(open) => !open && setMembersTeam(null)}>
         <SheetContent>
           <SheetHeader>
             <SheetTitle>Members — {membersTeam?.name}</SheetTitle>
@@ -232,7 +232,7 @@ export function TeamsTab() {
             </SheetDescription>
           </SheetHeader>
           <div className="mt-4 space-y-1">
-            {membersTeam?.members.map(member => {
+            {membersTeam?.members.map((member) => {
               const isCurrentUser = member.user_id === user?.id;
 
               return (

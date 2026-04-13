@@ -283,7 +283,7 @@ const OrganizationDashboard = () => {
                   <div>
                     <p className="text-sm text-muted-foreground">Active Workflows</p>
                     <p className="text-2xl font-bold">
-                      {workflows.filter(w => w.is_active).length}
+                      {workflows.filter((w) => w.is_active).length}
                     </p>
                   </div>
                   <Activity className="h-8 w-8 text-primary/60" />
@@ -386,7 +386,7 @@ const OrganizationDashboard = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {integrations.map(integration => {
+                {integrations.map((integration) => {
                   const Icon = getIntegrationIcon(integration.integration_type);
                   const colorClass = getIntegrationColor(integration.integration_type);
 
@@ -445,7 +445,7 @@ const OrganizationDashboard = () => {
               </div>
 
               <div className="space-y-4">
-                {workflows.map(workflow => (
+                {workflows.map((workflow) => (
                   <Card key={workflow.id}>
                     <CardContent className="p-6">
                       <div className="flex items-center justify-between">
@@ -503,7 +503,7 @@ const OrganizationDashboard = () => {
               </div>
 
               <div className="space-y-4">
-                {members.map(member => (
+                {members.map((member) => (
                   <Card key={member.id}>
                     <CardContent className="p-6">
                       <div className="flex items-center justify-between">

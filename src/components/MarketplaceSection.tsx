@@ -84,7 +84,7 @@ const MarketplaceSection = () => {
                 <div>
                   <h3 className="font-bold text-lg mb-2">{project.title}</h3>
                   <div className="flex flex-wrap gap-1">
-                    {project.tech.map(tech => (
+                    {project.tech.map((tech) => (
                       <Badge key={tech} variant="outline" className="text-xs">
                         {tech}
                       </Badge>

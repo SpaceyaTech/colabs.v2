@@ -57,6 +57,7 @@
 - [Community & Support](#-community--support)
 - [License](#-license)
 - [Acknowledgements](#-acknowledgements)
+- [Contributors](#contributors-)
 
 ---
 
@@ -333,7 +334,7 @@ Verify deployment in your Supabase dashboard under **Edge Functions**.
 | `github-issues`       | Fetches open issues from collaboration-enabled repos with label categorisation |
 | `github-project-data` | Retrieves detailed project/repo metadata                                       |
 
-> **Security note:** Access tokens are stored server-side only. They are never returned to or readable by the client — Supabase RLS column-level filtering enforces this.
+> **Security note:** Access tokens are stored server-side only. They are never returned to the client — protection is enforced by never including `access_token` in any client-side SELECT query. Edge Functions read the token via the service role key.
 
 ---
 
@@ -645,6 +646,25 @@ Made with ❤️ by the Colabs community · Powered by [SpaceYaTech](https://x.c
 
 [Discord](https://discord.gg/UKjtBDDFHH) · [X](https://x.com/SpaceYaTech) · [Instagram](https://instagram.com/SpaceYaTech) · [LinkedIn](https://linkedin.com/company/SpaceYaTech) · [TikTok](https://tiktok.com/@SpaceYaTech)
 
-[⬆ Back to top](#colabs)
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+
+[![All Contributors](https://img.shields.io/badge/all_contributors-0-orange.svg?style=flat-square)](#contributors-)
+
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
 
 </div>
+
+[⬆ Back to top](#colabs)

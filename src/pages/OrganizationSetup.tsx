@@ -130,7 +130,7 @@ const OrganizationSetup = () => {
     try {
       // In a real app, this would redirect to GitHub OAuth
       // For demo, we'll simulate the connection
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       const { error } = await supabase.from('organization_integrations').insert({
         organization_id: organization.id,
@@ -218,7 +218,7 @@ const OrganizationSetup = () => {
     try {
       // In a real app, you'd save the selected repos to the database
       // For demo, we'll just simulate saving
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await new Promise((resolve) => setTimeout(resolve, 1500));
 
       toast({
         title: 'Setup complete!',
@@ -318,7 +318,7 @@ const OrganizationSetup = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {repositories.map(repo => (
+                      {repositories.map((repo) => (
                         <div
                           key={repo.id}
                           className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"

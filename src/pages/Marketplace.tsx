@@ -150,14 +150,14 @@ function GigFilters({
       <div className="space-y-1.5">
         <p className="text-[11px] text-muted-foreground uppercase tracking-wider">Difficulty</p>
         <div className="flex flex-wrap gap-1.5">
-          {difficulties.map(d => (
+          {difficulties.map((d) => (
             <button
               key={d}
               onClick={() =>
-                onChange(p => ({
+                onChange((p) => ({
                   ...p,
                   difficulty: p.difficulty.includes(d)
-                    ? p.difficulty.filter(x => x !== d)
+                    ? p.difficulty.filter((x) => x !== d)
                     : [...p.difficulty, d],
                 }))
               }
@@ -175,14 +175,14 @@ function GigFilters({
       <div className="space-y-1.5">
         <p className="text-[11px] text-muted-foreground uppercase tracking-wider">Category</p>
         <div className="flex flex-wrap gap-1.5">
-          {categories.map(c => (
+          {categories.map((c) => (
             <button
               key={c}
               onClick={() =>
-                onChange(p => ({
+                onChange((p) => ({
                   ...p,
                   category: p.category.includes(c)
-                    ? p.category.filter(x => x !== c)
+                    ? p.category.filter((x) => x !== c)
                     : [...p.category, c],
                 }))
               }
@@ -201,7 +201,7 @@ function GigFilters({
         <Checkbox
           id="f-urgent"
           checked={filters.isUrgent}
-          onCheckedChange={(c: boolean) => onChange(p => ({ ...p, isUrgent: !!c }))}
+          onCheckedChange={(c: boolean) => onChange((p) => ({ ...p, isUrgent: !!c }))}
         />
         <label htmlFor="f-urgent" className="text-xs text-muted-foreground">
           Urgent only
@@ -228,14 +228,14 @@ function SoftwareFilters({
       <div className="space-y-1.5">
         <p className="text-[11px] text-muted-foreground uppercase tracking-wider">Industry</p>
         <div className="flex flex-wrap gap-1.5">
-          {industries.map(i => (
+          {industries.map((i) => (
             <button
               key={i}
               onClick={() =>
-                onChange(p => ({
+                onChange((p) => ({
                   ...p,
                   industry: p.industry.includes(i)
-                    ? p.industry.filter(x => x !== i)
+                    ? p.industry.filter((x) => x !== i)
                     : [...p.industry, i],
                 }))
               }
@@ -253,14 +253,14 @@ function SoftwareFilters({
       <div className="space-y-1.5">
         <p className="text-[11px] text-muted-foreground uppercase tracking-wider">Tech Stack</p>
         <div className="flex flex-wrap gap-1.5">
-          {techStacks.map(t => (
+          {techStacks.map((t) => (
             <button
               key={t}
               onClick={() =>
-                onChange(p => ({
+                onChange((p) => ({
                   ...p,
                   techStack: p.techStack.includes(t)
-                    ? p.techStack.filter(x => x !== t)
+                    ? p.techStack.filter((x) => x !== t)
                     : [...p.techStack, t],
                 }))
               }
@@ -316,7 +316,7 @@ function GigsContentView({
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-      {gigs.map(gig => (
+      {gigs.map((gig) => (
         <ExploreGigCard
           key={gig.id}
           gig={gig}
@@ -351,7 +351,7 @@ function SoftwareContentView({
 
   return (
     <div className="grid md:grid-cols-2 gap-3">
-      {software.map(sw => (
+      {software.map((sw) => (
         <Card
           key={sw.id}
           className="border-border/40 overflow-hidden hover:border-primary/30 transition-all cursor-pointer group"
@@ -381,7 +381,7 @@ function SoftwareContentView({
             </div>
             <p className="text-[10px] text-muted-foreground line-clamp-2">{sw.description}</p>
             <div className="flex flex-wrap gap-1">
-              {sw.tags.slice(0, 3).map(t => (
+              {sw.tags.slice(0, 3).map((t) => (
                 <span
                   key={t}
                   className="text-[10px] px-1.5 py-0.5 rounded bg-accent text-muted-foreground"
@@ -449,7 +449,7 @@ const Marketplace = () => {
     }
   }, []);
   const toggleSaveGig = useCallback((id: string) => {
-    setSavedGigIds(prev => {
+    setSavedGigIds((prev) => {
       const next = new Set(prev);
       if (next.has(id)) {
         next.delete(id);
@@ -467,12 +467,12 @@ const Marketplace = () => {
 
   const filteredGigs = useMemo(() => {
     return gigs
-      .filter(gig => {
+      .filter((gig) => {
         const q = searchQuery.toLowerCase();
         const matchesSearch =
           !q ||
           gig.title.toLowerCase().includes(q) ||
-          gig.technologies.some(s => s.toLowerCase().includes(q));
+          gig.technologies.some((s) => s.toLowerCase().includes(q));
         const matchesDifficulty =
           gigFilters.difficulty.length === 0 || gigFilters.difficulty.includes(gig.difficulty);
         const matchesCategory =
@@ -494,14 +494,14 @@ const Marketplace = () => {
 
   const filteredSoftware = useMemo(() => {
     return mockSoftware
-      .filter(sw => {
+      .filter((sw) => {
         const q = searchQuery.toLowerCase();
         const matchesSearch = !q || sw.name.toLowerCase().includes(q);
         const matchesIndustry =
           softwareFilters.industry.length === 0 || softwareFilters.industry.includes(sw.industry);
         const matchesTech =
           softwareFilters.techStack.length === 0 ||
-          softwareFilters.techStack.some(t => sw.techStack.includes(t));
+          softwareFilters.techStack.some((t) => sw.techStack.includes(t));
         return matchesSearch && matchesIndustry && matchesTech;
       })
       .sort((a, b) => {
@@ -541,7 +541,7 @@ const Marketplace = () => {
             <h1 className="text-lg font-semibold text-foreground">Marketplace</h1>
             <Tabs
               value={activeTab}
-              onValueChange={v => {
+              onValueChange={(v) => {
                 setActiveTab(v as 'gigs' | 'software');
                 setSearchQuery('');
               }}
@@ -564,7 +564,7 @@ const Marketplace = () => {
               <Input
                 placeholder={activeTab === 'gigs' ? 'Search gigs, skills...' : 'Search software...'}
                 value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 className="h-8 pl-8 text-[13px] bg-transparent border-border/40"
               />
             </div>

@@ -180,7 +180,7 @@ export function GigCard({ gig, className }: GigCardProps) {
 
         {/* Skills */}
         <div className="flex flex-wrap gap-2 mb-4">
-          {gig.skills.slice(0, 5).map(skill => (
+          {gig.skills.slice(0, 5).map((skill) => (
             <Badge key={skill} variant="secondary" className="text-xs">
               {skill}
             </Badge>

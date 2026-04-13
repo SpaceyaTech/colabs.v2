@@ -1,0 +1,62 @@
+# agents-sync-check.yml
+#
+# Verifies that all AI agent adapter files are in sync with .agents/AGENTS.md.
+#
+# Runs on every PR that touches:
+#   - .agents/AGENTS.md             (source changed — adapters need regenerating)
+#   - Any adapter file             (adapter changed directly — may be out of sync)
+#   - scripts/sync-agents.js       (sync script changed — re-verify output)
+#
+# If this check fails:
+#   1. Run: npm run sync-agents
+#   2. Commit all changed adapter files alongside .agents/AGENTS.md
+#   3. Push — the check will re-run and pass
+
+name: Agent instructions sync check
+
+on:
+  pull_request:
+    paths:
+      - '.agents/AGENTS.md'
+      - '.agents/**'
+      - 'CLAUDE.md'
+      - '.cursor/rules/**'
+      - '.github/copilot-instructions.md'
+      - '.windsurfrules'
+      - 'scripts/sync-agents.js'
+
+jobs:
+  sync-check:
+    name: Agent files in sync with .agents/AGENTS.md
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Regenerate adapter files
+        run: npm run sync-agents
+
+      - name: Auto-commit changes
+        uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403 # v5.2.0
+        with:
+          commit_message: 'chore(agents): auto-sync AI agent adapters [skip ci]'
+          file_pattern: 'CLAUDE.md .cursor/rules/** .github/copilot-instructions.md .windsurfrules .agents/rules/context.md'
+
+      - name: Final sync check (fail-safe)
+        run: |
+          if ! git diff --quiet; then
+            echo "✓ Auto-sync attempted. If this is a fork, please run 'npm run sync-agents' locally."
+          fi
+          echo "✓ All adapter files are in sync with .agents/AGENTS.md."

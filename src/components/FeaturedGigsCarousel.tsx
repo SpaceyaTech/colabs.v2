@@ -47,7 +47,7 @@ export const FeaturedGigsCarousel = ({ gigs, onGigClick }: FeaturedGigsCarouselP
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
 
-  const featuredGigs = gigs.filter(gig => gig.featured);
+  const featuredGigs = gigs.filter((gig) => gig.featured);
 
   useEffect(() => {
     if (!api) return;
@@ -133,7 +133,7 @@ export const FeaturedGigsCarousel = ({ gigs, onGigClick }: FeaturedGigsCarouselP
         className="w-full"
       >
         <CarouselContent className="-ml-4">
-          {featuredGigs.map(gig => (
+          {featuredGigs.map((gig) => (
             <CarouselItem key={gig.id} className="pl-4 md:basis-1/2 lg:basis-1/2">
               <Card
                 className="group relative overflow-hidden border-[0.5px] border-border/40 bg-gradient-to-br from-card via-card to-primary/5 hover:shadow-xl hover:shadow-primary/5 transition-all duration-500 cursor-pointer"
@@ -196,7 +196,7 @@ export const FeaturedGigsCarousel = ({ gigs, onGigClick }: FeaturedGigsCarouselP
 
                       {/* Skills */}
                       <div className="flex flex-wrap gap-1.5">
-                        {gig.skills.slice(0, 4).map(skill => (
+                        {gig.skills.slice(0, 4).map((skill) => (
                           <Badge key={skill} variant="outline" className="text-xs bg-muted/50">
                             {skill}
                           </Badge>
@@ -246,7 +246,7 @@ export const FeaturedGigsCarousel = ({ gigs, onGigClick }: FeaturedGigsCarouselP
                         <Button
                           size="sm"
                           className="group/btn"
-                          onClick={e => {
+                          onClick={(e) => {
                             e.stopPropagation();
                             if (onGigClick) {
                               onGigClick(gig.id);
