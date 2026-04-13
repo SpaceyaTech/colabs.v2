@@ -201,7 +201,7 @@ const Leaderboard = () => {
   const filtered = useMemo(() => {
     if (!searchQuery) return entries;
     return entries.filter(
-      e =>
+      (e) =>
         e.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
         e.country.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -235,7 +235,7 @@ const Leaderboard = () => {
             <Input
               placeholder="Search by name or country..."
               value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-9 h-9 text-sm"
             />
           </div>
@@ -243,7 +243,7 @@ const Leaderboard = () => {
           {/* Top 3 Highlight Cards */}
           {!searchQuery && entries.length >= 3 && (
             <div className="grid grid-cols-3 gap-3">
-              {entries.slice(0, 3).map(entry => (
+              {entries.slice(0, 3).map((entry) => (
                 <div
                   key={entry.username}
                   className={`rounded-lg border border-border/40 p-4 text-center space-y-2 ${
@@ -314,7 +314,7 @@ const Leaderboard = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filtered.map(entry => (
+                  {filtered.map((entry) => (
                     <TableRow key={entry.username} className="group">
                       <TableCell className="w-12">{getRankDisplay(entry.rank)}</TableCell>
                       <TableCell>

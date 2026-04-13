@@ -74,7 +74,7 @@ const MyProposals = () => {
             </div>
           ) : (
             <div className="border border-border rounded-lg divide-y divide-border">
-              {items.map(p => (
+              {items.map((p) => (
                 <div
                   key={p.id}
                   className="flex items-center justify-between px-4 py-3 hover:bg-muted/50 transition-colors"

@@ -151,7 +151,7 @@ const Pricing = () => {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {plans.map(plan => {
+            {plans.map((plan) => {
               const isCurrent = user && plan.key === currentPlan;
 
               return (

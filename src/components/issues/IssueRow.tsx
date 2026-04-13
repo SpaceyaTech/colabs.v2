@@ -48,7 +48,7 @@ export const IssueRow = forwardRef<
       </span>
     </div>
     <div className="flex items-center gap-1.5 pl-5 sm:pl-0">
-      {issue.labels.slice(0, 2).map(l => (
+      {issue.labels.slice(0, 2).map((l) => (
         <span key={l} className="text-[11px] px-1.5 py-0.5 rounded bg-accent text-muted-foreground">
           {l}
         </span>

@@ -20,3 +20,12 @@ CHANGELOG.md
 
 # Machine-generated files
 src/integrations/supabase/types.ts
+
+# Auto-generated agent adapter files
+CLAUDE.md
+.github/copilot-instructions.md
+.windsurfrules
+.cursor/rules/
+.agents/rules/context.md
+
+vercel.json

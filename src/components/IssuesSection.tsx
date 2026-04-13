@@ -111,10 +111,13 @@ export function IssuesSection() {
   const navigate = useNavigate();
 
   const groups = [
-    { status: 'todo' as const, issues: mockIssues.filter(i => i.status === 'todo') },
-    { status: 'in-progress' as const, issues: mockIssues.filter(i => i.status === 'in-progress') },
-    { status: 'done' as const, issues: mockIssues.filter(i => i.status === 'done') },
-  ].filter(g => g.issues.length > 0);
+    { status: 'todo' as const, issues: mockIssues.filter((i) => i.status === 'todo') },
+    {
+      status: 'in-progress' as const,
+      issues: mockIssues.filter((i) => i.status === 'in-progress'),
+    },
+    { status: 'done' as const, issues: mockIssues.filter((i) => i.status === 'done') },
+  ].filter((g) => g.issues.length > 0);
 
   return (
     <div className="space-y-4">
@@ -141,7 +144,7 @@ export function IssuesSection() {
               <span className="text-[11px] text-muted-foreground/50">{issues.length}</span>
             </div>
             <div className="space-y-px">
-              {issues.map(issue => (
+              {issues.map((issue) => (
                 <Sheet key={issue.id}>
                   <SheetTrigger asChild>
                     <IssueRow issue={issue} />

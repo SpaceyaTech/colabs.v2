@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const corsHeaders = {
@@ -27,7 +28,7 @@ interface Repository {
   html_url: string;
 }
 
-Deno.serve(async req => {
+Deno.serve(async (req: Request) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -64,10 +65,10 @@ Deno.serve(async req => {
 
     console.log(`Fetching issues for user: ${user.id}`);
 
-    // Get the user's active GitHub integration
+    // Get the user's active GitHub integration and secrets
     const { data: integration, error: integrationError } = await supabase
       .from('github_integrations')
-      .select('*')
+      .select('*, github_integration_secrets(access_token)')
       .eq('user_id', user.id)
       .eq('is_active', true)
       .maybeSingle();
@@ -122,7 +123,15 @@ Deno.serve(async req => {
 
     // Fetch issues from each repository
     const allIssues: any[] = [];
-    const accessToken = integration.access_token;
+    const secrets = integration.github_integration_secrets as any;
+    const accessToken = Array.isArray(secrets) ? secrets[0]?.access_token : secrets?.access_token;
+
+    if (!accessToken) {
+      return new Response(JSON.stringify({ error: 'GitHub access token not found' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
 
     for (const repo of repositories) {
       try {
@@ -147,15 +156,15 @@ Deno.serve(async req => {
         const issues: GitHubIssue[] = await response.json();
 
         // Filter out pull requests (they show up in issues API)
-        const realIssues = issues.filter(issue => !issue.html_url.includes('/pull/'));
+        const realIssues = issues.filter((issue) => !issue.html_url.includes('/pull/'));
 
         console.log(`Found ${realIssues.length} issues in ${repo.full_name}`);
 
         // Transform issues to our format
         for (const issue of realIssues) {
-          const labels = issue.labels.map(l => l.name);
+          const labels = issue.labels.map((l) => l.name);
           const isGoodFirstIssue = labels.some(
-            l =>
+            (l) =>
               l.toLowerCase().includes('good first issue') ||
               l.toLowerCase().includes('good-first-issue') ||
               l.toLowerCase().includes('beginner') ||
@@ -165,19 +174,19 @@ Deno.serve(async req => {
           // Determine category from labels
           let category: 'bug' | 'feature' | 'documentation' | 'enhancement' | 'help-wanted' =
             'feature';
-          if (labels.some(l => l.toLowerCase().includes('bug'))) {
+          if (labels.some((l) => l.toLowerCase().includes('bug'))) {
             category = 'bug';
           } else if (
             labels.some(
-              l => l.toLowerCase().includes('documentation') || l.toLowerCase().includes('docs')
+              (l) => l.toLowerCase().includes('documentation') || l.toLowerCase().includes('docs')
             )
           ) {
             category = 'documentation';
-          } else if (labels.some(l => l.toLowerCase().includes('enhancement'))) {
+          } else if (labels.some((l) => l.toLowerCase().includes('enhancement'))) {
             category = 'enhancement';
           } else if (
             labels.some(
-              l =>
+              (l) =>
                 l.toLowerCase().includes('help wanted') || l.toLowerCase().includes('help-wanted')
             )
           ) {
@@ -188,17 +197,17 @@ Deno.serve(async req => {
           let priority: 'low' | 'medium' | 'high' | 'urgent' = 'medium';
           if (
             labels.some(
-              l => l.toLowerCase().includes('urgent') || l.toLowerCase().includes('critical')
+              (l) => l.toLowerCase().includes('urgent') || l.toLowerCase().includes('critical')
             )
           ) {
             priority = 'urgent';
           } else if (
             labels.some(
-              l => l.toLowerCase().includes('high') || l.toLowerCase().includes('important')
+              (l) => l.toLowerCase().includes('high') || l.toLowerCase().includes('important')
             )
           ) {
             priority = 'high';
-          } else if (labels.some(l => l.toLowerCase().includes('low'))) {
+          } else if (labels.some((l) => l.toLowerCase().includes('low'))) {
             priority = 'low';
           }
 
@@ -251,7 +260,8 @@ Deno.serve(async req => {
     );
   } catch (error) {
     console.error('Unexpected error:', error);
-    return new Response(JSON.stringify({ error: 'An unexpected error occurred' }), {
+    const message = error instanceof Error ? error.message : 'An unexpected error occurred';
+    return new Response(JSON.stringify({ error: message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

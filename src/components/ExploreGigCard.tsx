@@ -130,7 +130,7 @@ export function ExploreGigCard({
 
         {/* Tech tags */}
         <div className="flex items-center gap-1 flex-wrap">
-          {gig.technologies.slice(0, 3).map(t => (
+          {gig.technologies.slice(0, 3).map((t) => (
             <span
               key={t}
               className="text-[10px] px-1.5 py-0.5 rounded bg-accent text-muted-foreground"
@@ -154,7 +154,7 @@ export function ExploreGigCard({
               <MessageSquare className="h-2.5 w-2.5" /> {gig.proposals} proposals
             </span>
           </div>
-          <div className="flex items-center gap-1" onClick={e => e.stopPropagation()}>
+          <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
             {onToggleSave && (
               <Button
                 variant="ghost"
