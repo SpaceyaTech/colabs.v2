@@ -1,0 +1,162 @@
+name: Community Automation
+
+on:
+  # 👋 Greeting
+  issues:
+    types: [opened]
+  pull_request_target:
+    types: [opened]
+
+  # ✅ Labeling on approval
+  pull_request_review:
+    types: [submitted]
+
+  # 🚀 Release trigger (ONLY when code reaches production)
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+jobs:
+  # 👋 1. Welcome first-time contributors
+  greeting:
+    if: github.event_name == 'issues' || github.event_name == 'pull_request_target'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+
+    steps:
+      - name: Welcome first-time contributors
+        uses: actions/first-interaction@v1.3.0
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+          issue-message: |
+            👋 Welcome to Colabs! Thanks for opening your first issue!
+
+            We appreciate your time and effort in helping us build a platform that connects developers with open-source projects, freelance gigs, and collaborative teams 💙  
+            A maintainer will review this soon.
+
+          pr-message: |
+            🎉 Welcome to Colabs! Thanks for your first contribution!
+
+            We're excited to have you on board 🙌 Your work helps empower the global developer community.
+            A maintainer will review your PR shortly.
+
+  # 🏆 2. Update contributors (ONLY on main)
+  contributors:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install tools
+        run: |
+          npm install -g all-contributors-cli
+          sudo apt-get install -y jq
+
+      # 🧠 Get contributors from merged PRs (SOURCE OF TRUTH)
+      - name: Fetch merged PR contributors
+        id: pr_contributors
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prs = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: "closed",
+              base: "main",
+              per_page: 100
+            });
+
+            const contributors = new Set();
+
+            for (const pr of prs.data) {
+              // ✅ Only merged PRs
+              if (!pr.merged_at) continue;
+
+              // ❌ Skip bots
+              if (pr.user.type === "Bot") continue;
+
+              contributors.add(pr.user.login);
+            }
+
+            return Array.from(contributors);
+
+      # 🧹 Remove existing contributors (deduplication)
+      - name: Filter new contributors
+        id: filtered
+        run: |
+          EXISTING=$(cat .all-contributorsrc 2>/dev/null | jq -r '.contributors[].login' || echo "")
+
+          NEW=""
+
+          # Parse the array output from github-script using jq
+          for user in $(echo '${{ steps.pr_contributors.outputs.result }}' | jq -r '.[]'); do
+            if echo "$EXISTING" | grep -w "$user" > /dev/null; then
+              continue
+            fi
+            NEW="${NEW} ${user}"
+          done
+
+          # Trim whitespace safely
+          NEW=$(echo "$NEW" | xargs)
+          echo "new=$NEW" >> "$GITHUB_OUTPUT"
+
+      # ➕ Add contributors safely
+      - name: Add contributors
+        if: steps.filtered.outputs.new != ''
+        run: |
+          for user in ${{ steps.filtered.outputs.new }}; do
+            npx all-contributors add "$user" code
+          done
+
+          npx all-contributors generate
+
+      # 📦 Create clean PR (NO direct commits to main)
+      - name: Create Pull Request
+        if: steps.filtered.outputs.new != ''
+        uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c # v6
+        with:
+          commit-message: 'docs: update contributors'
+          title: 'docs: update contributors'
+          body: |
+            🤖 Automated contributors update
+
+            Added new contributors from merged and approved PRs 🚀  
+            - No bots included  
+            - No duplicates  
+            - Only production-ready contributions
+
+          branch: chore/contributors-update
+
+  # ✅ 3. Label approved PRs
+  label-approved:
+    if: github.event_name == 'pull_request_review' && github.event.review.state == 'approved'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Add approved label
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // GitHub treats PRs as issues for the addLabels endpoint
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: ['approved']
+            });
