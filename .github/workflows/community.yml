@@ -19,7 +19,6 @@ on:
   workflow_dispatch:
 
 jobs:
-
   # 👋 1. Welcome first-time contributors
   greeting:
     if: github.event_name == 'issues' || github.event_name == 'pull_request_target'
@@ -129,17 +128,17 @@ jobs:
       # 📦 Create clean PR (NO direct commits to main)
       - name: Create Pull Request
         if: steps.filtered.outputs.new != ''
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c # v6
         with:
-          commit-message: "docs: update contributors"
-          title: "docs: update contributors"
+          commit-message: 'docs: update contributors'
+          title: 'docs: update contributors'
           body: |
             🤖 Automated contributors update
 
             Added new contributors from merged and approved PRs 🚀  
             - No bots included  
             - No duplicates  
-            - Only production-ready contributions  
+            - Only production-ready contributions
 
           branch: chore/contributors-update
 
