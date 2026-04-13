@@ -14,7 +14,7 @@ updates:
     open-pull-requests-limit: 10
 
     # Target branch (change if your default branch differs)
-    target-branch: "dev"
+    target-branch: 'dev'
 
     # Group non-breaking updates into a single PR to reduce noise
     groups:
