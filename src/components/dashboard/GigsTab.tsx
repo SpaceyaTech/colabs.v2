@@ -223,8 +223,8 @@ function SectionDivider({ label }: { readonly label: string }) {
 }
 
 function EarningsOverview({ gigs }: { readonly gigs: Gig[] }) {
-  const accepted = gigs.filter(g => g.status === 'accepted');
-  const interviewing = gigs.filter(g => g.status === 'interviewing');
+  const accepted = gigs.filter((g) => g.status === 'accepted');
+  const interviewing = gigs.filter((g) => g.status === 'interviewing');
   const totalEarnings = accepted.reduce((sum, g) => sum + g.budgetValue, 0);
   const pendingEarnings = interviewing.reduce((sum, g) => sum + g.budgetValue, 0);
 
@@ -313,7 +313,7 @@ function GigSidePanel({ gig }: { readonly gig: Gig }) {
       <div className="space-y-1.5">
         <p className="text-[11px] text-muted-foreground uppercase tracking-wider">Technologies</p>
         <div className="flex flex-wrap gap-1.5">
-          {gig.technologies.map(tech => (
+          {gig.technologies.map((tech) => (
             <Badge key={tech} variant="secondary" className="text-xs">
               {tech}
             </Badge>
@@ -350,7 +350,7 @@ function GigListView({ groups }: { readonly groups: { status: Gig['status']; gig
             <span className="text-[11px] text-muted-foreground/50">{groupGigs.length}</span>
           </div>
           <div className="space-y-px">
-            {groupGigs.map(gig => (
+            {groupGigs.map((gig) => (
               <Sheet key={gig.id}>
                 <SheetTrigger asChild>
                   <button className="w-full text-left px-3 py-2.5 rounded-md hover:bg-accent/50 transition-colors group flex items-center gap-3">
@@ -383,7 +383,7 @@ function GigListView({ groups }: { readonly groups: { status: Gig['status']; gig
                       </div>
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
-                      {gig.technologies.slice(0, 2).map(t => (
+                      {gig.technologies.slice(0, 2).map((t) => (
                         <span
                           key={t}
                           className="text-[10px] px-1.5 py-0.5 rounded bg-accent text-muted-foreground"
@@ -415,7 +415,7 @@ function GigListView({ groups }: { readonly groups: { status: Gig['status']; gig
 function GigGridView({ gigs }: { readonly gigs: Gig[] }) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-      {gigs.map(gig => (
+      {gigs.map((gig) => (
         <Sheet key={gig.id}>
           <SheetTrigger asChild>
             <Card className="border-border/40 hover:border-primary/30 transition-all cursor-pointer group">
@@ -446,7 +446,7 @@ function GigGridView({ gigs }: { readonly gigs: Gig[] }) {
                   </span>
                 </div>
                 <div className="flex items-center gap-1 flex-wrap">
-                  {gig.technologies.slice(0, 3).map(t => (
+                  {gig.technologies.slice(0, 3).map((t) => (
                     <span
                       key={t}
                       className="text-[10px] px-1.5 py-0.5 rounded bg-accent text-muted-foreground"
@@ -524,7 +524,7 @@ export function GigsTab() {
     }
   }, []);
   const toggleSaveGig = useCallback((id: string) => {
-    setSavedGigIds(prev => {
+    setSavedGigIds((prev) => {
       const next = new Set(prev);
       if (next.has(id)) {
         next.delete(id);
@@ -563,15 +563,15 @@ export function GigsTab() {
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
       items = items.filter(
-        g =>
+        (g) =>
           g.title.toLowerCase().includes(q) ||
           g.company.toLowerCase().includes(q) ||
-          g.technologies.some(t => t.toLowerCase().includes(q))
+          g.technologies.some((t) => t.toLowerCase().includes(q))
       );
     }
-    if (filterStatuses.size > 0) items = items.filter(g => filterStatuses.has(g.status));
+    if (filterStatuses.size > 0) items = items.filter((g) => filterStatuses.has(g.status));
     if (filterDifficulties.size > 0)
-      items = items.filter(g => filterDifficulties.has(g.difficulty));
+      items = items.filter((g) => filterDifficulties.has(g.difficulty));
 
     items.sort((a, b) => {
       let cmp = 0;
@@ -597,8 +597,8 @@ export function GigsTab() {
   const statusGroups = useMemo(() => {
     const order: Gig['status'][] = ['interviewing', 'applied', 'accepted', 'rejected'];
     return order
-      .map(status => ({ status, gigs: filteredAndSorted.filter(g => g.status === status) }))
-      .filter(g => g.gigs.length > 0);
+      .map((status) => ({ status, gigs: filteredAndSorted.filter((g) => g.status === status) }))
+      .filter((g) => g.gigs.length > 0);
   }, [filteredAndSorted]);
 
   // ========== RENDER ==========
@@ -609,7 +609,7 @@ export function GigsTab() {
         <div className="flex items-center gap-3">
           <h1 className="text-lg font-semibold">My Gigs</h1>
           <span className="text-[11px] px-2 py-0.5 rounded-md bg-primary/10 text-primary font-medium border border-primary/20">
-            {gigs.filter(g => g.status === 'accepted').length} active
+            {gigs.filter((g) => g.status === 'accepted').length} active
           </span>
         </div>
         <div className="flex items-center gap-2">
@@ -642,7 +642,7 @@ export function GigsTab() {
           <Input
             placeholder="Search gigs..."
             value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
+            onChange={(e) => setSearchQuery(e.target.value)}
             className="h-8 pl-8 text-[13px] bg-transparent border-border/40"
           />
         </div>
@@ -683,7 +683,7 @@ export function GigsTab() {
                 <button
                   key={field}
                   onClick={() => {
-                    if (sortField === field) setSortDir(d => (d === 'asc' ? 'desc' : 'asc'));
+                    if (sortField === field) setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
                     else {
                       setSortField(field);
                       setSortDir('asc');
@@ -720,7 +720,7 @@ export function GigsTab() {
           <div className="space-y-1.5">
             <p className="text-[11px] text-muted-foreground uppercase tracking-wider">Status</p>
             <div className="flex flex-wrap gap-1.5">
-              {ALL_STATUSES.map(s => (
+              {ALL_STATUSES.map((s) => (
                 <FilterChip
                   key={s}
                   label={statusLabel[s]}
@@ -733,7 +733,7 @@ export function GigsTab() {
           <div className="space-y-1.5">
             <p className="text-[11px] text-muted-foreground uppercase tracking-wider">Difficulty</p>
             <div className="flex flex-wrap gap-1.5">
-              {ALL_DIFFICULTIES.map(d => (
+              {ALL_DIFFICULTIES.map((d) => (
                 <FilterChip
                   key={d}
                   label={d}
@@ -799,7 +799,7 @@ export function GigsTab() {
           Based on your skills and past gig history
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
-          {recommendedGigs.map(gig => (
+          {recommendedGigs.map((gig) => (
             <ExploreGigCard
               key={gig.id}
               gig={gig}

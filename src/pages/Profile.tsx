@@ -225,7 +225,7 @@ export default function Profile() {
                 Tech Stack
               </h2>
               <div className="space-y-3">
-                {mockTechStack.map(tech => (
+                {mockTechStack.map((tech) => (
                   <div key={tech.name} className="space-y-1">
                     <div className="flex items-center justify-between text-sm">
                       <span className="font-medium">{tech.name}</span>
@@ -275,7 +275,7 @@ export default function Profile() {
               </Button>
             </div>
             <div className="border border-border rounded-lg divide-y divide-border">
-              {mockProjectsContributed.map(project => (
+              {mockProjectsContributed.map((project) => (
                 <div
                   key={project.id}
                   className="flex items-center justify-between px-4 py-3 hover:bg-muted/50 transition-colors"

@@ -11,7 +11,7 @@ export function BottomNav() {
   const touchStartX = useRef(0);
   const touchStartY = useRef(0);
 
-  const activeIndex = navItems.findIndex(item =>
+  const activeIndex = navItems.findIndex((item) =>
     item.url === '/dashboard'
       ? location.pathname === '/dashboard'
       : location.pathname.startsWith(item.url)

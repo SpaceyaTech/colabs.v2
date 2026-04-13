@@ -84,7 +84,7 @@ export function ProjectCard({
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm font-semibold text-primary hover:underline truncate flex items-center gap-1"
-                  onClick={e => e.stopPropagation()}
+                  onClick={(e) => e.stopPropagation()}
                 >
                   {owner ? `${owner}/` : ''}
                   {name}
@@ -123,7 +123,7 @@ export function ProjectCard({
         {/* Tech/topic tags */}
         {technologies && technologies.length > 0 && (
           <div className="flex flex-wrap gap-1">
-            {technologies.slice(0, 4).map(tech => (
+            {technologies.slice(0, 4).map((tech) => (
               <Badge key={tech} variant="secondary" className="text-[10px]">
                 {tech}
               </Badge>

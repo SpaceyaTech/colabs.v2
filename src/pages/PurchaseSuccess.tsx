@@ -41,10 +41,23 @@ const PurchaseSuccess = () => {
    * See docs/STRIPE_INTEGRATION.md for full implementation details.
    */
   useEffect(() => {
-    // TODO: Check for Stripe session_id in URL params
-    // const searchParams = new URLSearchParams(window.location.search);
-    // const sessionId = searchParams.get('session_id');
-    // if (sessionId) { /* verify with backend */ }
+    // Phase 2: Verify the Stripe session via a backend edge function
+    // This prevents users from accessing the success page by manually setting URL params
+    const searchParams = new URLSearchParams(window.location.search);
+    const sessionId = searchParams.get('session_id');
+
+    // if (sessionId) {
+    //   const verifySession = async () => {
+    //     const { data, error } = await supabase.functions.invoke('verify-checkout-session', {
+    //       body: { sessionId }
+    //     });
+    //     if (error) {
+    //       console.error('Session verification failed:', error);
+    //       navigate('/marketplace');
+    //     }
+    //   };
+    //   verifySession();
+    // }
 
     const {
       project: projectData,

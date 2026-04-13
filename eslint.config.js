@@ -14,10 +14,19 @@ export default tseslint.config(
       'public',
       'src/integrations/supabase/types.ts',
       'src/components/ui',
+      'supabase/functions',
     ],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
+  {
+    files: ['scripts/**/*.js'],
+    languageOptions: {
+      ecmaVersion: 2020,
+      sourceType: 'module',
+      globals: globals.node,
+    },
+  },
   {
     files: ['**/*.{ts,tsx}'],
     languageOptions: {

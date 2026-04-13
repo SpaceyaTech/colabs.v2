@@ -213,9 +213,9 @@ export function OverviewTab({ projects }: OverviewTabProps) {
   const navigate = useNavigate();
 
   const groups: { status: Issue['status']; issues: Issue[] }[] = [
-    { status: 'in-progress', issues: mockIssues.filter(i => i.status === 'in-progress') },
-    { status: 'todo', issues: mockIssues.filter(i => i.status === 'todo') },
-    { status: 'done', issues: mockIssues.filter(i => i.status === 'done') },
+    { status: 'in-progress', issues: mockIssues.filter((i) => i.status === 'in-progress') },
+    { status: 'todo', issues: mockIssues.filter((i) => i.status === 'todo') },
+    { status: 'done', issues: mockIssues.filter((i) => i.status === 'done') },
   ];
 
   const renderIssueRow = (issue: Issue) => (
@@ -229,7 +229,7 @@ export function OverviewTab({ projects }: OverviewTabProps) {
             <span className="flex-1 truncate text-foreground">{issue.title}</span>
           </div>
           <div className="flex items-center gap-1.5 pl-5 sm:pl-0">
-            {issue.labels.slice(0, 2).map(l => (
+            {issue.labels.slice(0, 2).map((l) => (
               <span
                 key={l}
                 className="text-[11px] px-1.5 py-0.5 rounded bg-accent text-muted-foreground"
@@ -282,7 +282,7 @@ export function OverviewTab({ projects }: OverviewTabProps) {
           <Separator />
           <p className="text-sm text-muted-foreground">{issue.description}</p>
           <div className="flex flex-wrap gap-1.5">
-            {issue.labels.map(l => (
+            {issue.labels.map((l) => (
               <Badge key={l} variant="secondary" className="text-xs">
                 {l}
               </Badge>
@@ -340,7 +340,7 @@ export function OverviewTab({ projects }: OverviewTabProps) {
         </div>
         {projects.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {projects.slice(0, 6).map(project => {
+            {projects.slice(0, 6).map((project) => {
               const meta = getProjectMeta(project.id);
               return (
                 <ProjectCard

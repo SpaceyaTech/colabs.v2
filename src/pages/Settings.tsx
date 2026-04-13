@@ -323,7 +323,7 @@ const Settings = () => {
                             'Public repositories only',
                             'Community support',
                           ]
-                      ).map(feature => (
+                      ).map((feature) => (
                         <div key={feature} className="flex items-center gap-2">
                           <Check className="h-3.5 w-3.5 text-primary shrink-0" />
                           <span className="text-xs text-muted-foreground">{feature}</span>
@@ -446,7 +446,7 @@ const Settings = () => {
                     desc: 'Show contributions on profile',
                     checked: true,
                   },
-                ].map(item => (
+                ].map((item) => (
                   <div key={item.label} className="flex items-center justify-between">
                     <div>
                       <Label className="text-sm">{item.label}</Label>
@@ -485,7 +485,7 @@ const Settings = () => {
                     Push Notifications
                   </h3>
                   <div className="space-y-3">
-                    {['Instant messages', 'Mentions', 'Project invitations'].map(label => (
+                    {['Instant messages', 'Mentions', 'Project invitations'].map((label) => (
                       <div key={label} className="flex items-center justify-between">
                         <Label className="text-sm">{label}</Label>
                         <Switch defaultChecked />
@@ -506,7 +506,7 @@ const Settings = () => {
                     {[
                       { name: 'GitLab', abbr: 'GL', bg: 'bg-blue-600' },
                       { name: 'Bitbucket', abbr: 'BB', bg: 'bg-orange-500' },
-                    ].map(svc => (
+                    ].map((svc) => (
                       <div key={svc.name} className="flex items-center justify-between px-4 py-3">
                         <div className="flex items-center gap-3">
                           <div

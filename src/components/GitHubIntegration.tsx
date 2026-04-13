@@ -226,7 +226,7 @@ export const GitHubIntegration = () => {
 
               {/* Repository List */}
               <div className="space-y-3">
-                {repositories.map(repo => (
+                {repositories.map((repo) => (
                   <div
                     key={repo.id}
                     className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
@@ -234,7 +234,7 @@ export const GitHubIntegration = () => {
                     <div className="flex items-center gap-3 flex-1">
                       <Checkbox
                         checked={selectedRepos.has(repo.id)}
-                        onCheckedChange={checked => {
+                        onCheckedChange={(checked) => {
                           const newSelected = new Set(selectedRepos);
                           if (checked) {
                             newSelected.add(repo.id);
@@ -297,7 +297,7 @@ export const GitHubIntegration = () => {
                         </span>
                         <Switch
                           checked={repo.allow_collaboration}
-                          onCheckedChange={enabled => handleRepoToggle(repo.id, enabled)}
+                          onCheckedChange={(enabled) => handleRepoToggle(repo.id, enabled)}
                           disabled={loading}
                         />
                       </div>

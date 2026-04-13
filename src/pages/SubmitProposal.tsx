@@ -94,19 +94,19 @@ const SubmitProposal = () => {
   }, [projectId, canonicalHref]);
 
   const handleAddMilestone = () =>
-    setMilestones(m => [...m, { title: '', description: '', duration: '', amount: '' }]);
+    setMilestones((m) => [...m, { title: '', description: '', duration: '', amount: '' }]);
   const handleRemoveMilestone = (index: number) => {
     if (milestones.length <= 1) return;
-    setMilestones(m => m.filter((_, i) => i !== index));
+    setMilestones((m) => m.filter((_, i) => i !== index));
   };
   const updateMilestone = (index: number, field: keyof Milestone, value: string | number) => {
-    setMilestones(arr => arr.map((m, i) => (i === index ? { ...m, [field]: value } : m)));
+    setMilestones((arr) => arr.map((m, i) => (i === index ? { ...m, [field]: value } : m)));
   };
 
   const isValid = useMemo(() => {
     if (!coverLetter.trim()) return false;
     if (!githubUrl.trim()) return false;
-    if (paymentType === 'fixed' && milestones.every(m => !m.title.trim())) return false;
+    if (paymentType === 'fixed' && milestones.every((m) => !m.title.trim())) return false;
     if (paymentType === 'hourly' && hourlyRate === '') return false;
     return true;
   }, [coverLetter, githubUrl, paymentType, milestones, hourlyRate]);
@@ -199,7 +199,7 @@ const SubmitProposal = () => {
             amount: m.amount === '' ? 0 : Number(m.amount),
             order_index: idx,
           }))
-          .filter(m => m.title.trim().length > 0);
+          .filter((m) => m.title.trim().length > 0);
 
         if (cleaned.length > 0) {
           const { error: msError } = await supabase
@@ -260,7 +260,7 @@ const SubmitProposal = () => {
                   rows={6}
                   placeholder="Describe your approach to this project, relevant experience, and what makes you uniquely qualified..."
                   value={coverLetter}
-                  onChange={e => setCoverLetter(e.target.value)}
+                  onChange={(e) => setCoverLetter(e.target.value)}
                   className="bg-transparent border-border/40 text-sm resize-none focus:border-primary/50"
                   maxLength={2000}
                 />
@@ -278,7 +278,7 @@ const SubmitProposal = () => {
                   rows={3}
                   placeholder="List specific projects or roles where you've done similar work..."
                   value={relevantExperience}
-                  onChange={e => setRelevantExperience(e.target.value)}
+                  onChange={(e) => setRelevantExperience(e.target.value)}
                   className="bg-transparent border-border/40 text-sm resize-none focus:border-primary/50"
                   maxLength={1000}
                 />
@@ -296,7 +296,7 @@ const SubmitProposal = () => {
 
               {/* Payment type toggle */}
               <div className="flex gap-2">
-                {(['fixed', 'hourly'] as const).map(type => (
+                {(['fixed', 'hourly'] as const).map((type) => (
                   <button
                     key={type}
                     onClick={() => setPaymentType(type)}
@@ -325,7 +325,7 @@ const SubmitProposal = () => {
                         min={0}
                         placeholder="75"
                         value={hourlyRate}
-                        onChange={e =>
+                        onChange={(e) =>
                           setHourlyRate(e.target.value === '' ? '' : Number(e.target.value))
                         }
                         className="pl-8 bg-transparent border-border/40 text-sm"
@@ -340,7 +340,7 @@ const SubmitProposal = () => {
                       id="estimatedHours"
                       placeholder="e.g. 40 hours over 2 weeks"
                       value={totalDuration}
-                      onChange={e => setTotalDuration(e.target.value)}
+                      onChange={(e) => setTotalDuration(e.target.value)}
                       className="bg-transparent border-border/40 text-sm"
                     />
                   </div>
@@ -392,7 +392,7 @@ const SubmitProposal = () => {
                           <Input
                             placeholder="Milestone title (e.g. Design & Setup)"
                             value={m.title}
-                            onChange={e => updateMilestone(idx, 'title', e.target.value)}
+                            onChange={(e) => updateMilestone(idx, 'title', e.target.value)}
                             className="bg-transparent border-border/40 text-sm h-8"
                           />
                         </div>
@@ -401,7 +401,7 @@ const SubmitProposal = () => {
                           <Textarea
                             placeholder="What will be delivered in this milestone..."
                             value={m.description}
-                            onChange={e => updateMilestone(idx, 'description', e.target.value)}
+                            onChange={(e) => updateMilestone(idx, 'description', e.target.value)}
                             className="bg-transparent border-border/40 text-sm resize-none h-16"
                             rows={2}
                           />
@@ -413,7 +413,7 @@ const SubmitProposal = () => {
                             <Input
                               placeholder="Duration (e.g. 1 week)"
                               value={m.duration}
-                              onChange={e => updateMilestone(idx, 'duration', e.target.value)}
+                              onChange={(e) => updateMilestone(idx, 'duration', e.target.value)}
                               className="pl-8 bg-transparent border-border/40 text-sm h-8"
                             />
                           </div>
@@ -424,7 +424,7 @@ const SubmitProposal = () => {
                               min={0}
                               placeholder="Amount"
                               value={m.amount}
-                              onChange={e =>
+                              onChange={(e) =>
                                 updateMilestone(
                                   idx,
                                   'amount',
@@ -455,7 +455,7 @@ const SubmitProposal = () => {
                       id="totalDuration"
                       placeholder="e.g. 4 weeks"
                       value={totalDuration}
-                      onChange={e => setTotalDuration(e.target.value)}
+                      onChange={(e) => setTotalDuration(e.target.value)}
                       className="bg-transparent border-border/40 text-sm"
                     />
                   </div>
@@ -476,7 +476,7 @@ const SubmitProposal = () => {
                 <div className="space-y-1.5">
                   <Label className="text-xs text-muted-foreground">Availability</Label>
                   <div className="flex gap-2 flex-wrap">
-                    {(['full-time', 'part-time', 'weekends'] as const).map(opt => (
+                    {(['full-time', 'part-time', 'weekends'] as const).map((opt) => (
                       <button
                         key={opt}
                         onClick={() => setAvailability(opt)}
@@ -503,7 +503,7 @@ const SubmitProposal = () => {
                     id="startDate"
                     type="date"
                     value={startDate}
-                    onChange={e => setStartDate(e.target.value)}
+                    onChange={(e) => setStartDate(e.target.value)}
                     className="bg-transparent border-border/40 text-sm"
                   />
                 </div>
@@ -530,7 +530,7 @@ const SubmitProposal = () => {
                       id="github"
                       placeholder="https://github.com/username"
                       value={githubUrl}
-                      onChange={e => setGithubUrl(e.target.value)}
+                      onChange={(e) => setGithubUrl(e.target.value)}
                       className="pl-8 bg-transparent border-border/40 text-sm"
                     />
                   </div>
@@ -545,7 +545,7 @@ const SubmitProposal = () => {
                       id="portfolio"
                       placeholder="https://yoursite.com"
                       value={portfolioUrl}
-                      onChange={e => setPortfolioUrl(e.target.value)}
+                      onChange={(e) => setPortfolioUrl(e.target.value)}
                       className="pl-8 bg-transparent border-border/40 text-sm"
                     />
                   </div>
@@ -561,7 +561,7 @@ const SubmitProposal = () => {
                     id="resume"
                     type="file"
                     accept="application/pdf"
-                    onChange={e => {
+                    onChange={(e) => {
                       const file = e.target.files?.[0];
                       if (file && file.size > 5 * 1024 * 1024) {
                         toast({

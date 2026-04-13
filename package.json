@@ -5,7 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "check": "npm run format:check && npm run lint && npm run type-check",
+    "prebuild": "npm run check",
     "build": "vite build",
+    "prebuild:dev": "npm run check",
     "build:dev": "vite build --mode development",
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix --max-warnings 0",
@@ -14,6 +17,7 @@
     "type-check": "tsc --noEmit",
     "typecheck": "npm run type-check",
     "check-types": "npm run type-check",
+    "sync-agents": "node scripts/sync-agents.js",
     "preview": "vite preview"
   },
   "dependencies": {

@@ -147,7 +147,7 @@ export const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
   }, [open, editProject]);
 
   const set = <K extends keyof typeof formData>(key: K, value: (typeof formData)[K]) =>
-    setFormData(prev => ({ ...prev, [key]: value }));
+    setFormData((prev) => ({ ...prev, [key]: value }));
 
   const addTechnology = () => {
     if (currentTech.trim() && !formData.technologies.includes(currentTech.trim())) {
@@ -170,7 +170,7 @@ export const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
     }
     set('logo', file);
     const reader = new FileReader();
-    reader.onload = ev => setLogoPreview(ev.target?.result as string);
+    reader.onload = (ev) => setLogoPreview(ev.target?.result as string);
     reader.readAsDataURL(file);
   };
 
@@ -326,7 +326,7 @@ export const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
                 <Input
                   placeholder="My Awesome Project"
                   value={formData.name}
-                  onChange={e => set('name', e.target.value)}
+                  onChange={(e) => set('name', e.target.value)}
                   className="h-9 text-sm"
                 />
               </div>
@@ -337,7 +337,7 @@ export const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
                 <Textarea
                   placeholder="What does this project do?"
                   value={formData.description}
-                  onChange={e => set('description', e.target.value)}
+                  onChange={(e) => set('description', e.target.value)}
                   rows={3}
                   className="text-sm resize-none"
                 />
@@ -396,8 +396,8 @@ export const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
                   <Input
                     placeholder="e.g. React, Python"
                     value={currentTech}
-                    onChange={e => setCurrentTech(e.target.value)}
-                    onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addTechnology())}
+                    onChange={(e) => setCurrentTech(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addTechnology())}
                     className="h-8 text-xs"
                   />
                   <Button
@@ -411,7 +411,7 @@ export const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
                 </div>
                 {formData.technologies.length > 0 && (
                   <div className="flex flex-wrap gap-1.5 pt-1">
-                    {formData.technologies.map(tech => (
+                    {formData.technologies.map((tech) => (
                       <Badge key={tech} variant="secondary" className="text-[10px] gap-1 pr-1">
                         {tech}
                         <X
@@ -419,7 +419,7 @@ export const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
                           onClick={() =>
                             set(
                               'technologies',
-                              formData.technologies.filter(t => t !== tech)
+                              formData.technologies.filter((t) => t !== tech)
                             )
                           }
                         />
@@ -433,7 +433,7 @@ export const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
                   <Label className="text-xs font-medium">Category</Label>
-                  <Select value={formData.category} onValueChange={v => set('category', v)}>
+                  <Select value={formData.category} onValueChange={(v) => set('category', v)}>
                     <SelectTrigger className="h-8 text-xs">
                       <SelectValue placeholder="Select" />
                     </SelectTrigger>
@@ -447,7 +447,7 @@ export const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
                         'tool',
                         'game',
                         'other',
-                      ].map(v => (
+                      ].map((v) => (
                         <SelectItem key={v} value={v} className="text-xs">
                           {v.replace('-', ' ')}
                         </SelectItem>
@@ -457,7 +457,7 @@ export const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-xs font-medium">Industry</Label>
-                  <Select value={formData.industry} onValueChange={v => set('industry', v)}>
+                  <Select value={formData.industry} onValueChange={(v) => set('industry', v)}>
                     <SelectTrigger className="h-8 text-xs">
                       <SelectValue placeholder="Select" />
                     </SelectTrigger>
@@ -471,7 +471,7 @@ export const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
                         'productivity',
                         'entertainment',
                         'other',
-                      ].map(v => (
+                      ].map((v) => (
                         <SelectItem key={v} value={v} className="text-xs capitalize">
                           {v}
                         </SelectItem>
@@ -490,7 +490,7 @@ export const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
                 <Label className="text-xs font-medium">Project Type</Label>
                 <RadioGroup
                   value={formData.projectType}
-                  onValueChange={v => set('projectType', v)}
+                  onValueChange={(v) => set('projectType', v)}
                   className="space-y-1.5"
                 >
                   {[
@@ -512,7 +512,7 @@ export const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
                       desc: 'Mix of open and closed components',
                       icon: Globe,
                     },
-                  ].map(opt => (
+                  ].map((opt) => (
                     <label
                       key={opt.value}
                       className={cn(
@@ -535,12 +535,12 @@ export const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
               <div className="grid grid-cols-3 gap-3">
                 <div className="space-y-1.5">
                   <Label className="text-xs font-medium">Team Size</Label>
-                  <Select value={formData.teamSize} onValueChange={v => set('teamSize', v)}>
+                  <Select value={formData.teamSize} onValueChange={(v) => set('teamSize', v)}>
                     <SelectTrigger className="h-8 text-xs">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {['1-3', '4-6', '7-10', '10+'].map(v => (
+                      {['1-3', '4-6', '7-10', '10+'].map((v) => (
                         <SelectItem key={v} value={v} className="text-xs">
                           {v} people
                         </SelectItem>
@@ -552,13 +552,13 @@ export const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
                   <Label className="text-xs font-medium">Level</Label>
                   <Select
                     value={formData.experienceLevel}
-                    onValueChange={v => set('experienceLevel', v)}
+                    onValueChange={(v) => set('experienceLevel', v)}
                   >
                     <SelectTrigger className="h-8 text-xs">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {['beginner', 'intermediate', 'advanced', 'expert'].map(v => (
+                      {['beginner', 'intermediate', 'advanced', 'expert'].map((v) => (
                         <SelectItem key={v} value={v} className="text-xs capitalize">
                           {v}
                         </SelectItem>
@@ -568,7 +568,7 @@ export const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-xs font-medium">Duration</Label>
-                  <Select value={formData.duration} onValueChange={v => set('duration', v)}>
+                  <Select value={formData.duration} onValueChange={(v) => set('duration', v)}>
                     <SelectTrigger className="h-8 text-xs">
                       <SelectValue />
                     </SelectTrigger>
@@ -599,7 +599,7 @@ export const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
                       Contributors will be compensated
                     </p>
                   </div>
-                  <Switch checked={formData.isPaid} onCheckedChange={v => set('isPaid', v)} />
+                  <Switch checked={formData.isPaid} onCheckedChange={(v) => set('isPaid', v)} />
                 </div>
                 {formData.isPaid && (
                   <div className="grid grid-cols-3 gap-3">
@@ -607,13 +607,13 @@ export const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
                       <Label className="text-[10px] text-muted-foreground">Type</Label>
                       <Select
                         value={formData.compensationType}
-                        onValueChange={v => set('compensationType', v)}
+                        onValueChange={(v) => set('compensationType', v)}
                       >
                         <SelectTrigger className="h-8 text-xs">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          {['fixed', 'hourly', 'equity', 'hybrid'].map(v => (
+                          {['fixed', 'hourly', 'equity', 'hybrid'].map((v) => (
                             <SelectItem key={v} value={v} className="text-xs capitalize">
                               {v}
                             </SelectItem>
@@ -625,19 +625,19 @@ export const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
                       <Label className="text-[10px] text-muted-foreground">Budget</Label>
                       <Input
                         value={formData.budget}
-                        onChange={e => set('budget', e.target.value)}
+                        onChange={(e) => set('budget', e.target.value)}
                         placeholder="5000"
                         className="h-8 text-xs"
                       />
                     </div>
                     <div className="space-y-1.5">
                       <Label className="text-[10px] text-muted-foreground">Currency</Label>
-                      <Select value={formData.currency} onValueChange={v => set('currency', v)}>
+                      <Select value={formData.currency} onValueChange={(v) => set('currency', v)}>
                         <SelectTrigger className="h-8 text-xs">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          {['USD', 'EUR', 'GBP', 'KES'].map(v => (
+                          {['USD', 'EUR', 'GBP', 'KES'].map((v) => (
                             <SelectItem key={v} value={v} className="text-xs">
                               {v}
                             </SelectItem>
@@ -660,7 +660,7 @@ export const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
                   type="url"
                   placeholder="https://github.com/username/repo"
                   value={formData.githubUrl}
-                  onChange={e => set('githubUrl', e.target.value)}
+                  onChange={(e) => set('githubUrl', e.target.value)}
                   className="h-9 text-sm"
                 />
                 <p className="text-[10px] text-muted-foreground">
@@ -693,7 +693,7 @@ export const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
                         type="url"
                         placeholder={placeholder}
                         value={formData[key]}
-                        onChange={e => set(key, e.target.value)}
+                        onChange={(e) => set(key, e.target.value)}
                         className="h-8 text-xs"
                       />
                     </div>
@@ -705,7 +705,7 @@ export const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
                     type="url"
                     placeholder="https://..."
                     value={formData.otherToolUrl}
-                    onChange={e => set('otherToolUrl', e.target.value)}
+                    onChange={(e) => set('otherToolUrl', e.target.value)}
                     className="h-8 text-xs"
                   />
                 </div>
@@ -720,7 +720,7 @@ export const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
                 <Label className="text-xs font-medium">Visibility</Label>
                 <RadioGroup
                   value={formData.visibility}
-                  onValueChange={v => set('visibility', v)}
+                  onValueChange={(v) => set('visibility', v)}
                   className="space-y-1.5"
                 >
                   {[
@@ -735,7 +735,7 @@ export const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
                       label: 'Invite Only',
                       desc: 'Requires invitation to join',
                     },
-                  ].map(opt => (
+                  ].map((opt) => (
                     <label
                       key={opt.value}
                       className={cn(
@@ -764,7 +764,7 @@ export const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
                   </div>
                   <Switch
                     checked={formData.allowApplications}
-                    onCheckedChange={v => set('allowApplications', v)}
+                    onCheckedChange={(v) => set('allowApplications', v)}
                   />
                 </div>
                 <div className="flex items-center justify-between">
@@ -776,7 +776,7 @@ export const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
                   </div>
                   <Switch
                     checked={formData.requiresApproval}
-                    onCheckedChange={v => set('requiresApproval', v)}
+                    onCheckedChange={(v) => set('requiresApproval', v)}
                   />
                 </div>
               </div>
@@ -790,8 +790,8 @@ export const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
                   <Input
                     placeholder="colleague@example.com"
                     value={currentEmail}
-                    onChange={e => setCurrentEmail(e.target.value)}
-                    onKeyDown={e => {
+                    onChange={(e) => setCurrentEmail(e.target.value)}
+                    onKeyDown={(e) => {
                       if (e.key === 'Enter') {
                         e.preventDefault();
                         if (
@@ -824,7 +824,7 @@ export const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
                 </div>
                 {formData.inviteEmails.length > 0 && (
                   <div className="flex flex-wrap gap-1.5 pt-1">
-                    {formData.inviteEmails.map(email => (
+                    {formData.inviteEmails.map((email) => (
                       <Badge key={email} variant="secondary" className="text-[10px] gap-1 pr-1">
                         {email}
                         <X
@@ -832,7 +832,7 @@ export const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
                           onClick={() =>
                             set(
                               'inviteEmails',
-                              formData.inviteEmails.filter(e => e !== email)
+                              formData.inviteEmails.filter((e) => e !== email)
                             )
                           }
                         />
