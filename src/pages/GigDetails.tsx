@@ -64,7 +64,7 @@ const GigDetails = () => {
     }
     try {
       const saved: string[] = JSON.parse(localStorage.getItem('colabs-saved-gigs') || '[]');
-      const next = isSaved ? saved.filter(s => s !== id) : [...saved, id!];
+      const next = isSaved ? saved.filter((s) => s !== id) : [...saved, id!];
       localStorage.setItem('colabs-saved-gigs', JSON.stringify(next));
       setIsSaved(!isSaved);
       toast({
@@ -84,7 +84,7 @@ const GigDetails = () => {
   const similarGigs = useMemo(() => {
     if (!gig || !allGigRows) return [];
     return allGigRows
-      .filter(g => g.id !== gig.id && g.category === gig.category)
+      .filter((g) => g.id !== gig.id && g.category === gig.category)
       .slice(0, 3)
       .map(gigRowToExploreGig);
   }, [gig, allGigRows]);
@@ -251,7 +251,7 @@ const GigDetails = () => {
             <section className="space-y-2">
               <h2 className="text-sm font-semibold text-foreground">Skills & Technologies</h2>
               <div className="flex flex-wrap gap-1.5">
-                {gig.technologies.map(tech => (
+                {gig.technologies.map((tech) => (
                   <Badge key={tech} variant="secondary" className="text-xs">
                     {tech}
                   </Badge>
@@ -323,7 +323,7 @@ const GigDetails = () => {
                   </Button>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-                  {similarGigs.map(g => (
+                  {similarGigs.map((g) => (
                     <ExploreGigCard key={g.id} gig={g} showApply={false} />
                   ))}
                 </div>

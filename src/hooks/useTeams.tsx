@@ -96,7 +96,7 @@ export function useTeams() {
 
       if (input.emails.length > 0) {
         await supabase.from('team_members').insert(
-          input.emails.map(email => ({
+          input.emails.map((email) => ({
             team_id: team.id,
             email,
             role: 'member',
@@ -107,7 +107,7 @@ export function useTeams() {
 
       if (input.projectIds.length > 0) {
         await supabase.from('team_projects').insert(
-          input.projectIds.map(project_id => ({
+          input.projectIds.map((project_id) => ({
             team_id: team.id,
             project_id,
           }))

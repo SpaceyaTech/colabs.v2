@@ -191,7 +191,7 @@ export function IssueSidePanel({
         <div className="space-y-2">
           <h3 className="text-sm font-medium">Labels</h3>
           <div className="flex flex-wrap gap-1.5">
-            {issue.labels.map(l => (
+            {issue.labels.map((l) => (
               <Badge key={l} variant="secondary" className="text-xs">
                 {l}
               </Badge>

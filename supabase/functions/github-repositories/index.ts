@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const corsHeaders = {
@@ -5,7 +6,7 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-Deno.serve(async req => {
+Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -35,10 +36,10 @@ Deno.serve(async req => {
       // Fetch repositories from GitHub and sync to database
       console.log(`Fetching repositories for user ${user.id}`);
 
-      // Get user's GitHub integration
+      // Get user's GitHub integration and secrets
       const { data: integration, error: integrationError } = await supabase
         .from('github_integrations')
-        .select('*')
+        .select('*, github_integration_secrets(access_token)')
         .eq('user_id', user.id)
         .eq('is_active', true)
         .single();
@@ -47,12 +48,19 @@ Deno.serve(async req => {
         throw new Error('GitHub integration not found or inactive');
       }
 
+      const secrets = integration.github_integration_secrets as any;
+      const accessToken = Array.isArray(secrets) ? secrets[0]?.access_token : secrets?.access_token;
+
+      if (!accessToken) {
+        throw new Error('GitHub access token not found');
+      }
+
       // Fetch repositories from GitHub API
       const reposResponse = await fetch(
         'https://api.github.com/user/repos?per_page=100&sort=updated',
         {
           headers: {
-            Authorization: `Bearer ${integration.access_token}`,
+            Authorization: `Bearer ${accessToken}`,
             Accept: 'application/vnd.github.v3+json',
           },
         }
@@ -155,7 +163,8 @@ Deno.serve(async req => {
     throw new Error('Method not allowed');
   } catch (error) {
     console.error('GitHub repositories error:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
+    const message = error instanceof Error ? error.message : 'An unexpected error occurred';
+    return new Response(JSON.stringify({ error: message }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 400,
     });

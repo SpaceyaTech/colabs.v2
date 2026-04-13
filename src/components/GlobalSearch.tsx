@@ -29,7 +29,7 @@ export function GlobalSearch() {
     const down = (e: KeyboardEvent) => {
       if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
-        setOpen(open => !open);
+        setOpen((open) => !open);
       }
     };
 
@@ -65,7 +65,7 @@ export function GlobalSearch() {
       const searchResults: SearchResult[] = [];
 
       // Add projects
-      projects?.forEach(project => {
+      projects?.forEach((project) => {
         searchResults.push({
           id: project.id,
           title: project.name,
@@ -76,7 +76,7 @@ export function GlobalSearch() {
       });
 
       // Add repos as "issues" source
-      repos?.forEach(repo => {
+      repos?.forEach((repo) => {
         searchResults.push({
           id: repo.id,
           title: repo.name,
@@ -94,7 +94,7 @@ export function GlobalSearch() {
         .or(`name.ilike.${searchTerm},description.ilike.${searchTerm}`)
         .limit(5);
 
-      gigs?.forEach(gig => {
+      gigs?.forEach((gig) => {
         searchResults.push({
           id: gig.id,
           title: gig.name,
@@ -126,10 +126,10 @@ export function GlobalSearch() {
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'ArrowDown') {
       e.preventDefault();
-      setSelectedIndex(i => (i < results.length - 1 ? i + 1 : i));
+      setSelectedIndex((i) => (i < results.length - 1 ? i + 1 : i));
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
-      setSelectedIndex(i => (i > 0 ? i - 1 : i));
+      setSelectedIndex((i) => (i > 0 ? i - 1 : i));
     } else if (e.key === 'Enter' && results[selectedIndex]) {
       handleSelect(results[selectedIndex]);
     }
@@ -196,7 +196,7 @@ export function GlobalSearch() {
             <Search className="h-4 w-4 text-muted-foreground shrink-0" />
             <Input
               value={query}
-              onChange={e => setQuery(e.target.value)}
+              onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Search projects, issues, and gigs..."
               className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0 h-12"

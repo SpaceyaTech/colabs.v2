@@ -112,7 +112,7 @@ const notifications = [
 ];
 
 const Notifications = () => {
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const unreadCount = notifications.filter((n) => !n.read).length;
 
   return (
     <AppLayout>
@@ -144,7 +144,7 @@ const Notifications = () => {
           </div>
         ) : (
           <div className="border border-border rounded-lg divide-y divide-border">
-            {notifications.map(notification => {
+            {notifications.map((notification) => {
               const Icon = notification.icon;
               return (
                 <div

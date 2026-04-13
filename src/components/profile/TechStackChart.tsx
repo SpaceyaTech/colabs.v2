@@ -28,7 +28,7 @@ const chartConfig = {
 };
 
 export function TechStackChart({ techStack }: TechStackChartProps) {
-  const radarData = techStack.map(tech => ({
+  const radarData = techStack.map((tech) => ({
     skill: tech.name,
     value: tech.proficiency,
     fullMark: 100,
@@ -69,7 +69,7 @@ export function TechStackChart({ techStack }: TechStackChartProps) {
 
         {/* Progress bars */}
         <div className="space-y-3">
-          {techStack.slice(0, 5).map(tech => (
+          {techStack.slice(0, 5).map((tech) => (
             <div key={tech.name} className="space-y-1">
               <div className="flex items-center justify-between text-sm">
                 <div className="flex items-center gap-2">
@@ -85,7 +85,7 @@ export function TechStackChart({ techStack }: TechStackChartProps) {
 
         {/* All tech badges */}
         <div className="flex flex-wrap gap-2 pt-2 border-t">
-          {techStack.map(tech => (
+          {techStack.map((tech) => (
             <Badge key={tech.name} variant="secondary" className="text-xs">
               {tech.name}
             </Badge>

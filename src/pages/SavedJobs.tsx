@@ -41,7 +41,7 @@ const SavedJobs = () => {
       .from('saved_jobs' as any)
       .delete()
       .eq('id', id);
-    setItems(arr => arr.filter(x => x.id !== id));
+    setItems((arr) => arr.filter((x) => x.id !== id));
   };
 
   return (
@@ -65,7 +65,7 @@ const SavedJobs = () => {
             </div>
           ) : (
             <div className="border border-border rounded-lg divide-y divide-border">
-              {items.map(s => (
+              {items.map((s) => (
                 <div
                   key={s.id}
                   className="flex items-center justify-between px-4 py-3 hover:bg-muted/50 transition-colors"

@@ -137,8 +137,8 @@ export const useGitHub = () => {
 
         if (data.success) {
           // Update local state
-          setRepositories(prev =>
-            prev.map(repo =>
+          setRepositories((prev) =>
+            prev.map((repo) =>
               repositoryIds.includes(repo.id)
                 ? { ...repo, allow_collaboration: allowCollaboration }
                 : repo
@@ -218,7 +218,7 @@ export const useGitHub = () => {
 
       // Fetch collaboration request counts for each repository
       if (repos && repos.length > 0) {
-        const repoIds = repos.map(r => r.id);
+        const repoIds = repos.map((r) => r.id);
         const { data: requestCounts, error: countError } = await supabase
           .from('collaboration_requests')
           .select('repository_id')
@@ -235,7 +235,7 @@ export const useGitHub = () => {
           );
 
           // Merge counts into repositories
-          const reposWithCounts = repos.map(repo => ({
+          const reposWithCounts = repos.map((repo) => ({
             ...repo,
             collaboration_requests_count: countMap[repo.id] || 0,
           }));

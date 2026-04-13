@@ -246,7 +246,7 @@ function IssueListItem({
               </span>
               <span>·</span>
               <div className="flex items-center gap-1">
-                {issue.labels.slice(0, 3).map(l => (
+                {issue.labels.slice(0, 3).map((l) => (
                   <span key={l} className="px-1.5 py-0.5 rounded bg-accent text-muted-foreground">
                     {l}
                   </span>
@@ -264,7 +264,7 @@ function IssueListItem({
             variant={isClaimed ? 'secondary' : 'outline'}
             size="sm"
             className={`h-7 text-[11px] shrink-0 gap-1 ${isClaimed ? 'text-primary' : ''}`}
-            onClick={e => {
+            onClick={(e) => {
               e.stopPropagation();
               if (!isClaimed) onClaim(issue);
             }}
@@ -367,17 +367,17 @@ export default function AllIssues() {
     const getTabIssues = (tab: string) => {
       switch (tab) {
         case 'saved':
-          return allIssues.filter(i => savedIssueIds.includes(i.id));
+          return allIssues.filter((i) => savedIssueIds.includes(i.id));
         case 'bugs':
-          return allIssues.filter(i => i.category === 'bug');
+          return allIssues.filter((i) => i.category === 'bug');
         case 'features':
-          return allIssues.filter(i => i.category === 'feature');
+          return allIssues.filter((i) => i.category === 'feature');
         case 'enhancements':
-          return allIssues.filter(i => i.category === 'enhancement');
+          return allIssues.filter((i) => i.category === 'enhancement');
         case 'docs':
-          return allIssues.filter(i => i.category === 'documentation');
+          return allIssues.filter((i) => i.category === 'documentation');
         case 'good-first':
-          return allIssues.filter(i => i.isGoodFirstIssue);
+          return allIssues.filter((i) => i.isGoodFirstIssue);
         default:
           return allIssues;
       }
@@ -387,14 +387,14 @@ export default function AllIssues() {
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
       issues = issues.filter(
-        i =>
+        (i) =>
           i.title.toLowerCase().includes(q) ||
-          i.labels.some(l => l.toLowerCase().includes(q)) ||
+          i.labels.some((l) => l.toLowerCase().includes(q)) ||
           i.id.toLowerCase().includes(q) ||
           `${i.repo.owner}/${i.repo.name}`.toLowerCase().includes(q)
       );
     }
-    if (filterPriorities.size > 0) issues = issues.filter(i => filterPriorities.has(i.priority));
+    if (filterPriorities.size > 0) issues = issues.filter((i) => filterPriorities.has(i.priority));
 
     issues.sort((a, b) => {
       let cmp = 0;
@@ -504,39 +504,39 @@ export default function AllIssues() {
                 value: 'good-first',
                 label: 'Good First',
                 icon: Sparkles,
-                count: allIssues.filter(i => i.isGoodFirstIssue).length,
+                count: allIssues.filter((i) => i.isGoodFirstIssue).length,
               },
               {
                 value: 'bugs',
                 label: 'Bugs',
                 icon: Bug,
-                count: allIssues.filter(i => i.category === 'bug').length,
+                count: allIssues.filter((i) => i.category === 'bug').length,
               },
               {
                 value: 'features',
                 label: 'Features',
                 icon: Zap,
-                count: allIssues.filter(i => i.category === 'feature').length,
+                count: allIssues.filter((i) => i.category === 'feature').length,
               },
               {
                 value: 'enhancements',
                 label: 'Enhancements',
                 icon: Code,
-                count: allIssues.filter(i => i.category === 'enhancement').length,
+                count: allIssues.filter((i) => i.category === 'enhancement').length,
               },
               {
                 value: 'docs',
                 label: 'Docs',
                 icon: FileText,
-                count: allIssues.filter(i => i.category === 'documentation').length,
+                count: allIssues.filter((i) => i.category === 'documentation').length,
               },
               {
                 value: 'saved',
                 label: 'Saved',
                 icon: Bookmark,
-                count: allIssues.filter(i => savedIssueIds.includes(i.id)).length,
+                count: allIssues.filter((i) => savedIssueIds.includes(i.id)).length,
               },
-            ].map(tab => (
+            ].map((tab) => (
               <TabsTrigger
                 key={tab.value}
                 value={tab.value}
@@ -557,7 +557,7 @@ export default function AllIssues() {
             <Input
               placeholder="Search by title, label, or project..."
               value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="h-8 pl-8 text-[13px] bg-transparent border-border/40"
             />
           </div>
@@ -597,7 +597,7 @@ export default function AllIssues() {
                   <button
                     key={field}
                     onClick={() => {
-                      if (sortField === field) setSortDir(d => (d === 'asc' ? 'desc' : 'asc'));
+                      if (sortField === field) setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
                       else {
                         setSortField(field);
                         setSortDir(field === 'date' ? 'desc' : 'asc');
@@ -634,7 +634,7 @@ export default function AllIssues() {
             <div className="space-y-1.5">
               <p className="text-[11px] text-muted-foreground uppercase tracking-wider">Priority</p>
               <div className="flex flex-wrap gap-1.5">
-                {(['urgent', 'high', 'medium', 'low'] as const).map(p => (
+                {(['urgent', 'high', 'medium', 'low'] as const).map((p) => (
                   <FilterChip
                     key={p}
                     label={p.charAt(0).toUpperCase() + p.slice(1)}
@@ -667,7 +667,7 @@ export default function AllIssues() {
           </div>
         ) : (
           <div className="divide-y divide-border/20">
-            {filteredAndSorted.map(issue => (
+            {filteredAndSorted.map((issue) => (
               <IssueListItem
                 key={issue.id}
                 issue={issue}

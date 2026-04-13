@@ -65,7 +65,7 @@ const GamefiedSection = () => {
               </div>
 
               <div className="space-y-4">
-                {leaderboardUsers.map(user => (
+                {leaderboardUsers.map((user) => (
                   <div
                     key={user.rank}
                     className="flex items-center justify-between p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"

@@ -251,7 +251,7 @@ const sourceIcon = {
 };
 
 function getMember(id: string) {
-  return teamMembers.find(m => m.id === id);
+  return teamMembers.find((m) => m.id === id);
 }
 
 // --- Components ---
@@ -299,7 +299,7 @@ function TaskRow({ task }: { task: Task }) {
                 </div>
               </div>
               <div className="flex -space-x-1.5 shrink-0">
-                {task.assignees.slice(0, 3).map(id => {
+                {task.assignees.slice(0, 3).map((id) => {
                   const m = getMember(id);
                   return m ? (
                     <Avatar key={id} className="h-5 w-5 border border-background">
@@ -352,7 +352,7 @@ function TaskRow({ task }: { task: Task }) {
                   </span>
                 </div>
                 <div className="flex -space-x-1.5 shrink-0">
-                  {task.assignees.slice(0, 3).map(id => {
+                  {task.assignees.slice(0, 3).map((id) => {
                     const m = getMember(id);
                     return m ? (
                       <Avatar key={id} className="h-5 w-5 border border-background">
@@ -390,12 +390,12 @@ function TaskRow({ task }: { task: Task }) {
             <div className="text-xs text-muted-foreground">
               <span className="font-medium text-foreground">People:</span>{' '}
               {task.assignees
-                .map(id => getMember(id)?.name)
+                .map((id) => getMember(id)?.name)
                 .filter(Boolean)
                 .join(', ')}
               {' · '}
               {task.assignees
-                .map(id => getMember(id)?.role)
+                .map((id) => getMember(id)?.role)
                 .filter(Boolean)
                 .join(', ')}
             </div>
@@ -421,9 +421,9 @@ function TaskRow({ task }: { task: Task }) {
 export function TeamWorkspace() {
   const navigate = useNavigate();
 
-  const activeTasks = tasks.filter(t => t.status !== 'done');
-  const completedTasks = tasks.filter(t => t.status === 'done');
-  const blockedTasks = tasks.filter(t => t.status === 'blocked');
+  const activeTasks = tasks.filter((t) => t.status !== 'done');
+  const completedTasks = tasks.filter((t) => t.status === 'done');
+  const blockedTasks = tasks.filter((t) => t.status === 'blocked');
   const overallProgress = Math.round(tasks.reduce((sum, t) => sum + t.progress, 0) / tasks.length);
 
   return (
@@ -478,7 +478,7 @@ export function TeamWorkspace() {
                 <AlertTriangle className="h-4 w-4 text-destructive" />
                 <span className="text-sm font-medium text-destructive">Risks & Blockers</span>
               </div>
-              {blockedTasks.map(t => (
+              {blockedTasks.map((t) => (
                 <div key={t.id} className="text-xs text-muted-foreground mb-1 last:mb-0">
                   <span className="font-medium text-foreground">{t.id}</span> {t.title}
                   {t.blockers.map((b, i) => (
@@ -497,7 +497,7 @@ export function TeamWorkspace() {
               Active Tasks
             </h2>
             <div className="border border-border rounded-lg overflow-hidden">
-              {activeTasks.map(t => (
+              {activeTasks.map((t) => (
                 <TaskRow key={t.id} task={t} />
               ))}
             </div>
@@ -510,7 +510,7 @@ export function TeamWorkspace() {
                 Completed
               </h2>
               <div className="border border-border rounded-lg overflow-hidden">
-                {completedTasks.map(t => (
+                {completedTasks.map((t) => (
                   <TaskRow key={t.id} task={t} />
                 ))}
               </div>
@@ -526,7 +526,7 @@ export function TeamWorkspace() {
               Team
             </h3>
             <div className="space-y-1">
-              {teamMembers.map(m => (
+              {teamMembers.map((m) => (
                 <div
                   key={m.id}
                   className="flex items-center gap-2 py-1.5 px-2 rounded hover:bg-muted/50"
@@ -562,7 +562,7 @@ export function TeamWorkspace() {
               This Week
             </h3>
             <div className="space-y-2">
-              {memberStats.map(s => (
+              {memberStats.map((s) => (
                 <div key={s.id} className="flex items-center justify-between text-xs py-1">
                   <span className="truncate flex-1">{s.name}</span>
                   <div className="flex items-center gap-3 text-muted-foreground shrink-0">
@@ -589,7 +589,7 @@ export function TeamWorkspace() {
               Recent Activity
             </h3>
             <div className="space-y-3">
-              {activityFeed.map(a => (
+              {activityFeed.map((a) => (
                 <div key={a.id} className="flex items-start gap-2">
                   <Avatar className="h-5 w-5 mt-0.5 shrink-0">
                     <AvatarFallback className="text-[8px] bg-muted">{a.initials}</AvatarFallback>

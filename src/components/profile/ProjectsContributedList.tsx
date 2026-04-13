@@ -41,7 +41,7 @@ export function ProjectsContributedList({ projects }: ProjectsContributedListPro
         </Button>
       </CardHeader>
       <CardContent className="space-y-4">
-        {projects.map(project => (
+        {projects.map((project) => (
           <div
             key={project.id}
             className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"

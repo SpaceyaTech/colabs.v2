@@ -5,7 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "check": "npm run format:check && npm run lint && npm run type-check",
+    "prebuild": "npm run check",
     "build": "vite build",
+    "prebuild:dev": "npm run check",
     "build:dev": "vite build --mode development",
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix --max-warnings 0",
@@ -14,6 +17,7 @@
     "type-check": "tsc --noEmit",
     "typecheck": "npm run type-check",
     "check-types": "npm run type-check",
+    "sync-agents": "node scripts/sync-agents.js",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -87,7 +91,7 @@
     "eslint-plugin-prettier": "^5.5.5",
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.5.2",
-    "globals": "^15.9.0",
+    "globals": "^17.5.0",
     "postcss": "^8.5.9",
     "prettier": "^3.8.2",
     "tailwindcss": "^4.2.2",
