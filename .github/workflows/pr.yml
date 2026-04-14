@@ -184,6 +184,7 @@ jobs:
             deps
             deps-dev
             actions
+            main
           requireScope: false
           subjectPattern: ^[a-z].+$
           subjectPatternError: |
