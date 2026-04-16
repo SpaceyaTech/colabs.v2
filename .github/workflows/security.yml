@@ -25,6 +25,9 @@
 name: Security
 
 on:
+  push:
+    branches:
+      - '**'
   pull_request:
     branches:
       - dev
@@ -104,6 +107,7 @@ jobs:
   # ─────────────────────────────────────────────────────────────────────────────
   audit:
     name: Security / audit
+    if: github.event_name != 'push' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -145,6 +149,7 @@ jobs:
   # ─────────────────────────────────────────────────────────────────────────────
   codeql:
     name: Security / codeql
+    if: github.event_name != 'push' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -169,3 +174,30 @@ jobs:
         uses: github/codeql-action/analyze@v4
         with:
           category: '/language:javascript'
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # JOB 4 — Unintended .env commit check
+  #
+  # Ensures .env files aren't accidentally pushed into the repository.
+  # ─────────────────────────────────────────────────────────────────────────────
+  check-env:
+    name: Security / check-env
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for tracked .env files
+        run: |
+          ENV_FILES=$(git ls-files | awk '/\.env$/')
+          
+          if [ -n "$ENV_FILES" ]; then
+            echo "::error::Found committed .env files. These files usually contain secrets and should not be tracked by git."
+            echo "The following .env files are currently tracked:"
+            echo "$ENV_FILES"
+            echo "Please remove them using: git rm --cached <file>"
+            echo "And ensure they are listed in .gitignore before committing."
+            exit 1
+          fi
+          echo "No tracked .env files found."
