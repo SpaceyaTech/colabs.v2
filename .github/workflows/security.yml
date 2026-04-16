@@ -191,7 +191,7 @@ jobs:
       - name: Check for tracked .env files
         run: |
           ENV_FILES=$(git ls-files | awk '/\.env$/')
-          
+
           if [ -n "$ENV_FILES" ]; then
             echo "::error::Found committed .env files. These files usually contain secrets and should not be tracked by git."
             echo "The following .env files are currently tracked:"
