@@ -23,11 +23,20 @@ dist-ssr
 *.sln
 *.sw?
 
+# Secrets and configuration files
 .env
-
-.env*
+.env.*
+!.env.example
+*.local
 *.pem
 *.key
 *.crt
 *.sqlite
 *.dump
+*.secret
+secrets.json
+auth.json
+
+# Local Supabase temporary data
+supabase/.temp/
+supabase/.branches/
