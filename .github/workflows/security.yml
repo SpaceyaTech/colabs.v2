@@ -25,6 +25,9 @@
 name: Security
 
 on:
+  push:
+    branches:
+      - '**'
   pull_request:
     branches:
       - dev
@@ -104,6 +107,7 @@ jobs:
   # ─────────────────────────────────────────────────────────────────────────────
   audit:
     name: Security / audit
+    if: github.event_name != 'push' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -145,6 +149,7 @@ jobs:
   # ─────────────────────────────────────────────────────────────────────────────
   codeql:
     name: Security / codeql
+    if: github.event_name != 'push' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -169,3 +174,49 @@ jobs:
         uses: github/codeql-action/analyze@v4
         with:
           category: '/language:javascript'
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # JOB 4 — Unintended .env commit check
+  #
+  # Ensures .env files aren't accidentally pushed into the repository.
+  # ─────────────────────────────────────────────────────────────────────────────
+  check-env:
+    name: Security / check-env
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for tracked .env files
+        run: |
+          ENV_FILES=$(git ls-files | awk '/(^|\/)\.env($|\.)/ && !/\.(example|template|sample)$/')
+
+          if [ -n "$ENV_FILES" ]; then
+            echo "::error::Found committed .env files. These files usually contain secrets and should not be tracked by git."
+            echo "The following .env files are currently tracked:"
+            echo "$ENV_FILES"
+            echo "Please remove them using: git rm --cached <file>"
+            echo "And ensure they are listed in .gitignore before committing."
+            exit 1
+          fi
+
+          TEMPLATE_FILES=$(git ls-files | awk '/(^|\/)\.env\.(example|template|sample)$/')
+          if [ -n "$TEMPLATE_FILES" ]; then
+            for file in $TEMPLATE_FILES; do
+              # 1. Known high-entropy prefixes: eyJ (JWTs), sk_test_/sk_live_/whsec_ (Stripe), gh[pousr]_ (GitHub)
+              SUSPICIOUS=$(grep -E '=(eyJ|sk_(test|live)_|whsec_|gh[pousr]_)' "$file" || true)
+              # 2. Generic 32+ char alphanumerics, ignoring usual placeholder words
+              GENERIC=$(grep -E '=[a-zA-Z0-9]{32,}' "$file" | grep -v -i -E '(your|example|dummy|mock|insert|here)' || true)
+              
+              if [ -n "$SUSPICIOUS" ] || [ -n "$GENERIC" ]; then
+                echo "::error::File $file contains what looks like actual key patterns."
+                [ -n "$SUSPICIOUS" ] && echo "$SUSPICIOUS"
+                [ -n "$GENERIC" ] && echo "$GENERIC"
+                echo "Please ensure templates only contain empty values or placeholders (e.g., 'your_key_here')."
+                exit 1
+              fi
+            done
+          fi
+
+          echo "No tracked .env files found, and templates are clean."

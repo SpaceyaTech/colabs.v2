@@ -168,6 +168,7 @@ jobs:
             refactor
             test
             chore
+            security
           scopes: |
             auth
             dashboard
