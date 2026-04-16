@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/SpaceyaTech/colabs.v2/compare/v1.0.0...v1.1.0) (2026-04-16)
+
+
+### Features
+
+* add GitHub Actions workflow for automated security scanning ([ab3b5ad](https://github.com/SpaceyaTech/colabs.v2/commit/ab3b5ad140620a515940ba37bc8a2aeb753670d6))
+
 ## 1.0.0 (2026-04-14)
 
 
