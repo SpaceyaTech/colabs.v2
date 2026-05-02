@@ -126,7 +126,7 @@ Open `.env` and fill in your values. Full reference in the [README — Environme
 VITE_SUPABASE_URL=https://your-project-ref.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-key
 VITE_GITHUB_CLIENT_ID=your-github-oauth-app-client-id
-VITE_APP_URL=http://localhost:5173
+VITE_APP_URL=http://localhost:8080
 ```
 
 > ⚠️ Never commit your `.env` file. It is already in `.gitignore`.
@@ -154,7 +154,7 @@ npx supabase functions deploy github-project-data
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173). For the full setup guide including GitHub OAuth configuration, see [README — Getting Started](./README.md#-getting-started).
+Open [http://localhost:8080](http://localhost:8080). For the full setup guide including GitHub OAuth configuration, see [README — Getting Started](./README.md#-getting-started).
 
 ---
 

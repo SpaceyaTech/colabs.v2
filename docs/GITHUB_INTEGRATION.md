@@ -23,7 +23,7 @@ Colabs integrates with GitHub for two independent purposes. Understanding the di
 | **What it does**     | Authenticates the user — creates or restores a Supabase session         | Connects a GitHub account to sync repos and fetch issues                                          |
 | **When it runs**     | On `/sign-in` or `/sign-up`                                             | Inside Settings, after the user is already logged in                                              |
 | **GitHub OAuth App** | GitHub Auth App (configured in Supabase)                                | GitHub Integration App (configured in GitHub)                                                     |
-| **Callback URL**     | `https://<project>.supabase.co/auth/v1/callback`                        | Local: `http://localhost:5173/github-callback`<br>Prod: `https://your-domain.com/github-callback` |
+| **Callback URL**     | `https://<project>.supabase.co/auth/v1/callback`                        | Local: `http://localhost:8080/github-callback`<br>Prod: `https://your-domain.com/github-callback` |
 | **Token stored**     | Supabase Auth JWT — managed by Supabase                                 | GitHub access token — stored in `github_integrations.access_token` (server-side only)             |
 | **Client-side code** | `useAuth.tsx` → `supabase.auth.signInWithOAuth({ provider: 'github' })` | `useGitHub.tsx` → manual redirect → `github-oauth` edge function                                  |
 
@@ -208,13 +208,13 @@ const { claimedIssues, claimIssue, unclaimIssue, updateStatus } = useClaimedIssu
 
 ### Testing the auth flow locally
 
-1. Create a GitHub OAuth App with callback URL `http://localhost:5173` (not the Supabase URL — use localhost for local auth testing)
+1. Create a GitHub OAuth App with callback URL `http://localhost:8080` (not the Supabase URL — use localhost for local auth testing)
 2. Add it to Supabase Auth providers in the dashboard
 3. Run `npm run dev` and sign in with GitHub
 
 ### Testing the integration flow locally
 
-1. Create a second GitHub OAuth App with callback URL `http://localhost:5173/github-callback`
+1. Create a second GitHub OAuth App with callback URL `http://localhost:8080/github-callback`
 2. Add `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` to `.env.local`
 3. Start the local Supabase stack: `npx supabase start`
 4. Serve the edge function: `npx supabase functions serve github-oauth --env-file .env.local`
@@ -239,7 +239,7 @@ curl -X POST \
 The user has not connected their GitHub account. Go through the integration OAuth flow first.
 
 **Callback redirects to an error page**:
-Check that the Authorization callback URL in the GitHub OAuth App matches exactly. Local testing uses `http://localhost:5173/github-callback`, not the Supabase URL.
+Check that the Authorization callback URL in the GitHub OAuth App matches exactly. Local testing uses `http://localhost:8080/github-callback`, not the Supabase URL.
 
 **Edge function returns `Unauthorized`**:
 The JWT is expired or the function was not restarted after a secret change. Re-authenticate and restart `supabase functions serve`.

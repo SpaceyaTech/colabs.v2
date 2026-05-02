@@ -26,6 +26,19 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
+const getAppUrl = () => {
+  const configuredAppUrl = import.meta.env.VITE_APP_URL?.trim();
+  const baseUrl = configuredAppUrl || window.location.origin;
+
+  try {
+    return new URL(baseUrl).toString().replace(/\/$/, '');
+  } catch {
+    return window.location.origin.replace(/\/$/, '');
+  }
+};
+
+const getDashboardRedirectUrl = () => `${getAppUrl()}/dashboard`;
+
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
@@ -52,7 +65,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   const signUp = async (email: string, password: string) => {
-    const redirectUrl = `${window.location.origin}/dashboard`;
+    const redirectUrl = getDashboardRedirectUrl();
 
     const { error } = await supabase.auth.signUp({
       email,
@@ -77,7 +90,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const signInWithOAuth = async (provider: 'github' | 'google') => {
-    const redirectUrl = `${window.location.origin}/dashboard`;
+    const redirectUrl = getDashboardRedirectUrl();
 
     const { error } = await supabase.auth.signInWithOAuth({
       provider,

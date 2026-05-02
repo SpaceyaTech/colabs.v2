@@ -102,7 +102,7 @@ VITE_SUPABASE_ANON_KEY=your-anon-key
 VITE_GITHUB_CLIENT_ID=your-integration-app-client-id
 
 # ── Application ─────────────────────────────────────────────────────────────
-VITE_APP_URL=http://localhost:5173
+VITE_APP_URL=http://localhost:8080
 ```
 
 > ⚠️ **Never commit your `.env` file.** It is already in `.gitignore`. The `GITHUB_CLIENT_SECRET` is a server-side secret — it must never appear in a `VITE_` variable. Set it via the Supabase CLI (see Step 6).
@@ -163,8 +163,8 @@ Go to [GitHub Developer Settings → OAuth Apps](https://github.com/settings/dev
 
 | App                | Homepage URL            | Authorization callback URL                              |
 | ------------------ | ----------------------- | ------------------------------------------------------- |
-| Colabs Auth        | `http://localhost:5173` | `https://your-project-ref.supabase.co/auth/v1/callback` |
-| Colabs Integration | `http://localhost:5173` | `http://localhost:5173/github-callback`                 |
+| Colabs Auth        | `http://localhost:8080` | `https://your-project-ref.supabase.co/auth/v1/callback` |
+| Colabs Integration | `http://localhost:8080` | `http://localhost:8080/github-callback`                 |
 
 ### 5b. Configure the Auth app in Supabase
 
@@ -219,7 +219,7 @@ Verify deployment in **Supabase Dashboard → Edge Functions**.
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173). Sign up with email or GitHub to access the dashboard.
+Open [http://localhost:8080](http://localhost:8080). Sign up with email or GitHub to access the dashboard.
 
 ---
 
@@ -227,7 +227,7 @@ Open [http://localhost:5173](http://localhost:5173). Sign up with email or GitHu
 
 | Script           | Command              | Description                                           |
 | ---------------- | -------------------- | ----------------------------------------------------- |
-| Dev server       | `npm run dev`        | Start Vite with HMR at `localhost:5173`               |
+| Dev server       | `npm run dev`        | Start Vite with HMR at `localhost:8080`               |
 | Production build | `npm run build`      | Build to `dist/` — must pass before any PR            |
 | Preview build    | `npm run preview`    | Preview the production build locally                  |
 | Lint             | `npm run lint`       | Run ESLint — zero errors required before a PR         |
@@ -373,7 +373,7 @@ npx supabase gen types typescript \
 
 Common causes:
 
-1. **Wrong callback URL in GitHub OAuth App** — the Authorization callback URL must match exactly. For auth: `https://your-project-ref.supabase.co/auth/v1/callback`. For integration: `http://localhost:5173/github-callback`
+1. **Wrong callback URL in GitHub OAuth App** — the Authorization callback URL must match exactly. For auth: `https://your-project-ref.supabase.co/auth/v1/callback`. For integration: `http://localhost:8080/github-callback`
 2. **Edge function secrets not set** — run `npx supabase secrets set GITHUB_CLIENT_SECRET=...`
 3. **Edge function not deployed** — run `npx supabase functions deploy github-oauth`
 
