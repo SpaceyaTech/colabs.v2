@@ -74,11 +74,11 @@ jobs:
 
       - name: Verify Gitleaks License Presence
         # Diagnoses if the GITLEAKS_LICENSE secret is accessible to the workflow.
-        # If this fails, check Organization Settings -> Secrets -> Actions -> Repository Access.
+        # Secrets are not available in PRs from forks, and Gitleaks is free for public repos.
+        # Therefore, we issue a warning rather than failing the build.
         run: |
           if [ -z "$GITLEAKS_LICENSE" ]; then
-            echo "::error::GITLEAKS_LICENSE is empty! Check Org settings for repository access."
-            exit 1
+            echo "::warning::GITLEAKS_LICENSE is empty! Check Org settings if this is a private repository. This is expected for PRs from forks."
           else
             echo "GITLEAKS_LICENSE is present and populated."
           fi
@@ -114,7 +114,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: 20
           cache: npm
