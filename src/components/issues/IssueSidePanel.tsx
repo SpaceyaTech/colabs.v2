@@ -88,13 +88,17 @@ export function IssueSidePanel({
   showUnclaim?: boolean;
   onUnclaim?: () => void;
 }) {
-  const [isSaved, setIsSaved] = useState(false);
-
-  useEffect(() => {
-    if (!showSave) return;
-    const savedIssues = JSON.parse(localStorage.getItem('savedIssues') || '[]');
-    setIsSaved(savedIssues.includes(issue.id));
-  }, [issue.id, showSave]);
+  // Lazy initializer — read localStorage synchronously at mount instead of
+  // in a useEffect, avoiding react-hooks/set-state-in-effect
+  const [isSaved, setIsSaved] = useState(() => {
+    if (!showSave) return false;
+    try {
+      const savedIssues = JSON.parse(localStorage.getItem('savedIssues') || '[]');
+      return savedIssues.includes(issue.id);
+    } catch {
+      return false;
+    }
+  });
 
   const toggleSave = () => {
     const savedIssues = JSON.parse(localStorage.getItem('savedIssues') || '[]');

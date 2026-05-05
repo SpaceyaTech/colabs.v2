@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useCallback } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { AppLayout } from '@/components/AppLayout';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
@@ -22,19 +22,24 @@ const SavedJobs = () => {
     document.title = 'Saved Jobs | Colabs';
   }, []);
 
-  const load = useCallback(async () => {
-    if (!user) return;
-    const { data, error } = await supabase
-      .from('saved_jobs' as any)
-      .select('id, project_id, created_at')
-      .order('created_at', { ascending: false });
-    if (!error) setItems(data as any);
-    setLoading(false);
-  }, [user]);
-
+  // Inline async IIFE — satisfies react-hooks/set-state-in-effect by keeping
+  // all setState calls inside the async continuation, not at the top level
   useEffect(() => {
-    load();
-  }, [user, load]);
+    let cancelled = false;
+    (async () => {
+      if (!user) return;
+      const { data, error } = await supabase
+        .from('saved_jobs' as any)
+        .select('id, project_id, created_at')
+        .order('created_at', { ascending: false });
+      if (cancelled) return;
+      if (!error) setItems(data as any);
+      setLoading(false);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [user]);
 
   const remove = async (id: string) => {
     await supabase

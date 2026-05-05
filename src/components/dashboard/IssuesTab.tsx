@@ -488,16 +488,13 @@ export function IssuesTab() {
   const [sortDir, setSortDir] = useState<SortDir>('asc');
   const [showFilters, setShowFilters] = useState(false);
 
-  // Saved recommended issues (localStorage)
-  const [savedRecIds, setSavedRecIds] = useState<Set<string>>(new Set());
-  useEffect(() => {
+  const [savedRecIds, setSavedRecIds] = useState<Set<string>>(() => {
     try {
-      const saved = JSON.parse(localStorage.getItem('colabs-saved-rec') || '[]');
-      setSavedRecIds(new Set(saved));
-    } catch (err) {
-      console.error('Failed to load saved recommendations:', err);
+      return new Set(JSON.parse(localStorage.getItem('colabs-saved-rec') || '[]'));
+    } catch {
+      return new Set();
     }
-  }, []);
+  });
   const toggleSaveRec = useCallback((id: string) => {
     setSavedRecIds((prev) => {
       const next = new Set(prev);

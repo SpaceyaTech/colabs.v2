@@ -47,11 +47,6 @@ const Leaderboard = () => {
   const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    document.title = 'Leaderboard | Colabs';
-    fetchLeaderboard();
-  }, []);
-
   const fetchLeaderboard = async () => {
     try {
       setLoading(true);
@@ -197,6 +192,11 @@ const Leaderboard = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    document.title = 'Leaderboard | Colabs';
+    fetchLeaderboard();
+  }, []);
 
   const filtered = useMemo(() => {
     if (!searchQuery) return entries;

@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -514,15 +514,13 @@ export function GigsTab() {
   const [showFilters, setShowFilters] = useState(false);
 
   // Saved recommended gigs
-  const [savedGigIds, setSavedGigIds] = useState<Set<string>>(new Set());
-  useEffect(() => {
+  const [savedGigIds, setSavedGigIds] = useState<Set<string>>(() => {
     try {
-      const saved = JSON.parse(localStorage.getItem('colabs-saved-gigs') || '[]');
-      setSavedGigIds(new Set(saved));
-    } catch (err) {
-      console.error('Failed to load saved gigs:', err);
+      return new Set(JSON.parse(localStorage.getItem('colabs-saved-gigs') || '[]'));
+    } catch {
+      return new Set();
     }
-  }, []);
+  });
   const toggleSaveGig = useCallback((id: string) => {
     setSavedGigIds((prev) => {
       const next = new Set(prev);
@@ -754,27 +752,34 @@ export function GigsTab() {
       )}
 
       {/* ===== SECTION 1: CURRENT GIGS ===== */}
-      {gigs.length === 0 ? (
-        <EmptyState
-          icon={Briefcase}
-          title="No gigs yet"
-          description="Start exploring the marketplace to find freelance opportunities that match your skills."
-          actionLabel="Browse Marketplace"
-          onAction={() => navigate('/marketplace')}
-        />
-      ) : filteredAndSorted.length === 0 ? (
-        <div className="text-center py-12 text-sm text-muted-foreground">
-          <Briefcase className="h-8 w-8 mx-auto mb-3 text-muted-foreground/30" />
-          <p>No gigs match your filters</p>
-          <Button variant="ghost" size="sm" className="mt-2 text-xs" onClick={clearAllFilters}>
-            Clear filters
-          </Button>
-        </div>
-      ) : viewMode === 'list' ? (
-        <GigListView groups={statusGroups} />
-      ) : (
-        <GigGridView gigs={filteredAndSorted} />
-      )}
+      {(() => {
+        if (gigs.length === 0) {
+          return (
+            <EmptyState
+              icon={Briefcase}
+              title="No gigs yet"
+              description="Start exploring the marketplace to find freelance opportunities that match your skills."
+              actionLabel="Browse Marketplace"
+              onAction={() => navigate('/marketplace')}
+            />
+          );
+        }
+        if (filteredAndSorted.length === 0) {
+          return (
+            <div className="text-center py-12 text-sm text-muted-foreground">
+              <Briefcase className="h-8 w-8 mx-auto mb-3 text-muted-foreground/30" />
+              <p>No gigs match your filters</p>
+              <Button variant="ghost" size="sm" className="mt-2 text-xs" onClick={clearAllFilters}>
+                Clear filters
+              </Button>
+            </div>
+          );
+        }
+        if (viewMode === 'list') {
+          return <GigListView groups={statusGroups} />;
+        }
+        return <GigGridView gigs={filteredAndSorted} />;
+      })()}
 
       {/* ===== DIVIDER: Recommended Gigs ===== */}
       <SectionDivider label="Recommended for you" />

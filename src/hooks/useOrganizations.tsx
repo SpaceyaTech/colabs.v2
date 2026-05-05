@@ -59,13 +59,51 @@ export const useOrganizations = () => {
   }, [user]);
 
   useEffect(() => {
-    if (user) {
-      fetchUserOrganizations();
-    } else {
-      setOrganizations([]);
-      setLoading(false);
-    }
-  }, [user, fetchUserOrganizations]);
+    let cancelled = false;
+    (async () => {
+      if (!user) {
+        setOrganizations([]);
+        setLoading(false);
+        return;
+      }
+      try {
+        setLoading(true);
+        setError(null);
+        const { data, error } = await supabase
+          .from('organization_members')
+          .select(
+            `
+          role,
+          organizations (
+            id,
+            name,
+            slug,
+            description,
+            avatar_url,
+            website_url,
+            created_at
+          )
+        `
+          )
+          .eq('user_id', user?.id);
+        if (cancelled) return;
+        if (error) throw error;
+        const orgsWithRole =
+          data?.map((item) => ({
+            ...item.organizations,
+            role: item.role,
+          })) || [];
+        setOrganizations(orgsWithRole);
+      } catch (err: any) {
+        if (!cancelled) setError(err.message);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [user]);
 
   const createOrganization = async (orgData: {
     name: string;

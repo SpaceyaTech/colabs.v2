@@ -21,6 +21,18 @@ import {
   Radar,
 } from 'recharts';
 
+// Generate heatmap data once at module level to ensure purity
+// react-hooks/purity forbids impure calls like Math.random() during render
+const HEATMAP_DATA = (() => {
+  const data = [];
+  for (let week = 0; week < 15; week++) {
+    for (let day = 0; day < 7; day++) {
+      data.push(Math.floor(Math.random() * 10));
+    }
+  }
+  return data;
+})();
+
 const InteractiveDemoSection = () => {
   // Sample data for charts
   const activityData = [
@@ -50,19 +62,6 @@ const InteractiveDemoSection = () => {
     { skill: 'Go', value: 45 },
     { skill: 'Docker', value: 70 },
   ];
-
-  // Generate heatmap data
-  const generateHeatmapData = () => {
-    const data = [];
-    for (let week = 0; week < 15; week++) {
-      for (let day = 0; day < 7; day++) {
-        data.push(Math.floor(Math.random() * 10));
-      }
-    }
-    return data;
-  };
-
-  const heatmapData = generateHeatmapData();
 
   const getHeatmapColor = (count: number) => {
     if (count === 0) return 'bg-muted/30';
@@ -223,7 +222,7 @@ const InteractiveDemoSection = () => {
                             duration: 0.2,
                             delay: (weekIndex * 7 + dayIndex) * 0.005,
                           }}
-                          className={`w-3 h-3 rounded-sm ${getHeatmapColor(heatmapData[weekIndex * 7 + dayIndex])}`}
+                          className={`w-3 h-3 rounded-sm ${getHeatmapColor(HEATMAP_DATA[weekIndex * 7 + dayIndex])}`}
                         />
                       ))}
                     </div>

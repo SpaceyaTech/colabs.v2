@@ -51,6 +51,16 @@ interface Project {
   updated_at: string;
 }
 
+// Deterministic hash of a string — avoids Math.random() in render paths
+// (react-hooks/purity requires render functions to be idempotent)
+function stableHash(str: string): number {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) {
+    h = (Math.imul(31, h) + str.charCodeAt(i)) | 0;
+  }
+  return Math.abs(h);
+}
+
 const Projects = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilter, setSelectedFilter] = useState<string>('All');
@@ -79,11 +89,7 @@ const Projects = () => {
     'Vue.js',
   ];
 
-  useEffect(() => {
-    document.title = 'Explore Projects | Colabs';
-    fetchProjects();
-  }, []);
-
+  // Declared before the useEffect that calls it (react-hooks/immutability)
   const fetchProjects = async () => {
     try {
       setLoading(true);
@@ -99,19 +105,28 @@ const Projects = () => {
     }
   };
 
-  const transformProjectToCard = (project: Project) => ({
-    name: project.name,
-    description: project.description,
-    owner: 'Creator',
-    language: project.technologies[0] || 'JavaScript',
-    stars: Math.floor(Math.random() * 200),
-    forks: Math.floor(Math.random() * 50),
-    contributors: 2 + Math.floor(Math.random() * 15),
-    languageColor: 'bg-blue-500',
-    technologies: project.technologies,
-    status: project.status,
-    isPaid: project.is_paid,
-  });
+  useEffect(() => {
+    document.title = 'Explore Projects | Colabs';
+    fetchProjects();
+  }, []);
+
+  // Pure transform — uses stableHash so values are consistent across re-renders
+  const transformProjectToCard = (project: Project) => {
+    const h = stableHash(project.id);
+    return {
+      name: project.name,
+      description: project.description,
+      owner: 'Creator',
+      language: project.technologies[0] || 'JavaScript',
+      stars: h % 200,
+      forks: (h >> 4) % 50,
+      contributors: 2 + ((h >> 8) % 15),
+      languageColor: 'bg-blue-500',
+      technologies: project.technologies,
+      status: project.status,
+      isPaid: project.is_paid,
+    };
+  };
 
   const filteredProjects = useMemo(() => {
     return projects

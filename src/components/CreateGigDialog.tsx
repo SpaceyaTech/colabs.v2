@@ -87,7 +87,12 @@ const CATEGORIES = [
 
 const DIFFICULTIES = ['Entry level', 'Intermediate', 'Expert'];
 
-export function CreateGigDialog({ open, onOpenChange, onCreated, editGig }: CreateGigDialogProps) {
+export function CreateGigDialog({
+  open,
+  onOpenChange,
+  onCreated,
+  editGig,
+}: Readonly<CreateGigDialogProps>) {
   const { user } = useAuth();
   const { toast } = useToast();
   const [submitting, setSubmitting] = useState(false);
@@ -111,36 +116,6 @@ export function CreateGigDialog({ open, onOpenChange, onCreated, editGig }: Crea
   const [requirements, setRequirements] = useState<string[]>(['']);
   const [deliverables, setDeliverables] = useState<string[]>(['']);
   const [errors, setErrors] = useState<FieldErrors>({});
-  useEffect(() => {
-    if (editGig && open) {
-      setTitle(editGig.title);
-      setCompany(editGig.company);
-      setDescription(editGig.description);
-      setFullDescription(editGig.full_description);
-      setBudget(editGig.budget);
-      setBudgetValue(editGig.budget_value || '');
-      setDuration(editGig.duration);
-      setLocation(editGig.location);
-      setDifficulty(editGig.difficulty);
-      setCategory(editGig.category ?? '');
-      setIsUrgent(editGig.is_urgent);
-      setTechnologies(editGig.technologies ?? []);
-      setRequirements(editGig.requirements?.length ? editGig.requirements : ['']);
-      setDeliverables(editGig.deliverables?.length ? editGig.deliverables : ['']);
-      setTechInput('');
-    } else if (!editGig && open) {
-      resetForm();
-    }
-  }, [editGig, open]);
-
-  const addTech = () => {
-    const trimmed = techInput.trim();
-    if (trimmed && !technologies.includes(trimmed)) {
-      setTechnologies([...technologies, trimmed]);
-      setTechInput('');
-    }
-  };
-
   const resetForm = () => {
     setTitle('');
     setCompany('');
@@ -159,6 +134,40 @@ export function CreateGigDialog({ open, onOpenChange, onCreated, editGig }: Crea
     setDeliverables(['']);
     setErrors({});
   };
+
+  const addTech = () => {
+    const trimmed = techInput.trim();
+    if (trimmed && !technologies.includes(trimmed)) {
+      setTechnologies([...technologies, trimmed]);
+      setTechInput('');
+    }
+  };
+
+  useEffect(() => {
+    if (editGig && open) {
+      (async () => {
+        setTitle(editGig.title);
+        setCompany(editGig.company);
+        setDescription(editGig.description);
+        setFullDescription(editGig.full_description);
+        setBudget(editGig.budget);
+        setBudgetValue(editGig.budget_value || '');
+        setDuration(editGig.duration);
+        setLocation(editGig.location);
+        setDifficulty(editGig.difficulty);
+        setCategory(editGig.category ?? '');
+        setIsUrgent(editGig.is_urgent);
+        setTechnologies(editGig.technologies ?? []);
+        setRequirements(editGig.requirements?.length ? editGig.requirements : ['']);
+        setDeliverables(editGig.deliverables?.length ? editGig.deliverables : ['']);
+        setTechInput('');
+      })();
+    } else if (!editGig && open) {
+      (async () => {
+        resetForm();
+      })();
+    }
+  }, [editGig, open]);
 
   const handleSubmit = async () => {
     if (!user) return;
@@ -219,7 +228,7 @@ export function CreateGigDialog({ open, onOpenChange, onCreated, editGig }: Crea
     let error;
 
     if (isEditing) {
-      ({ error } = await supabase.from('gigs').update(payload).eq('id', editGig!.id));
+      ({ error } = await supabase.from('gigs').update(payload).eq('id', editGig.id));
     } else {
       ({ error } = await supabase.from('gigs').insert({
         ...payload,
@@ -574,22 +583,30 @@ export function CreateGigDialog({ open, onOpenChange, onCreated, editGig }: Crea
               Cancel
             </Button>
             <Button onClick={handleSubmit} disabled={submitting}>
-              {submitting ? (
-                <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  {isEditing ? 'Saving...' : 'Posting...'}
-                </>
-              ) : isEditing ? (
-                <>
-                  <Pencil className="h-4 w-4 mr-2" />
-                  Save Changes
-                </>
-              ) : (
-                <>
-                  <Briefcase className="h-4 w-4 mr-2" />
-                  Post Gig
-                </>
-              )}
+              {(() => {
+                if (submitting) {
+                  return (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      {isEditing ? 'Saving...' : 'Posting...'}
+                    </>
+                  );
+                }
+                if (isEditing) {
+                  return (
+                    <>
+                      <Pencil className="h-4 w-4 mr-2" />
+                      Save Changes
+                    </>
+                  );
+                }
+                return (
+                  <>
+                    <Briefcase className="h-4 w-4 mr-2" />
+                    Post Gig
+                  </>
+                );
+              })()}
             </Button>
           </div>
         </div>
