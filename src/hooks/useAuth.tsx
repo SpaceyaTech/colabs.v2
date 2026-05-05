@@ -28,12 +28,12 @@ interface AuthProviderProps {
 
 const getAppUrl = () => {
   const configuredAppUrl = import.meta.env.VITE_APP_URL?.trim();
-  const baseUrl = configuredAppUrl || window.location.origin;
+  const baseUrl = configuredAppUrl || globalThis.location?.origin || '';
 
   try {
     return new URL(baseUrl).toString().replace(/\/$/, '');
   } catch {
-    return window.location.origin.replace(/\/$/, '');
+    return globalThis.location?.origin?.replace(/\/$/, '') || '';
   }
 };
 
