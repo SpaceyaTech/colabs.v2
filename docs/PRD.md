@@ -661,7 +661,7 @@ All of the following must pass before a PR can be merged to `dev`:
 
 | Environment       | Branch                  | URL                | Purpose                                                                  |
 | ----------------- | ----------------------- | ------------------ | ------------------------------------------------------------------------ |
-| Local development | `feat/*`, `fix/*`, etc. | `localhost:5173`   | Active contributor development                                           |
+| Local development | `feat/*`, `fix/*`, etc. | `localhost:8080`   | Active contributor development                                           |
 | Staging           | `dev`                   | staging.colabs.dev | Integration testing — all PRs land here first                            |
 | Production        | `main`                  | colabs.dev         | Stable released code — only receives release PRs from `dev` and hotfixes |
 
