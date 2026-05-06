@@ -32,6 +32,17 @@ const Dashboard = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const navigate = useNavigate();
 
+  const fetchProjects = async () => {
+    const { data } = await supabase
+      .from('projects')
+      .select('*')
+      .eq('status', 'active')
+      .in('visibility', ['public', 'unlisted'])
+      .order('created_at', { ascending: false })
+      .limit(10);
+    setProjects(data || []);
+  };
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
@@ -57,17 +68,6 @@ const Dashboard = () => {
 
     return () => subscription.unsubscribe();
   }, [navigate]);
-
-  const fetchProjects = async () => {
-    const { data } = await supabase
-      .from('projects')
-      .select('*')
-      .eq('status', 'active')
-      .in('visibility', ['public', 'unlisted'])
-      .order('created_at', { ascending: false })
-      .limit(10);
-    setProjects(data || []);
-  };
 
   if (loading) {
     return (

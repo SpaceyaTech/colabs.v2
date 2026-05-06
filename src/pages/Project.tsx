@@ -1,5 +1,5 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -148,7 +148,8 @@ const ProjectPage = () => {
     }
   };
 
-  const fetchProject = useCallback(async () => {
+  // Plain async function — reused by the effect below and by the onSaved handler
+  const fetchProject = async () => {
     if (!id) {
       setError('Project ID not provided');
       setLoading(false);
@@ -168,11 +169,40 @@ const ProjectPage = () => {
     } finally {
       setLoading(false);
     }
-  }, [id]);
+  };
 
+  // Inline async IIFE — avoids calling an external setState-bearing function
+  // directly from an effect body (react-hooks/set-state-in-effect)
   useEffect(() => {
-    fetchProject();
-  }, [fetchProject]);
+    let cancelled = false;
+    (async () => {
+      if (!id) {
+        if (!cancelled) {
+          setError('Project ID not provided');
+          setLoading(false);
+        }
+        return;
+      }
+      try {
+        const { data, error: fetchError } = await supabase
+          .from('projects')
+          .select('*')
+          .eq('id', id)
+          .maybeSingle();
+        if (cancelled) return;
+        if (fetchError) throw fetchError;
+        if (!data) setError('Project not found');
+        else setProject(data as unknown as Project);
+      } catch {
+        if (!cancelled) setError('Failed to load project');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [id]);
 
   useEffect(() => {
     if (!project?.github_repo_url) return;

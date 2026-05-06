@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -49,79 +49,83 @@ const OrganizationSetup = () => {
   const [connecting, setConnecting] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  const fetchOrganization = useCallback(async () => {
-    try {
-      const { data, error } = await supabase
-        .from('organizations')
-        .select('*')
-        .eq('slug', slug)
-        .single();
-
-      if (error) throw error;
-      setOrganization(data);
-
-      // Check if GitHub is already connected
-      const { data: integration } = await supabase
-        .from('organization_integrations')
-        .select('*')
-        .eq('organization_id', data.id)
-        .eq('integration_type', 'github')
-        .single();
-
-      if (integration) {
-        setIsConnected(true);
-        // In a real app, you'd fetch repos from GitHub API
-        // For demo, we'll show some mock repositories
-        setRepositories([
-          {
-            id: 1,
-            name: 'frontend-app',
-            full_name: 'acme/frontend-app',
-            description: 'React frontend application',
-            private: false,
-            stargazers_count: 25,
-            language: 'TypeScript',
-            updated_at: '2024-01-15T10:30:00Z',
-          },
-          {
-            id: 2,
-            name: 'api-server',
-            full_name: 'acme/api-server',
-            description: 'Node.js API server',
-            private: true,
-            stargazers_count: 8,
-            language: 'JavaScript',
-            updated_at: '2024-01-14T14:20:00Z',
-          },
-          {
-            id: 3,
-            name: 'mobile-app',
-            full_name: 'acme/mobile-app',
-            description: 'React Native mobile application',
-            private: false,
-            stargazers_count: 42,
-            language: 'TypeScript',
-            updated_at: '2024-01-13T09:15:00Z',
-          },
-        ]);
-      }
-    } catch (error: any) {
-      console.error('Organization fetch error:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to load organization details',
-        variant: 'destructive',
-      });
-    } finally {
-      setLoading(false);
-    }
-  }, [slug]);
-
+  // Single useEffect with inline async IIFE — all setState calls live inside
+  // the async continuation (react-hooks/set-state-in-effect)
   useEffect(() => {
-    if (slug && user) {
-      fetchOrganization();
-    }
-  }, [slug, user, fetchOrganization]);
+    if (!slug || !user) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const { data, error } = await supabase
+          .from('organizations')
+          .select('*')
+          .eq('slug', slug)
+          .single();
+
+        if (cancelled) return;
+        if (error) throw error;
+        setOrganization(data);
+
+        const { data: integration } = await supabase
+          .from('organization_integrations')
+          .select('*')
+          .eq('organization_id', data.id)
+          .eq('integration_type', 'github')
+          .single();
+
+        if (cancelled) return;
+        if (integration) {
+          setIsConnected(true);
+          setRepositories([
+            {
+              id: 1,
+              name: 'frontend-app',
+              full_name: 'acme/frontend-app',
+              description: 'React frontend application',
+              private: false,
+              stargazers_count: 25,
+              language: 'TypeScript',
+              updated_at: '2024-01-15T10:30:00Z',
+            },
+            {
+              id: 2,
+              name: 'api-server',
+              full_name: 'acme/api-server',
+              description: 'Node.js API server',
+              private: true,
+              stargazers_count: 8,
+              language: 'JavaScript',
+              updated_at: '2024-01-14T14:20:00Z',
+            },
+            {
+              id: 3,
+              name: 'mobile-app',
+              full_name: 'acme/mobile-app',
+              description: 'React Native mobile application',
+              private: false,
+              stargazers_count: 42,
+              language: 'TypeScript',
+              updated_at: '2024-01-13T09:15:00Z',
+            },
+          ]);
+        }
+      } catch (error: any) {
+        if (!cancelled) {
+          console.error('Organization fetch error:', error);
+          toast({
+            title: 'Error',
+            description: 'Failed to load organization details',
+            variant: 'destructive',
+          });
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [slug, user]);
 
   const connectGitHub = async () => {
     if (!organization) return;

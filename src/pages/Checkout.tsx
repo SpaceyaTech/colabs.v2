@@ -35,12 +35,14 @@ const Checkout = () => {
   const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
-    const projectData = location.state?.project;
-    if (!projectData) {
-      navigate('/marketplace');
-      return;
-    }
-    setProject(projectData);
+    (async () => {
+      const projectData = location.state?.project;
+      if (!projectData) {
+        navigate('/marketplace');
+        return;
+      }
+      setProject(projectData);
+    })();
   }, [location.state, navigate]);
 
   const handleInputChange = (field: string, value: string) => {

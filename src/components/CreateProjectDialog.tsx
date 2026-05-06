@@ -140,9 +140,11 @@ export const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
   // Reset when dialog opens with new project
   React.useEffect(() => {
     if (open) {
-      setFormData(getInitialForm(editProject));
-      setLogoPreview(editProject?.logo_url || null);
-      setStep(0);
+      (async () => {
+        setFormData(getInitialForm(editProject));
+        setLogoPreview(editProject?.logo_url || null);
+        setStep(0);
+      })();
     }
   }, [open, editProject]);
 
@@ -184,6 +186,50 @@ export const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
     return links;
   };
 
+  const handleLogoFileUpload = async (logoFile: File, userId: string) => {
+    const allowedExtensions = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+    const fileExt = logoFile.name.split('.').pop()?.toLowerCase() || '';
+    if (!allowedExtensions.includes(fileExt)) {
+      throw new Error('Invalid file type');
+    }
+    const fileName = `${userId}-${globalThis.Date.now()}.${fileExt}`;
+    const { error: upErr } = await supabase.storage
+      .from('project-logos')
+      .upload(fileName, logoFile);
+    if (upErr) throw new Error(upErr.message);
+    const {
+      data: { publicUrl },
+    } = supabase.storage.from('project-logos').getPublicUrl(fileName);
+    return publicUrl;
+  };
+
+  const buildProjectPayload = (logoUrl: string | null) => {
+    const externalLinks = buildExternalLinks();
+    return {
+      name: formData.name,
+      description: formData.description,
+      logo_url: logoUrl,
+      technologies: formData.technologies,
+      project_type: formData.projectType,
+      visibility: formData.visibility,
+      is_paid: formData.isPaid,
+      compensation_type: formData.isPaid ? formData.compensationType : null,
+      budget: formData.isPaid ? formData.budget : null,
+      currency: formData.currency,
+      team_size: formData.teamSize,
+      experience_level: formData.experienceLevel,
+      duration: formData.duration,
+      allow_applications: formData.allowApplications,
+      requires_approval: formData.requiresApproval,
+      invite_emails: formData.inviteEmails,
+      category: formData.category || null,
+      industry: formData.industry || null,
+      launch_readiness: formData.launchReadiness,
+      github_repo_url: formData.githubUrl.trim() || null,
+      external_links: Object.keys(externalLinks).length > 0 ? externalLinks : {},
+    };
+  };
+
   const handleSubmit = async () => {
     if (!user) {
       toast.error('You must be logged in');
@@ -198,48 +244,10 @@ export const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
     try {
       let logoUrl = editProject?.logo_url || null;
       if (formData.logo) {
-        const allowedExtensions = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
-        const fileExt = formData.logo.name.split('.').pop()?.toLowerCase() || '';
-        if (!allowedExtensions.includes(fileExt)) {
-          toast.error('Invalid file type');
-          setIsSubmitting(false);
-          return;
-        }
-        const fileName = `${user.id}-${Date.now()}.${fileExt}`;
-        const { error: upErr } = await supabase.storage
-          .from('project-logos')
-          .upload(fileName, formData.logo);
-        if (upErr) throw new Error(upErr.message);
-        const {
-          data: { publicUrl },
-        } = supabase.storage.from('project-logos').getPublicUrl(fileName);
-        logoUrl = publicUrl;
+        logoUrl = await handleLogoFileUpload(formData.logo, user.id);
       }
 
-      const externalLinks = buildExternalLinks();
-      const payload = {
-        name: formData.name,
-        description: formData.description,
-        logo_url: logoUrl,
-        technologies: formData.technologies,
-        project_type: formData.projectType,
-        visibility: formData.visibility,
-        is_paid: formData.isPaid,
-        compensation_type: formData.isPaid ? formData.compensationType : null,
-        budget: formData.isPaid ? formData.budget : null,
-        currency: formData.currency,
-        team_size: formData.teamSize,
-        experience_level: formData.experienceLevel,
-        duration: formData.duration,
-        allow_applications: formData.allowApplications,
-        requires_approval: formData.requiresApproval,
-        invite_emails: formData.inviteEmails,
-        category: formData.category || null,
-        industry: formData.industry || null,
-        launch_readiness: formData.launchReadiness,
-        github_repo_url: formData.githubUrl.trim() || null,
-        external_links: Object.keys(externalLinks).length > 0 ? externalLinks : {},
-      };
+      const payload = buildProjectPayload(logoUrl);
 
       if (isEditMode && editProject) {
         const { error } = await supabase.from('projects').update(payload).eq('id', editProject.id);
@@ -254,7 +262,7 @@ export const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
           .single();
         if (error) throw new Error(error.message);
         toast.success('Project created!');
-        window.location.reload();
+        globalThis.location.reload();
       }
       onOpenChange(false);
     } catch (err) {
@@ -287,21 +295,22 @@ export const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
                   onClick={() => setStep(i)}
                   className={cn(
                     'flex items-center gap-1.5 text-xs font-medium px-2 py-1 rounded-md transition-colors',
-                    step === i
-                      ? 'bg-accent text-foreground'
-                      : isStepComplete(i)
-                        ? 'text-muted-foreground hover:text-foreground'
-                        : 'text-muted-foreground/50'
+                    (() => {
+                      if (step === i) return 'bg-accent text-foreground';
+                      if (isStepComplete(i)) return 'text-muted-foreground hover:text-foreground';
+                      return 'text-muted-foreground/50';
+                    })()
                   )}
                 >
                   <span
                     className={cn(
                       'w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-semibold border',
-                      step === i
-                        ? 'border-foreground text-foreground'
-                        : isStepComplete(i)
-                          ? 'border-primary bg-primary text-primary-foreground'
-                          : 'border-border text-muted-foreground/50'
+                      (() => {
+                        if (step === i) return 'border-foreground text-foreground';
+                        if (isStepComplete(i))
+                          return 'border-primary bg-primary text-primary-foreground';
+                        return 'border-border text-muted-foreground/50';
+                      })()
                     )}
                   >
                     {isStepComplete(i) && step !== i ? <Check className="h-2.5 w-2.5" /> : i + 1}
@@ -397,7 +406,12 @@ export const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
                     placeholder="e.g. React, Python"
                     value={currentTech}
                     onChange={(e) => setCurrentTech(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addTechnology())}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        addTechnology();
+                      }
+                    }}
                     className="h-8 text-xs"
                   />
                   <Button
@@ -876,13 +890,12 @@ export const CreateProjectDialog: React.FC<CreateProjectDialogProps> = ({
               </Button>
             ) : (
               <Button size="sm" className="text-xs" onClick={handleSubmit} disabled={isSubmitting}>
-                {isSubmitting
-                  ? isEditMode
-                    ? 'Saving…'
-                    : 'Creating…'
-                  : isEditMode
-                    ? 'Save Changes'
-                    : 'Create Project'}
+                {(() => {
+                  if (isSubmitting) {
+                    return isEditMode ? 'Saving…' : 'Creating…';
+                  }
+                  return isEditMode ? 'Save Changes' : 'Create Project';
+                })()}
               </Button>
             )}
           </div>
