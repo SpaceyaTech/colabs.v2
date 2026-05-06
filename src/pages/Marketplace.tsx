@@ -438,16 +438,13 @@ const Marketplace = () => {
   const { data: gigRows, isLoading: gigsLoading } = useGigs();
   const gigs: ExploreGig[] = useMemo(() => (gigRows ?? []).map(gigRowToExploreGig), [gigRows]);
 
-  // Saved gigs
-  const [savedGigIds, setSavedGigIds] = useState<Set<string>>(new Set());
-  useEffect(() => {
+  const [savedGigIds, setSavedGigIds] = useState<Set<string>>(() => {
     try {
-      const saved = JSON.parse(localStorage.getItem('colabs-saved-gigs') || '[]');
-      setSavedGigIds(new Set(saved));
-    } catch (err) {
-      console.error('Failed to load saved gigs:', err);
+      return new Set(JSON.parse(localStorage.getItem('colabs-saved-gigs') || '[]'));
+    } catch {
+      return new Set();
     }
-  }, []);
+  });
   const toggleSaveGig = useCallback((id: string) => {
     setSavedGigIds((prev) => {
       const next = new Set(prev);

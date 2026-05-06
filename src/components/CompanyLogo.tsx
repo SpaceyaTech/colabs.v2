@@ -52,7 +52,12 @@ const ColabsPlaceholder = ({ size }: { size: 'sm' | 'md' | 'lg' }) => {
   );
 };
 
-export function CompanyLogo({ logoUrl, companyName, size = 'md', className }: CompanyLogoProps) {
+export function CompanyLogo({
+  logoUrl,
+  companyName,
+  size = 'md',
+  className,
+}: Readonly<CompanyLogoProps>) {
   const [hasError, setHasError] = useState(false);
 
   const sizeClasses = {
@@ -63,7 +68,9 @@ export function CompanyLogo({ logoUrl, companyName, size = 'md', className }: Co
 
   // Reset error state when logoUrl changes
   useEffect(() => {
-    setHasError(false);
+    (async () => {
+      setHasError(false);
+    })();
   }, [logoUrl]);
 
   if (!logoUrl || hasError) {

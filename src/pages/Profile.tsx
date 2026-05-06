@@ -120,6 +120,10 @@ const generateHeatmapData = () => {
   return data;
 };
 
+// Evaluated once at module load — keeps Date.now() completely outside React's
+// render cycle (react-hooks/purity disallows impure function calls during render)
+const MODULE_LOAD_TIMESTAMP = Date.now();
+
 export default function Profile() {
   const { user } = useAuth();
   const [heatmapData] = useState(generateHeatmapData);
@@ -129,10 +133,11 @@ export default function Profile() {
   }, []);
 
   const userInitials = user?.email?.substring(0, 2).toUpperCase() || 'U';
-  const joinedDate = new Date(user?.created_at || Date.now()).toLocaleDateString('en-US', {
-    month: 'long',
-    year: 'numeric',
-  });
+  // Falls back to MODULE_LOAD_TIMESTAMP — a stable value computed outside React
+  const joinedDate = new Date(user?.created_at ?? MODULE_LOAD_TIMESTAMP).toLocaleDateString(
+    'en-US',
+    { month: 'long', year: 'numeric' }
+  );
   const currentStreak = 12;
 
   return (

@@ -32,7 +32,8 @@ updates:
         patterns:
           - 'typescript'
           - 'ts-*'
-          - '@typescript-eslint/*'
+          # @typescript-eslint/* moved to linting-formatting so all ESLint
+          # flat-config deps travel in a single PR
         update-types:
           - 'minor'
           - 'patch'
@@ -52,6 +53,8 @@ updates:
           - 'eslint*'
           - 'prettier*'
           - '@eslint/*'
+          - '@typescript-eslint/*' # peer-coupled to eslint — must upgrade together
+          - 'globals' # eslint flat-config peer — moves with eslint
         update-types:
           - 'minor'
           - 'patch'

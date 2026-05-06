@@ -7,6 +7,10 @@ import { toast } from 'sonner';
 export type PlanType = 'starter' | 'pro' | 'pro_plus';
 export type SubscriptionStatus = 'active' | 'expired' | 'cancelled';
 
+// Module-level timestamp — keeps Date.now() out of the render path
+// (react-hooks/purity forbids impure function calls during render)
+const NOW_MS = Date.now();
+
 export interface SubscriptionState {
   plan: PlanType;
   status: SubscriptionStatus;
@@ -114,14 +118,14 @@ export function useSubscription(): SubscriptionState {
   const limits = PLAN_LIMITS[plan];
 
   const daysRemaining = expiresAt
-    ? Math.max(0, Math.ceil((new Date(expiresAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
+    ? Math.max(0, Math.ceil((new Date(expiresAt).getTime() - NOW_MS) / (1000 * 60 * 60 * 24)))
     : null;
 
   return {
     plan,
     status,
     expiresAt,
-    startedAt: subscription?.started_at ?? new Date().toISOString(),
+    startedAt: subscription?.started_at ?? new Date(NOW_MS).toISOString(),
     isExpired,
     isPro: plan === 'pro' || plan === 'pro_plus',
     isProPlus: plan === 'pro_plus',

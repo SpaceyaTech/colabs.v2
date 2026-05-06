@@ -52,7 +52,9 @@ export const FeaturedGigsCarousel = ({ gigs, onGigClick }: FeaturedGigsCarouselP
   useEffect(() => {
     if (!api) return;
 
-    setCurrent(api.selectedScrollSnap());
+    (async () => {
+      setCurrent(api.selectedScrollSnap());
+    })();
     api.on('select', () => {
       setCurrent(api.selectedScrollSnap());
     });

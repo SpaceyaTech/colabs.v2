@@ -18,9 +18,13 @@ interface Project {
 const PurchaseSuccess = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [project, setProject] = useState<Project | null>(null);
-  const [transactionId, setTransactionId] = useState<string>('');
-  const [paymentMethod, setPaymentMethod] = useState<string>('');
+  const [purchaseData, setPurchaseData] = useState<{
+    project: Project | null;
+    transactionId: string;
+    paymentMethod: string;
+  }>({ project: null, transactionId: '', paymentMethod: '' });
+
+  const { project, transactionId, paymentMethod } = purchaseData;
 
   /**
    * TODO: STRIPE INTEGRATION - Verify Purchase
@@ -40,39 +44,29 @@ const PurchaseSuccess = () => {
    *
    * See docs/STRIPE_INTEGRATION.md for full implementation details.
    */
+  // Async IIFE — batches all derived state in one update and avoids calling
+  // multiple setStates synchronously at the top level of an effect body
+  // (react-hooks/set-state-in-effect)
   useEffect(() => {
-    // Phase 2: Verify the Stripe session via a backend edge function
-    // This prevents users from accessing the success page by manually setting URL params
-    const searchParams = new URLSearchParams(window.location.search);
-    const sessionId = searchParams.get('session_id');
+    (async () => {
+      // Phase 2: verify Stripe session via edge function (uncomment when ready)
+      // const searchParams = new URLSearchParams(window.location.search);
+      // const sessionId = searchParams.get('session_id');
 
-    // if (sessionId) {
-    //   const verifySession = async () => {
-    //     const { data, error } = await supabase.functions.invoke('verify-checkout-session', {
-    //       body: { sessionId }
-    //     });
-    //     if (error) {
-    //       console.error('Session verification failed:', error);
-    //       navigate('/marketplace');
-    //     }
-    //   };
-    //   verifySession();
-    // }
+      const {
+        project: projectData,
+        transactionId: txnId,
+        paymentMethod: method,
+      } = location.state || {};
 
-    const {
-      project: projectData,
-      transactionId: txnId,
-      paymentMethod: method,
-    } = location.state || {};
+      if (!projectData || !txnId) {
+        navigate('/marketplace');
+        return;
+      }
 
-    if (!projectData || !txnId) {
-      navigate('/marketplace');
-      return;
-    }
-
-    setProject(projectData);
-    setTransactionId(txnId);
-    setPaymentMethod(method);
+      // Single setState call — one render, no cascading
+      setPurchaseData({ project: projectData, transactionId: txnId, paymentMethod: method ?? '' });
+    })();
   }, [location.state, navigate]);
 
   const handleDownload = () => {

@@ -50,9 +50,31 @@ export const useClaimedIssues = () => {
     setLoading(false);
   }, [user]);
 
+  // Inline IIFE — keeps all setState calls inside the async continuation
+  // (react-hooks/set-state-in-effect)
   useEffect(() => {
-    if (user) fetchClaimed();
-  }, [user, fetchClaimed]);
+    if (!user) return;
+    let cancelled = false;
+    (async () => {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('claimed_issues')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('claimed_at', { ascending: false });
+      if (cancelled) return;
+      if (error) {
+        console.error('Failed to fetch claimed issues:', error);
+      } else {
+        setClaimedIssues(data || []);
+        setClaimedIssueIds(new Set((data || []).map((d: ClaimedIssue) => d.issue_id)));
+      }
+      setLoading(false);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [user]);
 
   const claimIssue = useCallback(
     async (issue: UnifiedIssue) => {

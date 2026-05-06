@@ -89,12 +89,42 @@ export const useGitHubIssues = () => {
     }
   }, [user, session]);
 
-  // Auto-fetch on mount if user is authenticated
+  // Inline IIFE — keeps all setState calls inside the async continuation
+  // (react-hooks/set-state-in-effect)
   useEffect(() => {
-    if (user && session) {
-      fetchIssues();
-    }
-  }, [user, session, fetchIssues]);
+    if (!user || !session) return;
+    let cancelled = false;
+    (async () => {
+      setLoading(true);
+      setError(null);
+      setMessage(null);
+      try {
+        const { data, error: fnError } = await supabase.functions.invoke('github-issues', {
+          headers: { Authorization: `Bearer ${session.access_token}` },
+        });
+        if (cancelled) return;
+        if (fnError) throw new Error(fnError.message || 'Failed to fetch issues');
+        if (data.error) throw new Error(data.error);
+        if (data.message) setMessage(data.message);
+        setIssues(data.issues || []);
+        setRepositories(data.repositories || []);
+        if (data.issues?.length > 0) {
+          toast.success(`Loaded ${data.issues.length} issues from GitHub`);
+        }
+      } catch (err) {
+        if (cancelled) return;
+        const errorMessage = err instanceof Error ? err.message : 'Failed to fetch issues';
+        console.error('Fetch issues error:', err);
+        setError(errorMessage);
+        toast.error(errorMessage);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [user, session]);
 
   return {
     loading,

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, NavLink } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -67,71 +67,74 @@ const OrganizationDashboard = () => {
   const [workflows, setWorkflows] = useState<Workflow[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchOrganizationData = useCallback(async () => {
-    try {
-      // Fetch organization
-      const { data: orgData, error: orgError } = await supabase
-        .from('organizations')
-        .select('*')
-        .eq('slug', slug)
-        .single();
-
-      if (orgError) throw orgError;
-      setOrganization(orgData);
-
-      // Fetch user role
-      const { data: memberData, error: memberError } = await supabase
-        .from('organization_members')
-        .select('role')
-        .eq('organization_id', orgData.id)
-        .eq('user_id', user?.id)
-        .single();
-
-      if (memberError) throw memberError;
-      setUserRole(memberData.role);
-
-      // Fetch members
-      const { data: membersData, error: membersError } = await supabase
-        .from('organization_members')
-        .select('*')
-        .eq('organization_id', orgData.id);
-
-      if (membersError) throw membersError;
-      setMembers(membersData || []);
-
-      // Fetch integrations
-      const { data: integrationsData, error: integrationsError } = await supabase
-        .from('organization_integrations')
-        .select('*')
-        .eq('organization_id', orgData.id);
-
-      if (integrationsError) throw integrationsError;
-      setIntegrations(integrationsData || []);
-
-      // Fetch workflows
-      const { data: workflowsData, error: workflowsError } = await supabase
-        .from('organization_workflows')
-        .select('*')
-        .eq('organization_id', orgData.id);
-
-      if (workflowsError) throw workflowsError;
-      setWorkflows(workflowsData || []);
-    } catch (error: any) {
-      toast({
-        title: 'Error',
-        description: error.message || 'Failed to load organization data',
-        variant: 'destructive',
-      });
-    } finally {
-      setLoading(false);
-    }
-  }, [slug, user]);
-
   useEffect(() => {
-    if (slug && user) {
-      fetchOrganizationData();
-    }
-  }, [slug, user, fetchOrganizationData]);
+    if (!slug || !user) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const { data: orgData, error: orgError } = await supabase
+          .from('organizations')
+          .select('*')
+          .eq('slug', slug)
+          .single();
+
+        if (cancelled) return;
+        if (orgError) throw orgError;
+        setOrganization(orgData);
+
+        const { data: memberData, error: memberError } = await supabase
+          .from('organization_members')
+          .select('role')
+          .eq('organization_id', orgData.id)
+          .eq('user_id', user?.id)
+          .single();
+
+        if (cancelled) return;
+        if (memberError) throw memberError;
+        setUserRole(memberData.role);
+
+        const { data: membersData, error: membersError } = await supabase
+          .from('organization_members')
+          .select('*')
+          .eq('organization_id', orgData.id);
+
+        if (cancelled) return;
+        if (membersError) throw membersError;
+        setMembers(membersData || []);
+
+        const { data: integrationsData, error: integrationsError } = await supabase
+          .from('organization_integrations')
+          .select('*')
+          .eq('organization_id', orgData.id);
+
+        if (cancelled) return;
+        if (integrationsError) throw integrationsError;
+        setIntegrations(integrationsData || []);
+
+        const { data: workflowsData, error: workflowsError } = await supabase
+          .from('organization_workflows')
+          .select('*')
+          .eq('organization_id', orgData.id);
+
+        if (cancelled) return;
+        if (workflowsError) throw workflowsError;
+        setWorkflows(workflowsData || []);
+      } catch (error: any) {
+        if (!cancelled) {
+          toast({
+            title: 'Error',
+            description: error.message || 'Failed to load organization data',
+            variant: 'destructive',
+          });
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [slug, user]);
 
   const getIntegrationIcon = (type: string) => {
     switch (type) {
