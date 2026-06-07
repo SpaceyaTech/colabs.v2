@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { AuthGuard } from '@/components/AuthGuard';
 import { AppLayout } from '@/components/AppLayout';
 import { useAuth } from '@/hooks/useAuth';
+import { useProfile } from '@/hooks/useProfile';
+import { useAnalytics } from '@/hooks/useAnalytics';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -16,124 +18,48 @@ import {
   Clock,
   FolderGit2,
   Star,
+  Loader2,
 } from 'lucide-react';
 import { ContributionHeatmap } from '@/components/profile/ContributionHeatmap';
 import { Progress } from '@/components/ui/progress';
 
-// Mock data
-const mockContributionStats = {
-  totalPRs: 47,
-  totalCommits: 342,
-  hoursContributed: 156,
-  projectsContributed: 12,
-};
-
-const mockTechStack = [
-  { name: 'TypeScript', proficiency: 92, projects: 8, color: 'hsl(var(--primary))' },
-  { name: 'React', proficiency: 88, projects: 7, color: 'hsl(var(--primary))' },
-  { name: 'Python', proficiency: 75, projects: 4, color: 'hsl(var(--primary))' },
-  { name: 'Node.js', proficiency: 82, projects: 5, color: 'hsl(var(--primary))' },
-  { name: 'PostgreSQL', proficiency: 70, projects: 3, color: 'hsl(var(--primary))' },
-];
-
-const mockProjectsContributed = [
-  {
-    id: '1',
-    name: 'react',
-    owner: 'facebook',
-    language: 'TypeScript',
-    stars: 218000,
-    prsCount: 12,
-    commitsCount: 45,
-    role: 'contributor' as const,
-  },
-  {
-    id: '2',
-    name: 'next.js',
-    owner: 'vercel',
-    language: 'TypeScript',
-    stars: 115000,
-    prsCount: 8,
-    commitsCount: 23,
-    role: 'contributor' as const,
-  },
-  {
-    id: '3',
-    name: 'my-oss-project',
-    owner: 'user',
-    language: 'Python',
-    stars: 342,
-    prsCount: 25,
-    commitsCount: 156,
-    role: 'owner' as const,
-  },
-  {
-    id: '4',
-    name: 'supabase',
-    owner: 'supabase',
-    language: 'TypeScript',
-    stars: 58000,
-    prsCount: 2,
-    commitsCount: 8,
-    role: 'contributor' as const,
-  },
-];
-
-const recentActivity = [
-  {
-    action: 'Merged PR #1234',
-    detail: 'facebook/react — Fix memory leak in useEffect',
-    time: '2 hours ago',
-    color: 'bg-primary',
-  },
-  {
-    action: '5 commits pushed',
-    detail: 'user/my-oss-project — Add new API endpoints',
-    time: '5 hours ago',
-    color: 'bg-green-500',
-  },
-  {
-    action: 'Opened PR #567',
-    detail: 'vercel/next.js — Improve build performance',
-    time: '1 day ago',
-    color: 'bg-blue-500',
-  },
-  {
-    action: 'Started contributing',
-    detail: 'supabase/supabase — First contribution',
-    time: '3 days ago',
-    color: 'bg-muted-foreground',
-  },
-];
-
-const generateHeatmapData = () => {
-  const data = [];
-  const today = new Date();
-  for (let i = 140; i >= 0; i--) {
-    const date = new Date(today);
-    date.setDate(date.getDate() - i);
-    data.push({
-      date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-      count: Math.floor(Math.random() * 12),
-    });
-  }
-  return data;
-};
-
 export default function Profile() {
   const { user } = useAuth();
-  const [heatmapData] = useState(generateHeatmapData);
+  const { profile, isLoading: profileLoading } = useProfile();
+  const { data: analytics, isLoading: analyticsLoading } = useAnalytics();
 
   useEffect(() => {
-    document.title = 'My Profile - OSS Contributions';
-  }, []);
+    document.title = `${profile?.full_name || 'My Profile'} - OSS Contributions`;
+  }, [profile]);
 
-  const userInitials = user?.email?.substring(0, 2).toUpperCase() || 'U';
+  if (profileLoading || analyticsLoading) {
+    return (
+      <AuthGuard>
+        <AppLayout>
+          <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-4">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <p className="text-sm text-muted-foreground">Loading profile data...</p>
+          </div>
+        </AppLayout>
+      </AuthGuard>
+    );
+  }
+
+  const userInitials = profile?.full_name?.substring(0, 2).toUpperCase() || user?.email?.substring(0, 2).toUpperCase() || 'U';
   const joinedDate = new Date(user?.created_at || Date.now()).toLocaleDateString('en-US', {
     month: 'long',
     year: 'numeric',
   });
-  const currentStreak = 12;
+  
+  // Real stats from analytics
+  const stats = analytics?.stats || {
+    totalPRs: 0,
+    totalCommits: 0,
+    hoursContributed: 0,
+    projectsContributed: 0
+  };
+
+  const currentStreak = 0; // TBD: Implement streak logic
 
   return (
     <AuthGuard>
@@ -142,7 +68,7 @@ export default function Profile() {
           {/* Header */}
           <div className="flex items-start gap-5 mb-6">
             <Avatar className="h-16 w-16 border border-border">
-              <AvatarImage src={user?.user_metadata?.avatar_url} alt="Profile" />
+              <AvatarImage src={profile?.avatar_url || user?.user_metadata?.avatar_url} alt="Profile" />
               <AvatarFallback className="bg-muted text-muted-foreground text-lg">
                 {userInitials}
               </AvatarFallback>
@@ -151,24 +77,28 @@ export default function Profile() {
               <div className="flex items-center justify-between">
                 <div>
                   <h1 className="text-lg font-semibold">
-                    {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Contributor'}
+                    {profile?.full_name || user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Contributor'}
                   </h1>
                   <div className="flex items-center gap-3 text-sm text-muted-foreground mt-0.5">
                     <span className="flex items-center gap-1">
                       <Calendar className="h-3.5 w-3.5" /> Joined {joinedDate}
                     </span>
-                    <span className="flex items-center gap-1">
-                      <Github className="h-3.5 w-3.5" />{' '}
-                      {user?.email?.split('@')[0] || 'contributor'}
-                    </span>
+                    {profile?.github_username && (
+                      <span className="flex items-center gap-1">
+                        <Github className="h-3.5 w-3.5" />{' '}
+                        {profile.github_username}
+                      </span>
+                    )}
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm">
-                    <Github className="h-4 w-4 mr-2" />
-                    View GitHub
-                  </Button>
-                  <Button size="sm">Edit Profile</Button>
+                  {profile?.github_username && (
+                    <Button variant="outline" size="sm" onClick={() => window.open(`https://github.com/${profile.github_username}`, '_blank')}>
+                      <Github className="h-4 w-4 mr-2" />
+                      View GitHub
+                    </Button>
+                  )}
+                  <Button size="sm" onClick={() => window.location.href = '/settings'}>Edit Profile</Button>
                 </div>
               </div>
               <div className="flex gap-2 mt-2">
@@ -176,12 +106,14 @@ export default function Profile() {
                   <TrendingUp className="h-3 w-3 mr-1" />
                   {currentStreak} day streak
                 </Badge>
-                <Badge variant="secondary" className="text-xs font-normal">
-                  Top 10% Contributor
-                </Badge>
                 <Badge variant="outline" className="text-xs font-normal">
-                  {mockContributionStats.projectsContributed} Projects
+                  {stats.projectsContributed} Projects
                 </Badge>
+                {profile?.tech_stack?.slice(0, 3).map(tech => (
+                  <Badge key={tech} variant="secondary" className="text-xs font-normal">
+                    {tech}
+                  </Badge>
+                ))}
               </div>
             </div>
           </div>
@@ -194,14 +126,14 @@ export default function Profile() {
               {
                 icon: GitPullRequest,
                 label: 'Pull Requests',
-                value: mockContributionStats.totalPRs,
+                value: stats.totalPRs,
               },
-              { icon: GitCommit, label: 'Commits', value: mockContributionStats.totalCommits },
-              { icon: Clock, label: 'Hours Coded', value: mockContributionStats.hoursContributed },
+              { icon: GitCommit, label: 'Commits', value: stats.totalCommits },
+              { icon: Clock, label: 'Hours Coded', value: stats.hoursContributed },
               {
                 icon: FolderGit2,
                 label: 'Projects',
-                value: mockContributionStats.projectsContributed,
+                value: stats.projectsContributed,
               },
             ].map(({ icon: Icon, label, value }) => (
               <div key={label} className="space-y-1">
@@ -215,7 +147,7 @@ export default function Profile() {
           </div>
 
           {/* Heatmap */}
-          <ContributionHeatmap data={heatmapData} />
+          <ContributionHeatmap data={analytics?.heatmapData || []} />
 
           {/* Two column: Tech Stack + Recent Activity */}
           <div className="grid md:grid-cols-2 gap-6 mt-6">
@@ -225,7 +157,7 @@ export default function Profile() {
                 Tech Stack
               </h2>
               <div className="space-y-3">
-                {mockTechStack.map((tech) => (
+                {analytics?.techStack.map((tech) => (
                   <div key={tech.name} className="space-y-1">
                     <div className="flex items-center justify-between text-sm">
                       <span className="font-medium">{tech.name}</span>
@@ -236,90 +168,20 @@ export default function Profile() {
                     <Progress value={tech.proficiency} className="h-1.5" />
                   </div>
                 ))}
+                {(!analytics?.techStack || analytics.techStack.length === 0) && (
+                  <p className="text-xs text-muted-foreground">No tech stack data yet. Start claiming issues to see analytics.</p>
+                )}
               </div>
             </div>
 
-            {/* Recent Activity */}
+            {/* Recent Activity - Static for now, can be linked to an activity log table later */}
             <div>
               <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-4">
                 Recent Activity
               </h2>
               <div className="space-y-4">
-                {recentActivity.map((item, i) => (
-                  <div key={i} className="flex gap-3">
-                    <div className="flex flex-col items-center pt-1">
-                      <div className={`h-2 w-2 rounded-full ${item.color}`} />
-                      {i < recentActivity.length - 1 && (
-                        <div className="h-full w-px bg-border mt-1" />
-                      )}
-                    </div>
-                    <div className="pb-2">
-                      <p className="text-sm font-medium">{item.action}</p>
-                      <p className="text-xs text-muted-foreground">{item.detail}</p>
-                      <p className="text-xs text-muted-foreground mt-0.5">{item.time}</p>
-                    </div>
-                  </div>
-                ))}
+                <p className="text-xs text-muted-foreground italic">Activity logging coming soon in Phase 2.</p>
               </div>
-            </div>
-          </div>
-
-          {/* Projects Contributed */}
-          <div className="mt-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
-                Projects Contributed
-              </h2>
-              <Button variant="ghost" size="sm" className="text-xs text-muted-foreground">
-                View All
-              </Button>
-            </div>
-            <div className="border border-border rounded-lg divide-y divide-border">
-              {mockProjectsContributed.map((project) => (
-                <div
-                  key={project.id}
-                  className="flex items-center justify-between px-4 py-3 hover:bg-muted/50 transition-colors"
-                >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="h-8 w-8 rounded bg-muted flex items-center justify-center text-xs font-medium text-muted-foreground">
-                      {project.name.substring(0, 2).toUpperCase()}
-                    </div>
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium truncate">
-                          {project.owner}/{project.name}
-                        </span>
-                        <Badge
-                          variant={project.role === 'owner' ? 'default' : 'outline'}
-                          className="text-[10px] capitalize"
-                        >
-                          {project.role}
-                        </Badge>
-                      </div>
-                      <div className="flex items-center gap-3 text-xs text-muted-foreground mt-0.5">
-                        <span>{project.language}</span>
-                        <span className="flex items-center gap-0.5">
-                          <Star className="h-3 w-3" />
-                          {project.stars.toLocaleString()}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                    <span className="flex items-center gap-1">
-                      <GitPullRequest className="h-3.5 w-3.5" />
-                      {project.prsCount}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <GitCommit className="h-3.5 w-3.5" />
-                      {project.commitsCount}
-                    </span>
-                    <Button variant="ghost" size="icon" className="h-7 w-7">
-                      <ExternalLink className="h-3.5 w-3.5" />
-                    </Button>
-                  </div>
-                </div>
-              ))}
             </div>
           </div>
         </div>

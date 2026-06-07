@@ -24,13 +24,39 @@ import {
   Key,
   Trash2,
   Save,
+  Loader2,
   Settings as SettingsIcon,
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { useProfile } from '@/hooks/useProfile';
 import { GitHubIntegration } from '@/components/GitHubIntegration';
+import { useState, useEffect } from 'react';
 
 export function SettingsTab() {
   const { user } = useAuth();
+  const { profile, updateProfile, isUpdating } = useProfile();
+  
+  const [formData, setFormData] = useState({
+    full_name: '',
+    username: '',
+    bio: '',
+    website_url: ''
+  });
+
+  useEffect(() => {
+    if (profile) {
+      setFormData({
+        full_name: profile.full_name || '',
+        username: profile.username || '',
+        bio: profile.bio || '',
+        website_url: profile.website_url || ''
+      });
+    }
+  }, [profile]);
+
+  const handleSave = () => {
+    updateProfile(formData);
+  };
 
   return (
     <div className="max-w-4xl space-y-6">
@@ -69,9 +95,9 @@ export function SettingsTab() {
             <CardContent className="space-y-6">
               <div className="flex items-center gap-6">
                 <Avatar className="h-20 w-20">
-                  <AvatarImage src={user?.user_metadata?.avatar_url} />
+                  <AvatarImage src={profile?.avatar_url || user?.user_metadata?.avatar_url} />
                   <AvatarFallback className="text-lg">
-                    {user?.email?.charAt(0).toUpperCase()}
+                    {(profile?.full_name || user?.email)?.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                 <div className="space-y-2">
@@ -84,11 +110,12 @@ export function SettingsTab() {
 
               <div className="grid gap-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="name">Name</Label>
+                  <Label htmlFor="full_name">Name</Label>
                   <Input
-                    id="name"
+                    id="full_name"
                     placeholder="Your full name"
-                    defaultValue={user?.user_metadata?.full_name || ''}
+                    value={formData.full_name}
+                    onChange={(e) => setFormData({...formData, full_name: e.target.value})}
                   />
                 </div>
                 <div className="grid gap-2">
@@ -96,25 +123,38 @@ export function SettingsTab() {
                   <Input
                     id="username"
                     placeholder="Your username"
-                    defaultValue={user?.email?.split('@')[0] || ''}
+                    value={formData.username}
+                    onChange={(e) => setFormData({...formData, username: e.target.value})}
                   />
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="bio">Bio</Label>
-                  <Textarea id="bio" placeholder="Tell us about yourself" rows={3} />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="location">Location</Label>
-                  <Input id="location" placeholder="Your location" />
+                  <Textarea 
+                    id="bio" 
+                    placeholder="Tell us about yourself" 
+                    rows={3} 
+                    value={formData.bio}
+                    onChange={(e) => setFormData({...formData, bio: e.target.value})}
+                  />
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="website">Website</Label>
-                  <Input id="website" placeholder="https://your-website.com" type="url" />
+                  <Input 
+                    id="website" 
+                    placeholder="https://your-website.com" 
+                    type="url" 
+                    value={formData.website_url}
+                    onChange={(e) => setFormData({...formData, website_url: e.target.value})}
+                  />
                 </div>
               </div>
 
-              <Button>
-                <Save className="h-4 w-4 mr-2" />
+              <Button onClick={handleSave} disabled={isUpdating}>
+                {isUpdating ? (
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                ) : (
+                  <Save className="h-4 w-4 mr-2" />
+                )}
                 Save changes
               </Button>
             </CardContent>
