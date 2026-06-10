@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Toaster } from '@/components/ui/toaster';
+import { AuthErrorListener } from '@/components/shared/AuthErrorListener';
 import Index from '@/pages/Index';
 import SignIn from '@/pages/SignIn';
 import SignUp from '@/pages/SignUp';
@@ -34,6 +35,7 @@ function App() {
       <BrowserRouter>
         <AuthProvider>
           <Toaster />
+          <AuthErrorListener />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/sign-in" element={<SignIn />} />
